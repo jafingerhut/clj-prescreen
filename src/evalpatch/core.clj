@@ -70,6 +70,11 @@
   (System/exit 1))
 
 
+(defn read-from-file-safely [filename]
+  (with-open [r (java.io.PushbackReader. (io/reader filename))]
+    (binding [*read-eval* false]
+      (read r))))
+
 
 (defn attachments-from-ticket [ticket]
   (let [k (xml1-> ticket :key text)
@@ -493,8 +498,7 @@ Check it to see if it was created incorrectly."})
 (defn eval-patches! [patches attach-dir people-info-filename clojure-dir]
   (if-not (clojure-git-dir? clojure-dir)
     (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" clojure-dir)
-    (let [people-info (read (java.io.PushbackReader.
-                             (io/reader people-info-filename)))]
+    (let [people-info (read-from-file-safely people-info-filename)]
       (sh/with-sh-dir clojure-dir
         (let [n (count patches)]
           (doall
@@ -539,17 +543,16 @@ Check it to see if it was created incorrectly."})
 
 ;; See Note 1 below about editing.
 
-(def as2 (read (java.io.PushbackReader. (io/reader "att-info-pprinted.txt"))))
+(def as2 (read-from-file-safely "att-info-pprinted.txt"))
 ;; Evaluate all patches:
 (def as3 (eval-patches! as2 "ticket-info" "data/people-data.clj" "../clojure"))
 ;; Evaluate one patch:
 ;; TBD
 
 (spit "att-evaled-pprinted.txt" (with-out-str (pprint as3)))
-(def as3 (read (java.io.PushbackReader. (io/reader "att-evaled-pprinted.txt"))))
+(def as3 (read-from-file-safely "att-evaled-pprinted.txt"))
 ;; Update author info, perhaps after editing "data/people-data.clj"
-(def as4 (let [people-info (read (java.io.PushbackReader.
-                                  (io/reader "data/people-data.clj")))]
+(def as4 (let [people-info (read-from-file-safely "data/people-data.clj")]
            (map #(add-author-info % "ticket-info" people-info) as3)))
 
 ;            (fn [p]
@@ -564,13 +567,10 @@ Check it to see if it was created incorrectly."})
 ;; Testing with 1 patch at a time.
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
-(def as2 (read (java.io.PushbackReader. (io/reader "att-1-non-git-wrong-opts.txt"))))
+(def as2 (read-from-file-safely "att-1-non-git-wrong-opts.txt"))
 (def as3 (eval-patches! as2 "ticket-info" "../clojure"))
 
-(def as2 (read (java.io.PushbackReader. (io/reader "att-2-non-git-hand-corrected-opts.txt"))))
-
-;;(def as2 (read (java.io.PushbackReader. (io/reader "
-;;"))))
+(def as2 (read-from-file-safely "att-2-non-git-hand-corrected-opts.txt"))
 
 
 ;; ======================================================================
