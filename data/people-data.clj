@@ -185,7 +185,7 @@
 {:full-name "Baishampayan Ghose"
  :aliases #{ }
  :usernames #{ "ghoseb" }
- :emails #{ "b.ghose@gmail.com" }
+ :emails #{ "b.ghose@gmail.com" "b.ghose@infinitelybeta.com" }
  :contributor true
  }
 {:full-name "Greg Chapman"
@@ -255,7 +255,7 @@
  :contributor true
  }
 {:full-name "Jürgen Hötzel"
- :aliases #{ }
+ :aliases #{ "Juergen Hoetzel" }
  :usernames #{ "juergenhoetzel" }
  :emails #{ "juergen@archlinux.org" }
  :contributor true
