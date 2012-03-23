@@ -439,8 +439,8 @@ Check it to see if it was created incorrectly."})
                 :patch-author-summary
                 (if (every? #(= :contributor (:contributor-status %))
                             author-info)
-                  :all-contributors
-                  :not-all-contributors)}))
+                  :CA-ok
+                  :not-CA-clean)}))
     ;; else not a git patch
     (merge p {:patch-author-info nil
               :patch-author-summary :not-git-patch})))
@@ -511,15 +511,25 @@ Check it to see if it was created incorrectly."})
                         patches)))))))
 
 
+(defn name-or-default [p k deflt]
+  (if-let [s (get p k)]
+    (name s)
+    deflt))
+
+
+(defn one-patch-summary [idx p n]
+  (iprintf "%3d/%3d %-13s %-10s %-5s %s %s\n"
+           (inc idx) n
+           (name-or-default p :patch-author-summary "--")
+           (name-or-default p :patch-status "--")
+           (name-or-default p :ant-status "--")
+           (:ticket p) (:name p)))
+
+
 (defn eval-patches-summary [patches]
   (let [n (count patches)]
     (dorun
-     (map-indexed (fn [idx p]
-                    (iprintf "%3d/%3d %-12s %-10s %-5s %s %s\n" (inc idx) n
-                             (if-let [s (patch-type p)] (name s) "--")
-                             (if-let [s (:patch-status p)] (name s) "--")
-                             (if-let [s (:ant-status p)] (name s) "--")
-                             (:ticket p) (:name p)))
+     (map-indexed #(one-patch-summary %1 %2 n)
                   patches))))
 
 
