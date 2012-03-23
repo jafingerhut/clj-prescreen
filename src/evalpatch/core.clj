@@ -6,6 +6,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.java.shell :as sh]
+            [clojure.pprint :as p]
             ;; TBD: Is Raynes's version on a Maven repo somewhere?
             [fs :as fs]))
 
@@ -70,10 +71,14 @@
   (System/exit 1))
 
 
-(defn read-from-file-safely [filename]
-  (with-open [r (java.io.PushbackReader. (io/reader filename))]
+(defn read-safely [x & opts]
+  (with-open [r (java.io.PushbackReader. (apply io/reader x opts))]
     (binding [*read-eval* false]
       (read r))))
+
+
+(defn spit-pretty [f data & options]
+  (apply spit f (with-out-str (p/pprint data)) options))
 
 
 (defn attachments-from-ticket [ticket]
@@ -498,7 +503,7 @@ Check it to see if it was created incorrectly."})
 (defn eval-patches! [patches attach-dir people-info-filename clojure-dir]
   (if-not (clojure-git-dir? clojure-dir)
     (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" clojure-dir)
-    (let [people-info (read-from-file-safely people-info-filename)]
+    (let [people-info (read-safely people-info-filename)]
       (sh/with-sh-dir clojure-dir
         (let [n (count patches)]
           (doall
@@ -520,17 +525,13 @@ Check it to see if it was created incorrectly."})
 
 (comment
 
-;; By going to the Clojure Jira page, then to the filters, and looking
-;; at the tickets that match a particular filter, there is a popup
-;; menu that says "Views" in the upper right of the page.
+;; Go to the Clojure Jira page, then to the filters, and look at the
+;; tickets that match a particular filter.  There is a popup menu that
+;; says "Views" in the upper right of the page.
 
-;; If you pick the XML view from that menu, then an XML form of the
-;; ticket list is shown, and you can save the page as a file.  That is
-;; how I created the file:
-
-;; rfs.xml
-
-;; which is an abbreviation of "Ready For Screening".
+;; Pick the XML view from that menu.  An XML form of the ticket list
+;; will be shown.  Save the page as a file.  That is how I created the
+;; file rfs.xml (abbreviation of "Ready For Screening").
 
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
@@ -538,39 +539,55 @@ Check it to see if it was created incorrectly."})
 (def as (xml->attach-info "rfs.xml"))
 (pprint (take 10 as))
 (def as2 (download-attachments! as "ticket-info"))
-(pprint (take 10 as2))
-(spit "att-info-pprinted.txt" (with-out-str (pprint as2)))
+(spit-pretty "att-info.txt" as2)
 
 ;; See Note 1 below about editing.
 
-(def as2 (read-from-file-safely "att-info-pprinted.txt"))
+(def as2 (read-safely "att-info.txt"))
 ;; Evaluate all patches:
 (def as3 (eval-patches! as2 "ticket-info" "data/people-data.clj" "../clojure"))
 ;; Evaluate one patch:
 ;; TBD
 
-(spit "att-evaled-pprinted.txt" (with-out-str (pprint as3)))
-(def as3 (read-from-file-safely "att-evaled-pprinted.txt"))
+(spit-pretty "att-evaled.txt" as3)
+
+(def as3 (read-safely "att-evaled.txt"))
 ;; Update author info, perhaps after editing "data/people-data.clj"
-(def as4 (let [people-info (read-from-file-safely "data/people-data.clj")]
+(def as4 (let [people-info (read-safely "data/people-data.clj")]
            (map #(add-author-info % "ticket-info" people-info) as3)))
 
-;            (fn [p]
-;              (if (= :git-diff (patch-type p))
-;                (update-author-info p (str (att-dir-name (:ticket p) "ticket-info")
-;                                           "/" (:name p))
-;                                    people-info)
-;                p))
-(eval-patches-summary as3)
+(eval-patches-summary as4)
 
 
 ;; Testing with 1 patch at a time.
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
-(def as2 (read-from-file-safely "att-1-non-git-wrong-opts.txt"))
+(def as2 (read-safely "att-1-non-git-wrong-opts.txt"))
 (def as3 (eval-patches! as2 "ticket-info" "../clojure"))
 
-(def as2 (read-from-file-safely "att-2-non-git-hand-corrected-opts.txt"))
+(def as2 (read-safely "att-2-non-git-hand-corrected-opts.txt"))
+
+
+;; Older expressions I used for learning how clojure.data.zip.xml
+;; works while writing xml->attach-info:
+
+(use 'clojure.data.zip.xml 'clojure.pprint)
+(require '[clojure.xml :as xml] '[clojure.zip :as zip] '[clojure.inspector :as i])
+(def z (zip/xml-zip (xml/parse "rfs.xml")))
+(def tickets (xml-> z :channel :item))
+(count tickets) ; => 53
+
+(def t1 (first tickets))
+(def k (xml1-> t1 :key text))
+(def title (xml1-> t1 :title text))
+(def atts (xml-> t1 :attachments :attachment))
+
+(->> (xml-> t1 :attachments :attachment)
+     (map (fn [att] (:attrs (first att))))
+     (map #(merge % {:key k :title title}))
+     )
+
+)
 
 
 ;; ======================================================================
@@ -601,8 +618,8 @@ Check it to see if it was created incorrectly."})
 ;; ======================================================================
 ;; Information evalpatch should add to each attachment:
 
-;; (0) When was the evaluation done?  Against what version of Clojure
-;; source code?  What OS and JVM were used?
+;; (0) TBD: When was the evaluation done?  Against what version of
+;; Clojure source code?  What OS and JVM were used?
 
 ;; (a) Did it apply cleanly?  Whether it did or not, store the patch
 ;; command output for future reference.
@@ -629,25 +646,3 @@ Check it to see if it was created incorrectly."})
 ;; TBD: Make it quick and easy to use this code to evaluate just one
 ;; patch, perhaps specified merely by the ticket name and the
 ;; attachment file name.
-
-
-;; Older expressions I used for learning how clojure.data.zip.xml
-;; works while writing xml->attach-info:
-
-(use 'clojure.data.zip.xml 'clojure.pprint)
-(require '[clojure.xml :as xml] '[clojure.zip :as zip] '[clojure.inspector :as i])
-(def z (zip/xml-zip (xml/parse "rfs.xml")))
-(def tickets (xml-> z :channel :item))
-(count tickets) ; => 53
-
-(def t1 (first tickets))
-(def k (xml1-> t1 :key text))
-(def title (xml1-> t1 :title text))
-(def atts (xml-> t1 :attachments :attachment))
-
-(->> (xml-> t1 :attachments :attachment)
-     (map (fn [att] (:attrs (first att))))
-     (map #(merge % {:key k :title title}))
-     )
-
-)
