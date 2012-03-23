@@ -360,7 +360,6 @@ index bfc8274..dea9310 100644
     (is (= names-and-emails1
            #{{:name "Andy Fingerhut", :email "andy_fingerhut@alum.wustl.edu"}
              {:name "Juha Arpiainen", :email "jarpiain@iki.fi"}}))
-    (is (= 72 (count people)))
     (is (= (find-by-name-and-email people
                                    {:name "Andy Fingerhut"
                                     :email "andy_fingerhut@alum.wustl.edu"})
