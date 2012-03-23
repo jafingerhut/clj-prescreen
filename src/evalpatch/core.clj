@@ -1,14 +1,13 @@
 (ns evalpatch.core
   (:import java.io.File)
-  (:use [clojure.data.zip.xml])
   (:require [clojure.xml :as xml]
+            [clojure.data.zip.xml :as dzx]
             [clojure.zip :as zip]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.java.shell :as sh]
             [clojure.pprint :as p]
-            ;; TBD: Is Raynes's version on a Maven repo somewhere?
-            [fs :as fs]))
+            [fs.core :as fs]))
 
 (set! *warn-on-reflection* true)
 
@@ -82,9 +81,9 @@
 
 
 (defn attachments-from-ticket [ticket]
-  (let [k (xml1-> ticket :key text)
-        title (xml1-> ticket :title text)]
-    (->> (xml-> ticket :attachments :attachment)
+  (let [k (dzx/xml1-> ticket :key dzx/text)
+        title (dzx/xml1-> ticket :title dzx/text)]
+    (->> (dzx/xml-> ticket :attachments :attachment)
          (map (fn [att] (:attrs (first att))))
          (map #(merge % {:ticket k :title title})))))
 
@@ -110,7 +109,7 @@ TBENCH-11"
 
 (defn xml->attach-info [file]
   (let [z (zip/xml-zip (xml/parse file))
-        tickets (xml-> z :channel :item)]
+        tickets (dzx/xml-> z :channel :item)]
     (->> tickets
          (mapcat attachments-from-ticket)
          ;; add sort keys
@@ -256,7 +255,6 @@ the root directory of a Clojure git repository."
      (> (count partial-matches) 0)
      [:only-partial-matches partial-matches]
 
-     ;; zip
      :else [:no-matches nil])))
 
 
@@ -283,7 +281,6 @@ once, using a set."
 (defn one-author-contributor-status
   [people {:keys [name email] :as author}]
   (let [[match-kind x] (find-by-name-and-email people author)]
-    ;;(printf "andy-debug: match-kind='%s' x='%s'\n" match-kind (seq x)) (flush)
     (if (= match-kind :one-full-match)
       (if (:contributor x)
         :contributor
@@ -517,9 +514,8 @@ Check it to see if it was created incorrectly."})
     deflt))
 
 
-(defn one-patch-summary [idx p n]
-  (iprintf "%3d/%3d %-13s %-10s %-5s %s %s\n"
-           (inc idx) n
+(defn one-patch-summary [p]
+  (iprintf "%-13s %-10s %-5s %s %s\n"
            (name-or-default p :patch-author-summary "--")
            (name-or-default p :patch-status "--")
            (name-or-default p :ant-status "--")
@@ -527,10 +523,10 @@ Check it to see if it was created incorrectly."})
 
 
 (defn eval-patches-summary [patches]
-  (let [n (count patches)]
-    (dorun
-     (map-indexed #(one-patch-summary %1 %2 n)
-                  patches))))
+  (dorun (map (fn [p-group]
+                (iprintf "\n")
+                (dorun (map one-patch-summary p-group)))
+              (partition-by :ticket patches))))
 
 
 (comment
@@ -546,9 +542,9 @@ Check it to see if it was created incorrectly."})
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
 
-(def as (xml->attach-info "rfs.xml"))
-(pprint (take 10 as))
-(def as2 (download-attachments! as "ticket-info"))
+(def as1 (xml->attach-info "rfs.xml"))
+(pprint (take 10 as1))
+(def as2 (download-attachments! as1 "ticket-info"))
 (spit-pretty "att-info.txt" as2)
 
 ;; See Note 1 below about editing.
@@ -560,6 +556,7 @@ Check it to see if it was created incorrectly."})
 ;; TBD
 
 (spit-pretty "att-evaled.txt" as3)
+;;(spit-pretty "np-evaled.txt" as3)
 
 (def as3 (read-safely "att-evaled.txt"))
 ;; Update author info, perhaps after editing "data/people-data.clj"
@@ -584,15 +581,15 @@ Check it to see if it was created incorrectly."})
 (use 'clojure.data.zip.xml 'clojure.pprint)
 (require '[clojure.xml :as xml] '[clojure.zip :as zip] '[clojure.inspector :as i])
 (def z (zip/xml-zip (xml/parse "rfs.xml")))
-(def tickets (xml-> z :channel :item))
+(def tickets (dzx/xml-> z :channel :item))
 (count tickets) ; => 53
 
 (def t1 (first tickets))
-(def k (xml1-> t1 :key text))
-(def title (xml1-> t1 :title text))
-(def atts (xml-> t1 :attachments :attachment))
+(def k (dzx/xml1-> t1 :key dzx/text))
+(def title (dzx/xml1-> t1 :title dzx/text))
+(def atts (dzx/xml-> t1 :attachments :attachment))
 
-(->> (xml-> t1 :attachments :attachment)
+(->> (dzx/xml-> t1 :attachments :attachment)
      (map (fn [att] (:attrs (first att))))
      (map #(merge % {:key k :title title}))
      )

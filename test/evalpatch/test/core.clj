@@ -340,10 +340,10 @@ index bfc8274..dea9310 100644
 
 
 
-;; TBD: Test a patch that has one of the commit comment lines
-;; beginning with "From: ".  How does git recognize the boundaries of
-;; a patch in this case?  Perhaps by looking for the line "---" by
-;; itself at the end of the comments?
+;; TBD: Test a git format patch file that has one of the lines in the
+;; commit comments beginning with "From: ".  How does git recognize
+;; the boundaries of a patch in this case?  Perhaps by looking for the
+;; line "---" by itself at the end of the comments?
 
 (deftest test-author-checks
   (let [people (read (java.io.PushbackReader. (io/reader "data/people-data.clj")))
