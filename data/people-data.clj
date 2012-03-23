@@ -164,6 +164,12 @@
  :emails #{ "ekoontz@hiro-tan.org" }
  :contributor true
  }
+{:full-name "Eric Schoonover"
+ :aliases #{ }
+ :usernames #{ "spoon16" }
+ :emails #{ "erics@capdes.com" }
+ :contributor true
+ }
 {:full-name "Federico Brubacher"
  :aliases #{ }
  :usernames #{ "fbrubacher" }
