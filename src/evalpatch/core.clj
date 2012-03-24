@@ -122,8 +122,6 @@ TBENCH-11"
          (map second))))
 
 
-;;(def attach-dir "ticket-info")
-
 (defn att-dir-name [ticket-name attach-dir]
   (str attach-dir "/" ticket-name "-attachments"))
 
@@ -540,29 +538,35 @@ Check it to see if it was created incorrectly."})
 ;; file rfs.xml (abbreviation of "Ready For Screening").
 
 (use 'evalpatch.core 'clojure.pprint)
-(require '[clojure.java.io :as io])
+(require '[clojure.java.io :as io] '[fs.core :as fs])
+(def cur-eval-dir (str @fs/cwd "/2012-03-23-tickets/"))
+(def ticket-dir (str cur-eval-dir "ticket-info"))
 
-(def as1 (xml->attach-info "rfs.xml"))
+(def cur-patch-type "screened")
+;;(def cur-patch-type "rfs")
+;;(def cur-patch-type "np")
+
+(def as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml")))
 (pprint (take 10 as1))
-(def as2 (download-attachments! as1 "ticket-info"))
-(spit-pretty "att-info.txt" as2)
+(def as2 (download-attachments! as1 ticket-dir))
+(spit-pretty (str cur-eval-dir cur-patch-type "-info.txt") as2)
 
 ;; See Note 1 below about editing.
 
-(def as2 (read-safely "att-info.txt"))
+(def as2 (read-safely (str cur-eval-dir cur-patch-type "-info.txt")))
 ;; Evaluate all patches:
-(def as3 (eval-patches! as2 "ticket-info" "data/people-data.clj" "../clojure"))
+(def as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "../clojure"))
 ;; Evaluate one patch:
 ;; TBD
 
-(spit-pretty "att-evaled.txt" as3)
-;;(spit-pretty "np-evaled.txt" as3)
+(spit-pretty (str cur-eval-dir cur-patch-type "-evaled.txt") as3)
 
-(def as3 (read-safely "att-evaled.txt"))
+(def as3 (read-safely (str cur-eval-dir cur-patch-type "-evaled.txt")))
 ;; Update author info, perhaps after editing "data/people-data.clj"
 (def as4 (let [people-info (read-safely "data/people-data.clj")]
-           (map #(add-author-info % "ticket-info" people-info) as3)))
+           (map #(add-author-info % ticket-dir people-info) as3)))
 
+(spit-pretty (str cur-eval-dir cur-patch-type "-evaled-authors.txt") as4)
 (eval-patches-summary as4)
 
 
@@ -570,7 +574,7 @@ Check it to see if it was created incorrectly."})
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
 (def as2 (read-safely "att-1-non-git-wrong-opts.txt"))
-(def as3 (eval-patches! as2 "ticket-info" "../clojure"))
+(def as3 (eval-patches! as2 ticket-dir "../clojure"))
 
 (def as2 (read-safely "att-2-non-git-hand-corrected-opts.txt"))
 
