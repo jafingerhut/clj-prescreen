@@ -539,10 +539,11 @@ Check it to see if it was created incorrectly."})
 
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-03-23-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-03-26-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 
 (def cur-patch-type "screened")
+;;(def cur-patch-type "incomplete")
 ;;(def cur-patch-type "rfs")
 ;;(def cur-patch-type "np")
 
@@ -555,7 +556,7 @@ Check it to see if it was created incorrectly."})
 
 (def as2 (read-safely (str cur-eval-dir cur-patch-type "-info.txt")))
 ;; Evaluate all patches:
-(def as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "../clojure"))
+(def as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure"))
 ;; Evaluate one patch:
 ;; TBD
 
