@@ -407,7 +407,7 @@
 {:full-name "Tom Faulhaber"
  :aliases #{ }
  :usernames #{ "tomfaulhaber" }
- :emails #{ "tomfaulhaber@gmail.com" }
+ :emails #{ "tomfaulhaber@gmail.com" "git_net@infolace.com" }
  :contributor true
  }
 {:full-name "Colin Jones"
