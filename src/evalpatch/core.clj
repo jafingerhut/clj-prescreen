@@ -153,8 +153,9 @@ TBENCH-11"
     (doseq [ticket-name ticket-names]
       (let [^File att-dir (io/file (att-dir-name ticket-name attach-dir))]
         (iprintf ".")
-        (when-not (.mkdirs att-dir)
-          (die ".mkdirs %s failed.  Aborting.\n" att-dir))))
+        (when-not (.exists att-dir)
+          (when-not (.mkdirs att-dir)
+            (die ".mkdirs %s failed.  Aborting.\n" att-dir)))))
     (iprintf "\n"))
   (let [num-atts (count atts)]
     (iprintf "Getting %d attachments:\n" num-atts)
@@ -541,6 +542,12 @@ Check it to see if it was created incorrectly."})
 (require '[clojure.java.io :as io] '[fs.core :as fs])
 (def cur-eval-dir (str @fs/cwd "/2012-04-06-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
+
+;; Also need to pull a clone of the Clojure repo if you haven't done
+;; so already.  Don't make it your favorite one, as many branches will
+;; be created and deleted in it, and it will erase any local changes
+;; you have made in its current branch.
+;; git clone git://github.com/clojure/clojure.git
 
 ;; Automate things a bit more
 (doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
