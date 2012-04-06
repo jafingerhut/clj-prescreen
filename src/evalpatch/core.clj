@@ -539,10 +539,36 @@ Check it to see if it was created incorrectly."})
 
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-03-26-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-04-06-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 
-(def cur-patch-type "screened")
+;; Automate things a bit more
+(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+  (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
+        as2 (download-attachments! as1 ticket-dir)
+        as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure")
+        fname1 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
+        fname2 (str cur-eval-dir cur-patch-type "-patch-summary.txt")
+        as4 (let [people-info (read-safely "data/people-data.clj")]
+              (map #(add-author-info % ticket-dir people-info) as3))]
+    (spit-pretty fname1 as4)
+    (spit fname2 (with-out-str (eval-patches-summary as4)))))
+
+;; After doing the above, if you edit data/people-data.clj and want to
+;; redo the author evaluations only, do this:
+(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+  (let [fname1 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
+        fname2 (str cur-eval-dir cur-patch-type "-patch-summary.txt")
+        as4 (read-safely fname1)
+        as4 (let [people-info (read-safely "data/people-data.clj")]
+              (map #(add-author-info % ticket-dir people-info) as4))]
+    (spit-pretty fname1 as4)
+    (spit fname2 (with-out-str (eval-patches-summary as4)))))
+
+
+;; Beginning of older copy-and-paste one-step-at-a-time method
+
+;;(def cur-patch-type "screened")
 ;;(def cur-patch-type "incomplete")
 ;;(def cur-patch-type "rfs")
 ;;(def cur-patch-type "np")
