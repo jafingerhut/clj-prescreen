@@ -540,7 +540,7 @@ Check it to see if it was created incorrectly."})
 
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-04-06-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-04-11-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
@@ -550,27 +550,38 @@ Check it to see if it was created incorrectly."})
 ;; git clone git://github.com/clojure/clojure.git
 
 ;; Automate things a bit more
+
+;; Download all attachments for selected tickets.  Do this once on one
+;; machine, not once for each OS/JDK combo I want to test.
 (doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
   (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
         as2 (download-attachments! as1 ticket-dir)
+        fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")]
+    (spit-pretty fname2 as2)))
+
+;; Evaluate downloaded attachments.  DO this once for each OS/JDK
+;; combo.
+(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+  (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+        as2 (read-safely fname2)
         as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure")
-        fname1 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
-        fname2 (str cur-eval-dir cur-patch-type "-patch-summary.txt")
         as4 (let [people-info (read-safely "data/people-data.clj")]
-              (map #(add-author-info % ticket-dir people-info) as3))]
-    (spit-pretty fname1 as4)
-    (spit fname2 (with-out-str (eval-patches-summary as4)))))
+              (map #(add-author-info % ticket-dir people-info) as3))
+        fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
+        fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")]
+    (spit-pretty fname4 as4)
+    (spit fname-sum (with-out-str (eval-patches-summary as4)))))
 
 ;; After doing the above, if you edit data/people-data.clj and want to
 ;; redo the author evaluations only, do this:
 (doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
-  (let [fname1 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
-        fname2 (str cur-eval-dir cur-patch-type "-patch-summary.txt")
-        as4 (read-safely fname1)
+  (let [fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
+        fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")
+        as4 (read-safely fname4)
         as4 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as4))]
-    (spit-pretty fname1 as4)
-    (spit fname2 (with-out-str (eval-patches-summary as4)))))
+    (spit-pretty fname4 as4)
+    (spit fname-sum (with-out-str (eval-patches-summary as4)))))
 
 
 ;; Beginning of older copy-and-paste one-step-at-a-time method
