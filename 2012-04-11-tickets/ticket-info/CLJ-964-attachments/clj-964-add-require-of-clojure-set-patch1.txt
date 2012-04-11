@@ -1,0 +1,24 @@
+From a9321dc20ddd0e7def9ba94c3dc5619eeaa134b8 Mon Sep 17 00:00:00 2001
+From: Andy Fingerhut <andy_fingerhut@alum.wustl.edu>
+Date: Sat, 31 Mar 2012 18:44:36 -0700
+Subject: [PATCH] Add require of clojure.set to test_clojure/rt.clj
+
+---
+ test/clojure/test_clojure/rt.clj |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/test/clojure/test_clojure/rt.clj b/test/clojure/test_clojure/rt.clj
+index a70df2d..ce406ae 100644
+--- a/test/clojure/test_clojure/rt.clj
++++ b/test/clojure/test_clojure/rt.clj
+@@ -9,6 +9,7 @@
+ ; Author: Stuart Halloway
+ 
+ (ns clojure.test-clojure.rt
++  (:require clojure.set)
+   (:use clojure.test clojure.test-helper))
+ 
+ (defn bare-rt-print
+-- 
+1.7.9.2
+

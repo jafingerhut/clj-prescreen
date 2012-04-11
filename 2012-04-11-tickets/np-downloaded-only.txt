@@ -1,0 +1,204 @@
+({:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-2-attachments/scopes-spike.patch",
+  :title "[CLJ-2] Scopes",
+  :ticket "CLJ-2",
+  :id "10275",
+  :name "scopes-spike.patch",
+  :size "4258",
+  :author "stu",
+  :created "Tue, 12 Jul 2011 06:26:23 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-373-attachments/0001-Support-empty-path-in-update-in.-CLJ-373.patch",
+  :title "[CLJ-373] update-in with empty key paths",
+  :ticket "CLJ-373",
+  :id "10019",
+  :name "0001-Support-empty-path-in-update-in.-CLJ-373.patch",
+  :size "949",
+  :author "chouser@n01se.net",
+  :created "Sat, 13 Nov 2010 16:37:53 -0800"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-438-attachments/0001-Fix-error-case-in-eval-of-walk-macroexpand-all-outpu.patch",
+  :title "[CLJ-438] case* and code walkers",
+  :ticket "CLJ-438",
+  :id "10065",
+  :name
+  "0001-Fix-error-case-in-eval-of-walk-macroexpand-all-outpu.patch",
+  :size "1571",
+  :author "trptcolin",
+  :created "Sat, 1 Jan 2011 14:13:12 -0800"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-445-attachments/reorg-reflector.patch",
+  :title
+  "[CLJ-445] Method/Constructor resolution does not factor in widening conversion of primitive args",
+  :ticket "CLJ-445",
+  :id "10203",
+  :name "reorg-reflector.patch",
+  :size "73345",
+  :author "ataggart",
+  :created "Thu, 28 Apr 2011 11:19:50 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-445-attachments/prim-conversion.patch",
+  :title
+  "[CLJ-445] Method/Constructor resolution does not factor in widening conversion of primitive args",
+  :ticket "CLJ-445",
+  :id "10205",
+  :name "prim-conversion.patch",
+  :size "36375",
+  :author "ataggart",
+  :created "Fri, 29 Apr 2011 04:43:21 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-445-attachments/prim-conversion-update-1.patch",
+  :title
+  "[CLJ-445] Method/Constructor resolution does not factor in widening conversion of primitive args",
+  :ticket "CLJ-445",
+  :id "10225",
+  :name "prim-conversion-update-1.patch",
+  :size "36473",
+  :author "ataggart",
+  :created "Tue, 10 May 2011 13:13:33 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-445-attachments/clj-445-prim-conversion-update-2-patch.txt",
+  :title
+  "[CLJ-445] Method/Constructor resolution does not factor in widening conversion of primitive args",
+  :ticket "CLJ-445",
+  :id "10932",
+  :name "clj-445-prim-conversion-update-2-patch.txt",
+  :size "36531",
+  :author "jafingerhut",
+  :created "Mon, 20 Feb 2012 12:04:42 -0800"}
+ {:guessed-type :non-git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-450-attachments/clojure-default-every-argument-v1.patch",
+  :title
+  "[CLJ-450] Add default predicate argument to filter, every?, take-while",
+  :ticket "CLJ-450",
+  :id "10991",
+  :name "clojure-default-every-argument-v1.patch",
+  :size "9139",
+  :author "jorendorff",
+  :created "Tue, 13 Mar 2012 12:51:07 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-666-attachments/0001-Add-Big-support-to-Reflector.patch",
+  :title "[CLJ-666] Add support for Big* numeric types to Reflector",
+  :ticket "CLJ-666",
+  :id "10200",
+  :name "0001-Add-Big-support-to-Reflector.patch",
+  :size "4834",
+  :author "trptcolin",
+  :created "Wed, 27 Apr 2011 14:41:39 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-669-attachments/0001-use-java.nio-in-do-copy-method-for-Files.patch",
+  :title "[CLJ-669] clojure.java.io/do-copy: use java.nio for Files",
+  :ticket "CLJ-669",
+  :id "10032",
+  :name "0001-use-java.nio-in-do-copy-method-for-Files.patch",
+  :size "1158",
+  :author "juergenhoetzel",
+  :created "Sat, 27 Nov 2010 03:05:14 -0800"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-703-attachments/0001-use-File.mkdirs-instead-of-mkdir-every-single-direct.patch",
+  :title "[CLJ-703] Improve writeClassFile performance",
+  :ticket "CLJ-703",
+  :id "10066",
+  :name
+  "0001-use-File.mkdirs-instead-of-mkdir-every-single-direct.patch",
+  :size "1224",
+  :author "juergenhoetzel",
+  :created "Tue, 4 Jan 2011 10:58:38 -0800"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-703-attachments/0002-Ensure-atomic-creation-of-class-files-by-renaming-a-.patch",
+  :title "[CLJ-703] Improve writeClassFile performance",
+  :ticket "CLJ-703",
+  :id "10067",
+  :name
+  "0002-Ensure-atomic-creation-of-class-files-by-renaming-a-.patch",
+  :size "1442",
+  :author "juergenhoetzel",
+  :created "Tue, 4 Jan 2011 10:58:38 -0800"}
+ {:guessed-type :other,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-760-attachments/stacktraces.txt",
+  :title
+  "[CLJ-760] ClassNotFound when AOT compiling a self-referring deftype extended to a protocol",
+  :ticket "CLJ-760",
+  :id "10153",
+  :name "stacktraces.txt",
+  :size "4744",
+  :author "ryansenior",
+  :created "Fri, 18 Mar 2011 07:06:37 -0700"}
+ {:guessed-type :other,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-825-attachments/scribbles.clj",
+  :title "[CLJ-825] Protocol implementation inconsistencies ",
+  :ticket "CLJ-825",
+  :id "10310",
+  :name "scribbles.clj",
+  :size "816",
+  :author "carllerche",
+  :created "Mon, 8 Aug 2011 10:35:38 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-835-attachments/0001-Clarify-docstring-for-defmulti.patch",
+  :title
+  "[CLJ-835] defmulti doc string doesn't mention needing to be passed a var for the value of :hierarchy",
+  :ticket "CLJ-835",
+  :id "10361",
+  :name "0001-Clarify-docstring-for-defmulti.patch",
+  :size "1058",
+  :author "mbrandmeyer",
+  :created "Wed, 14 Sep 2011 13:11:10 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-840-attachments/add-test-var.diff",
+  :title
+  "[CLJ-840] Add a way to access the current test var in :each fixtures for clojure.test",
+  :ticket "CLJ-840",
+  :id "10495",
+  :name "add-test-var.diff",
+  :size "2970",
+  :author "hugoduncan",
+  :created "Fri, 21 Oct 2011 20:34:24 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-840-attachments/clj840-2.diff",
+  :title
+  "[CLJ-840] Add a way to access the current test var in :each fixtures for clojure.test",
+  :ticket "CLJ-840",
+  :id "10497",
+  :name "clj840-2.diff",
+  :size "2366",
+  :author "stuart.sierra",
+  :created "Tue, 25 Oct 2011 16:26:51 -0700"}
+ {:guessed-type :git-diff,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-851-attachments/CLJ-851-test.patch",
+  :title
+  "[CLJ-851] Type-hinting a var with primitive array pseudo-class results in IllegalArgumentException when the var is used as an arg",
+  :ticket "CLJ-851",
+  :id "10399",
+  :name "CLJ-851-test.patch",
+  :size "2225",
+  :author "bsmith.occs@gmail.com",
+  :created "Sat, 15 Oct 2011 09:40:05 -0700"}
+ {:guessed-type :other,
+  :local-filename
+  "/Users/jafinger/clj/clj-prescreen/2012-04-11-tickets/ticket-info/CLJ-961-attachments/with_redefs_bug.clj",
+  :title
+  "[CLJ-961] with-redefs loses a Var's root binding if the Var is thread-bound",
+  :ticket "CLJ-961",
+  :id "11020",
+  :name "with_redefs_bug.clj",
+  :size "100",
+  :author "jirkamarsik",
+  :created "Wed, 28 Mar 2012 09:05:29 -0700"})

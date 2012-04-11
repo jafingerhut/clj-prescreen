@@ -1,0 +1,99 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Stacktrace from Clojure 1.2.0
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Exception in thread "main" java.lang.NoClassDefFoundError: compile__stub/type-test/TypeTest (test_type_user.clj:5)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:2911)
+	at clojure.lang.Compiler.compile1(Compiler.java:5933)
+	at clojure.lang.Compiler.compile(Compiler.java:5992)
+	at clojure.lang.RT.compile(RT.java:368)
+	at clojure.lang.RT.load(RT.java:407)
+	at clojure.lang.RT.load(RT.java:381)
+	at clojure.core$load$fn__4511.invoke(core.clj:4905)
+	at clojure.core$load.doInvoke(core.clj:4904)
+	at clojure.lang.RestFn.invoke(RestFn.java:409)
+	at clojure.core$load_one.invoke(core.clj:4729)
+	at clojure.core$compile$fn__4516.invoke(core.clj:4916)
+	at clojure.core$compile.invoke(core.clj:4915)
+	at user$eval7.invoke(NO_SOURCE_FILE:1)
+	at clojure.lang.Compiler.eval(Compiler.java:5424)
+	at clojure.lang.Compiler.eval(Compiler.java:5415)
+	at clojure.lang.Compiler.eval(Compiler.java:5391)
+	at clojure.core$eval.invoke(core.clj:2382)
+	at clojure.main$eval_opt.invoke(main.clj:235)
+	at clojure.main$initialize.invoke(main.clj:254)
+	at clojure.main$null_opt.invoke(main.clj:279)
+	at clojure.main$main.doInvoke(main.clj:354)
+	at clojure.lang.RestFn.invoke(RestFn.java:422)
+	at clojure.lang.Var.invoke(Var.java:369)
+	at clojure.lang.AFn.applyToHelper(AFn.java:165)
+	at clojure.lang.Var.applyTo(Var.java:482)
+	at clojure.main.main(main.java:37)
+Caused by: java.lang.NoClassDefFoundError: compile__stub/type-test/TypeTest
+	at type-test.TypeTest.isa_foo(type_test.clj:6)
+	at type_test$fn__20$G__16__22.invoke(type_test.clj:3)
+	at type_test$fn__20$G__15__25.invoke(type_test.clj:3)
+	at clojure.lang.AFn.applyToHelper(AFn.java:163)
+	at clojure.lang.AFn.applyTo(AFn.java:151)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:2906)
+	... 25 more
+Caused by: java.lang.ClassNotFoundException: compile__stub.type-test.TypeTest
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:202)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:190)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:301)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:248)
+	... 31 more
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Stacktrace from Clojure 1.2.1
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Exception in thread "main" java.lang.ClassNotFoundException: type-test.TypeTest (test_type_user.clj:1)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:2911)
+	at clojure.lang.Compiler.compile1(Compiler.java:5933)
+	at clojure.lang.Compiler.compile1(Compiler.java:5923)
+	at clojure.lang.Compiler.compile(Compiler.java:5992)
+	at clojure.lang.RT.compile(RT.java:368)
+	at clojure.lang.RT.load(RT.java:407)
+	at clojure.lang.RT.load(RT.java:381)
+	at clojure.core$load$fn__4519.invoke(core.clj:4915)
+	at clojure.core$load.doInvoke(core.clj:4914)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at clojure.core$load_one.invoke(core.clj:4729)
+	at clojure.core$compile$fn__4524.invoke(core.clj:4926)
+	at clojure.core$compile.invoke(core.clj:4925)
+	at user$eval7.invoke(NO_SOURCE_FILE:1)
+	at clojure.lang.Compiler.eval(Compiler.java:5424)
+	at clojure.lang.Compiler.eval(Compiler.java:5415)
+	at clojure.lang.Compiler.eval(Compiler.java:5391)
+	at clojure.core$eval.invoke(core.clj:2382)
+	at clojure.main$eval_opt.invoke(main.clj:235)
+	at clojure.main$initialize.invoke(main.clj:254)
+	at clojure.main$null_opt.invoke(main.clj:279)
+	at clojure.main$main.doInvoke(main.clj:354)
+	at clojure.lang.RestFn.invoke(RestFn.java:421)
+	at clojure.lang.Var.invoke(Var.java:369)
+	at clojure.lang.AFn.applyToHelper(AFn.java:163)
+	at clojure.lang.Var.applyTo(Var.java:482)
+	at clojure.main.main(main.java:37)
+Caused by: java.lang.ClassNotFoundException: type-test.TypeTest
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:202)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:190)
+	at clojure.lang.DynamicClassLoader.findClass(DynamicClassLoader.java:61)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:248)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:169)
+	at test_type_user$loading__4414__auto__.invoke(test_type_user.clj:1)
+	at clojure.lang.AFn.applyToHelper(AFn.java:159)
+	at clojure.lang.AFn.applyTo(AFn.java:151)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:2906)
+	... 26 more

@@ -1,0 +1,120 @@
+From 033c28c4a1d0a3c0d525b40bf6b79f36c5a62ea3 Mon Sep 17 00:00:00 2001
+From: Chris Perkins <chrisperkins99@gmail.com>
+Date: Mon, 28 Nov 2011 10:16:04 -0500
+Subject: [PATCH 1/2] Don't allocate StringBuffer unnecessarily when there is
+ no match in replace / replace-first.
+
+---
+ src/clj/clojure/string.clj           |   29 ++++++++++++++++-------------
+ test/clojure/test_clojure/string.clj |    8 ++++++--
+ 2 files changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/src/clj/clojure/string.clj b/src/clj/clojure/string.clj
+index 188b518..15b1967 100644
+--- a/src/clj/clojure/string.clj
++++ b/src/clj/clojure/string.clj
+@@ -52,13 +52,15 @@ Design notes for clojure.string:
+ (defn- replace-by
+   [^CharSequence s re f]
+   (let [m (re-matcher re s)]
+-    (let [buffer (StringBuffer. (.length s))]
+-      (loop []
+-        (if (.find m)
+-          (do (.appendReplacement m buffer (f (re-groups m)))
+-              (recur))
+-          (do (.appendTail m buffer)
+-              (.toString buffer)))))))
++    (if (.find m)
++      (let [buffer (StringBuffer. (.length s))]
++        (loop [found true]
++          (if found
++            (do (.appendReplacement m buffer (f (re-groups m)))
++                (recur (.find m)))
++            (do (.appendTail m buffer)
++                (.toString buffer)))))
++      s)))
+ 
+ (defn ^String replace
+   "Replaces all instance of match with replacement in s.
+@@ -85,12 +87,13 @@ Design notes for clojure.string:
+ (defn- replace-first-by
+   [^CharSequence s ^Pattern re f]
+   (let [m (re-matcher re s)]
+-    (let [buffer (StringBuffer. (.length s))]
+-      (if (.find m)
+-        (let [rep (f (re-groups m))]
+-          (.appendReplacement m buffer rep)
+-          (.appendTail m buffer)
+-          (str buffer))))))
++    (if (.find m)
++      (let [buffer (StringBuffer. (.length s))
++            rep (f (re-groups m))]
++        (.appendReplacement m buffer rep)
++        (.appendTail m buffer)
++        (str buffer))
++      s)))
+ 
+ (defn- replace-first-char
+   [^CharSequence s ^Character match replace]
+diff --git a/test/clojure/test_clojure/string.clj b/test/clojure/test_clojure/string.clj
+index d6f6469..b90a6b9 100644
+--- a/test/clojure/test_clojure/string.clj
++++ b/test/clojure/test_clojure/string.clj
+@@ -13,13 +13,17 @@
+ (deftest t-replace
+   (is (= "faabar" (s/replace "foobar" \o \a)))
+   (is (= "barbarbar" (s/replace "foobarfoo" "foo" "bar")))
+-  (is (= "FOObarFOO" (s/replace "foobarfoo" #"foo" s/upper-case))))
++  (is (= "FOObarFOO" (s/replace "foobarfoo" #"foo" s/upper-case)))
++  (is (= "FOOFOO" (s/replace "foofoo" #"foo" s/upper-case)))
++  (is (= "foobarfoo" (s/replace "foobarfoo" #"baz" s/upper-case)))
++  (is (= "OObarOO" (s/replace "foobarfoo" #"f(o+)" (fn [[m g1]] (s/upper-case g1))))))
+ 
+ (deftest t-replace-first
+   (is (= "barbarfoo" (s/replace-first "foobarfoo" "foo" "bar")))
+   (is (= "barbarfoo" (s/replace-first "foobarfoo" #"foo" "bar")))
+   (is (= "z.ology" (s/replace-first "zoology" \o \.)))
+-  (is (= "FOObarfoo" (s/replace-first "foobarfoo" #"foo" s/upper-case))))
++  (is (= "FOObarfoo" (s/replace-first "foobarfoo" #"foo" s/upper-case)))
++  (is (= "foobarfoo" (s/replace-first "foobarfoo" #"baz" s/upper-case))))
+ 
+ (deftest t-join
+   (are [x coll] (= x (s/join coll))
+-- 
+1.7.6.msysgit.0
+
+
+From 46e7bb48ea2682c8a8266773854ca08953a05633 Mon Sep 17 00:00:00 2001
+From: Chris Perkins <chrisperkins99@gmail.com>
+Date: Mon, 28 Nov 2011 10:37:03 -0500
+Subject: [PATCH 2/2] fix typos in docstrings
+
+---
+ src/clj/clojure/string.clj |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/clj/clojure/string.clj b/src/clj/clojure/string.clj
+index 15b1967..6bfca7b 100644
+--- a/src/clj/clojure/string.clj
++++ b/src/clj/clojure/string.clj
+@@ -36,7 +36,7 @@ Design notes for clojure.string:
+    general than String. In ordinary usage you will almost always
+    pass concrete strings. If you are doing something unusual,
+    e.g. passing a mutable implementation of CharSequence, then
+-   thead-safety is your responsibility."
++   thread-safety is your responsibility."
+       :author "Stuart Sierra, Stuart Halloway, David Liebke"}
+   clojure.string
+   (:refer-clojure :exclude (replace reverse))
+@@ -112,7 +112,7 @@ Design notes for clojure.string:
+    string / string
+    pattern / (string or function of match).
+ 
+-   See also replace-all."
++   See also replace."
+   {:added "1.2"}
+   [^CharSequence s match replacement]
+   (let [s (.toString s)]
+-- 
+1.7.6.msysgit.0
+

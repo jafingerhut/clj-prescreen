@@ -1,0 +1,30 @@
+From 234adb4350f692bbddcb2dd1ad7d780e9f8cda9e Mon Sep 17 00:00:00 2001
+From: Ambrose Bonnaire-Sergeant <abonnairesergeant@gmail.com>
+Date: Wed, 9 Nov 2011 05:25:20 +0800
+Subject: [PATCH 2/2] Fix redundant conditional
+
+---
+ src/clj/clojure/core.clj |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 50cf3ff..d6cac4e 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -270,10 +270,9 @@
+    :added "1.0"}
+  defn (fn defn [&form &env name & fdecl]
+         ;; Note: Cannot delegate this check to def because of the call to (with-meta name ..)
+-        ;; Same as (if (not (symbol? name)
+-        (if (if (instance? clojure.lang.Symbol name) false true)
+-          (throw (IllegalArgumentException. "First argument to defn must be a symbol"))
+-          nil)
++        (if (instance? clojure.lang.Symbol name)
++          nil
++          (throw (IllegalArgumentException. "First argument to defn must be a symbol")))
+         (let [m (if (string? (first fdecl))
+                   {:doc (first fdecl)}
+                   {})
+-- 
+1.7.1
+

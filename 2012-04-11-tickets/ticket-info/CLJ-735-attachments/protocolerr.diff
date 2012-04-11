@@ -1,0 +1,38 @@
+From 3c3e5dac051718fc6edf00dc484d7ed7567da6c3 Mon Sep 17 00:00:00 2001
+From: puredanger <alexdmiller@yahoo.com>
+Date: Fri, 4 Feb 2011 14:49:27 -0600
+Subject: [PATCH] Patch to improve error message in case of 0 or >1 protocol method match
+
+---
+ src/jvm/clojure/lang/Compiler.java |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index fd658d8..57c6932 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -3203,11 +3203,17 @@ static class InvokeExpr implements Expr{
+                     }
+                     String mname = munge(mmapVal.sym.toString());
+  					List methods = Reflector.getMethods(protocolOn, args.count() - 1, mname, false);
+-					if(methods.size() != 1)
+-						throw new IllegalArgumentException(
+-								"No single method: " + mname + " of interface: " + protocolOn.getName() +
++                                        switch (methods.size()) {
++                                          case 0: throw new IllegalArgumentException(
++								"No method: " + mname + " of interface: " + protocolOn.getName() +
++                                                                " with arity " + (args.count() - 1) +
++								" found for function: " + fvar.sym + " of protocol: " + pvar.sym);
++                                          case 1: this.onMethod = (java.lang.reflect.Method) methods.get(0); break;
++                                          default: throw new IllegalArgumentException(
++								"Multiple methods: " + mname + " of interface: " + protocolOn.getName() +
++                                                                " with arity " + (args.count() - 1) +
+ 								" found for function: " + fvar.sym + " of protocol: " + pvar.sym);
+-					this.onMethod = (java.lang.reflect.Method) methods.get(0);
++                                        }
+ 					}
+ 				}
+ 			}
+-- 
+1.7.1
+

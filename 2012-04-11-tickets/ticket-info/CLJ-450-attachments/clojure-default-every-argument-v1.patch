@@ -1,0 +1,311 @@
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 83b739b..7d0d725 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -2359,41 +2359,54 @@
+     (or (seq coll) ())))
+ 
+ (defn every?
+-  "Returns true if (pred x) is logical true for every x in coll, else
+-  false."
++  "Returns true if every value in coll is logical true, else false.
++  With optional pred argument, returns true if (pred x) is logical true
++  for every x in coll."
+   {:tag Boolean
+    :added "1.0"
+    :static true}
+-  [pred coll]
+-  (cond
+-   (nil? (seq coll)) true
+-   (pred (first coll)) (recur pred (next coll))
+-   :else false))
++  ([coll]
++   (cond
++    (nil? (seq coll)) true
++    (first coll) (recur (next coll))
++    :else false))
++  ([pred coll]
++   (cond
++    (nil? (seq coll)) true
++    (pred (first coll)) (recur pred (next coll))
++    :else false)))
+ 
+ (def
+  ^{:tag Boolean
+-   :doc "Returns false if (pred x) is logical true for every x in
+-  coll, else true."
+-   :arglists '([pred coll])
++   :doc "Returns true if any value in coll is logical false, else false.
++  With optional pred argument, returns true if (pred x) is logical false
++  for any x in coll."
++   :arglists '([coll] [pred coll])
+    :added "1.0"}
+  not-every? (comp not every?))
+ 
+ (defn some
+-  "Returns the first logical true value of (pred x) for any x in coll,
+-  else nil.  One common idiom is to use a set as pred, for example
+-  this will return :fred if :fred is in the sequence, otherwise nil:
++  "Returns the first logical true value in coll, else nil.
++  With optional pred argument, returns the first logical true value of
++  (pred x) for any x in coll, else nil.  One common idiom is to use a
++  set as pred, for example this will return :fred if :fred is in the
++  sequence, otherwise nil:
+   (some #{:fred} coll)"
+   {:added "1.0"
+    :static true}
+-  [pred coll]
+-    (when (seq coll)
+-      (or (pred (first coll)) (recur pred (next coll)))))
++  ([coll]
++   (when (seq coll)
++     (or (first coll) (recur (next coll)))))
++  ([pred coll]
++   (when (seq coll)
++     (or (pred (first coll)) (recur pred (next coll))))))
+ 
+ (def
+  ^{:tag Boolean
+-   :doc "Returns false if (pred x) is logical true for any x in coll,
+-  else true."
+-   :arglists '([pred coll])
++   :doc "Returns true if there are no logical true values in coll, else
++  false. With the optional pred argument, return false if (pred x) is
++  logical true for any x in coll."
++   :arglists '([coll] [pred coll])
+    :added "1.0"}
+  not-any? (comp not some))
+ 
+@@ -2448,7 +2461,7 @@
+    (let [step (fn step [cs]
+                  (lazy-seq
+                   (let [ss (map seq cs)]
+-                    (when (every? identity ss)
++                    (when (every? ss)
+                       (cons (map first ss) (step (map rest ss)))))))]
+      (map #(apply f %) (step (conj colls c3 c2 c1))))))
+ 
+@@ -2627,7 +2640,7 @@
+   {:added "1.0"
+    :static true}
+   [& maps]
+-  (when (some identity maps)
++  (when (some maps)
+     (reduce1 #(conj (or %1 {}) %2) maps)))
+ 
+ (defn merge-with
+@@ -2638,7 +2651,7 @@
+   {:added "1.0"
+    :static true}
+   [f & maps]
+-  (when (some identity maps)
++  (when (some maps)
+     (let [merge-entry (fn [m e]
+ 			(let [k (key e) v (val e)]
+ 			  (if (contains? m k)
+@@ -3834,7 +3847,7 @@
+   ([c1 c2 & colls] 
+      (lazy-seq 
+       (let [ss (map seq (conj colls c2 c1))]
+-        (when (every? identity ss)
++        (when (every? ss)
+           (concat (map first ss) (apply interleave (map rest ss))))))))
+ 
+ (defn var-get
+@@ -6177,7 +6190,7 @@
+    (let [step (fn step [cs]
+                 (lazy-seq
+                  (let [ss (map seq cs)]
+-                   (when (every? identity ss)
++                   (when (every? ss)
+                      (cons (map first ss) (step (map rest ss)))))))]
+      (pmap #(apply f %) (step (cons coll colls))))))
+ 
+diff --git a/test/clojure/test_clojure/sequences.clj b/test/clojure/test_clojure/sequences.clj
+index e69fdbb..9d47fa9 100644
+--- a/test/clojure/test_clojure/sequences.clj
++++ b/test/clojure/test_clojure/sequences.clj
+@@ -975,112 +975,91 @@
+ 
+ (deftest test-every?
+   ; always true for nil or empty coll/seq
+-  (are [x] (= (every? pos? x) true)
++  (are [x] (and (= true (every? x) (every? pos? x))
++                (= false (not-every? x) (not-every? pos? x)))
+       nil
+       () [] {} #{}
+       (lazy-seq [])
+       (into-array []) )
+ 
+-  (are [x y] (= x y)
+-      true (every? pos? [1])
+-      true (every? pos? [1 2])
+-      true (every? pos? [1 2 3 4 5])
+-
+-      false (every? pos? [-1])
+-      false (every? pos? [-1 -2])
+-      false (every? pos? [-1 -2 3])
+-      false (every? pos? [-1 2])
+-      false (every? pos? [1 -2])
+-      false (every? pos? [1 2 -3])
+-      false (every? pos? [1 2 -3 4]) )
+-
+-  (are [x y] (= x y)
+-      true (every? #{:a} [:a :a])
+-;!      false (every? #{:a} [:a :b])   ; Issue 68: every? returns nil instead of false
+-;!      false (every? #{:a} [:b :b])   ; http://code.google.com/p/clojure/issues/detail?id=68
++  (are [x s] (and (= x (every? s) (every? identity s))
++                  (= (not x) (not-every? s) (not-every? identity s)))
++      true [true]
++      false [false]
++      false [nil]
++      true [() [] {} 0 -0.0]
++      false (conj (range) nil)  ; check laziness
++      false (cycle [1 2 3 nil]))
++
++  (are [x s] (and (= x (every? pos? s))
++                  (= (not x) (not-every? pos? s)))
++      true [1]
++      true [1 2]
++      true [1 2 3 4 5]
++
++      false [-1]
++      false [-1 -2]
++      false [-1 -2 3]
++      false [-1 2]
++      false [1 -2]
++      false [1 2 -3]
++      false [1 2 -3 4] )
++
++  (are [x pred s] (and (= x (every? pred s))
++                       (= (not x) (not-every? pred s)))
++      true #{:a} [:a :a]
++      false #{:a} [:a :b]   ; Issue 68: every? returns nil instead of false
++      false #{:a} [:b :b]   ; http://code.google.com/p/clojure/issues/detail?id=68
+   ))
+ 
+-
+-(deftest test-not-every?
+-  ; always false for nil or empty coll/seq
+-  (are [x] (= (not-every? pos? x) false)
+-      nil
+-      () [] {} #{}
+-      (lazy-seq [])
+-      (into-array []) )
+-
+-  (are [x y] (= x y)
+-      false (not-every? pos? [1])
+-      false (not-every? pos? [1 2])
+-      false (not-every? pos? [1 2 3 4 5])
+-
+-      true (not-every? pos? [-1])
+-      true (not-every? pos? [-1 -2])
+-      true (not-every? pos? [-1 -2 3])
+-      true (not-every? pos? [-1 2])
+-      true (not-every? pos? [1 -2])
+-      true (not-every? pos? [1 2 -3])
+-      true (not-every? pos? [1 2 -3 4]) )
+-
+-  (are [x y] (= x y)
+-      false (not-every? #{:a} [:a :a])
+-      true (not-every? #{:a} [:a :b])
+-      true (not-every? #{:a} [:b :b]) ))
+-
+-
+-(deftest test-not-any?
+-  ; always true for nil or empty coll/seq
+-  (are [x] (= (not-any? pos? x) true)
+-      nil
+-      () [] {} #{}
+-      (lazy-seq [])
+-      (into-array []) )
+-
+-  (are [x y] (= x y)
+-      false (not-any? pos? [1])
+-      false (not-any? pos? [1 2])
+-      false (not-any? pos? [1 2 3 4 5])
+-
+-      true (not-any? pos? [-1])
+-      true (not-any? pos? [-1 -2])
+-
+-      false (not-any? pos? [-1 -2 3])
+-      false (not-any? pos? [-1 2])
+-      false (not-any? pos? [1 -2])
+-      false (not-any? pos? [1 2 -3])
+-      false (not-any? pos? [1 2 -3 4]) )
+-
+-  (are [x y] (= x y)
+-      false (not-any? #{:a} [:a :a])
+-      false (not-any? #{:a} [:a :b])
+-      true (not-any? #{:a} [:b :b]) ))
+-
+-
+ (deftest test-some
+   ;; always nil for nil or empty coll/seq
+-  (are [x] (= (some pos? x) nil)
++  (are [x] (and (= nil
++                   (some x)
++                   (some pos? x)
++                   (some "nonfn" x))
++                (= true
++                   (not-any? x)
++                   (not-any? pos? x)
++                   (not-any? "nonfn" x)))
+        nil
+        () [] {} #{}
+        (lazy-seq [])
+        (into-array []))
+-  
+-  (are [x y] (= x y)
+-       nil (some nil nil)
+-       
+-       true (some pos? [1])
+-       true (some pos? [1 2])
+-       
+-       nil (some pos? [-1])
+-       nil (some pos? [-1 -2])
+-       true (some pos? [-1 2])
+-       true (some pos? [1 -2])
+-       
+-       :a (some #{:a} [:a :a])
+-       :a (some #{:a} [:b :a])
+-       nil (some #{:a} [:b :b])
++
++  (are [x s] (and (= x (some s) (some identity s))
++                  (= (not x) (not-any? s) (not-any? identity s)))
++      true [true]
++      nil [false]
++      nil [nil]
++      () [() [] {} 0 -0.0]
++      0 (range)  ; check laziness
++      1 (cycle [nil nil nil 1]))
++
++  (are [x pred s] (and (= x (some pred s))
++                       (= (not x) (not-any? pred s)))
++       nil nil nil
+        
+-       :a (some #{:a} '(:a :b))
+-       :a (some #{:a} #{:a :b})
++       true pos? [1]
++       true pos? [1 2]
++       true pos? [1 2 3 4 5]
++
++       nil pos? [-1]
++       nil pos? [-1 -2]
++       true pos? [-1 -2 3]
++       true pos? [-1 2]
++       true pos? [1 -2]
++       true pos? [1 2 -3]
++       true pos? [1 2 -3 4]
++
++       :a #{:a} [:a :a]
++       :a #{:a} [:b :a]
++       nil #{:a} [:b :b]
++
++       :a #{:a} '(:a :b)
++       :a #{:a} #{:a :b}
++
++       :better {4 :good, 2 :better} (range)
+        ))
+ 
+ (deftest test-flatten-present
