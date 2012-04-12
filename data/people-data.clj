@@ -55,6 +55,12 @@
  :emails #{ "hhochleitner@gmail.com" }
  :contributor true
  }
+{:full-name "Nicola Mometto"
+ :aliases #{ "Bronsa" }
+ :usernames #{ "bronsa" }
+ :emails #{ "brobronsa@gmail.com" }
+ :contributor true
+ }
 {:full-name "Ben Smith-Mannschott"
  :aliases #{ }
  :usernames #{ "bsmith.occs@gmail.com" }
