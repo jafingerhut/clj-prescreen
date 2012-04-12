@@ -350,8 +350,52 @@ Check it to see if it was created incorrectly."})
                 :patch-msg "Failed."}))))
 
 
+;; "acceptable" here simply means that check-ant-output will treat the
+;; build as successful if these warnings/errors appear in the ant
+;; output.  We do this by first removing "acceptable" warnings or
+;; errors from the ant output string, then after that checking for
+;; other warnings or errors.
+;;
+;; Ideally this function shouldn't remove anything.  Strive to remove
+;; as little as possible, and only for those OS/JDK combos where we
+;; have problems we don't yet know how to work around otherwise.
+
+(defn remove-acceptable-ant-output-problems [s]
+  (let [p (System/getProperties)
+        orig-s s
+        s (if (and (= "Oracle Corporation" (get p "java.vendor"))
+                   (= "1.7.0_02" (get p "java.version")))
+            (-> s
+                (str/replace #"(?xms)
+(^ compile-java: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+(.*)
+^ \s* \[javac\]\ 1\ warning \s* $
+(.*
+ ^ compile-clojure: \s* $)"
+                             "$1$2$3")
+                (str/replace #"(?xms)
+(^ compile-tests: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+(.*)
+^ \s* \[javac\]\ 1\ warning \s* $
+(.*
+ ^ test: \s* $)"
+                             "$1$2$3"))
+            s)]
+    (comment
+      (printf "andy-debug: remove-acceptable-ant-output-problems ")
+      (if (= orig-s s)
+        (printf "left ant output UNCHANGED\n")
+        (printf "CHANGED ant output\n"))
+      (flush))
+    s))
+
+
 (defn check-ant-output [s]
-  (condp re-find s
+  (condp re-find (remove-acceptable-ant-output-problems s)
     #"(?im)^.*compile failed.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
     #"(?im)^.*[1-9]\d* failures, 0 errors.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
     #"(?im)^.*0 failures, [1-9]\d* errors.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
