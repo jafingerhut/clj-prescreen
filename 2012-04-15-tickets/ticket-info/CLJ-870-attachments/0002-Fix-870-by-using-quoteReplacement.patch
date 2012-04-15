@@ -1,0 +1,34 @@
+From 067ea6b0330c5ab9b3840c3b1ff0b44c46c1268c Mon Sep 17 00:00:00 2001
+From: Alan Malloy <alan@malloys.org>
+Date: Thu, 5 Jan 2012 18:44:52 -0800
+Subject: [PATCH 2/2] Fix #870 by using quoteReplacement
+
+---
+ src/clj/clojure/string.clj |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/clj/clojure/string.clj b/src/clj/clojure/string.clj
+index 188b518..5824c43 100644
+--- a/src/clj/clojure/string.clj
++++ b/src/clj/clojure/string.clj
+@@ -40,7 +40,7 @@ Design notes for clojure.string:
+       :author "Stuart Sierra, Stuart Halloway, David Liebke"}
+   clojure.string
+   (:refer-clojure :exclude (replace reverse))
+-  (:import (java.util.regex Pattern)
++  (:import (java.util.regex Pattern Matcher)
+            clojure.lang.LazilyPersistentVector))
+ 
+ (defn ^String reverse
+@@ -55,7 +55,7 @@ Design notes for clojure.string:
+     (let [buffer (StringBuffer. (.length s))]
+       (loop []
+         (if (.find m)
+-          (do (.appendReplacement m buffer (f (re-groups m)))
++          (do (.appendReplacement m buffer (Matcher/quoteReplacement (f (re-groups m))))
+               (recur))
+           (do (.appendTail m buffer)
+               (.toString buffer)))))))
+-- 
+1.7.4.1
+
