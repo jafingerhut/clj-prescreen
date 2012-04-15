@@ -584,8 +584,10 @@ Check it to see if it was created incorrectly."})
 
 (use 'evalpatch.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-04-11-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-04-15-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
+;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
+(def patch-type-list [ "notclosed" ])
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
 ;; so already.  Don't make it your favorite one, as many branches will
@@ -597,15 +599,16 @@ Check it to see if it was created incorrectly."})
 
 ;; Download all attachments for selected tickets.  Do this once on one
 ;; machine, not once for each OS/JDK combo I want to test.
-(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+;;(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+(doseq [cur-patch-type patch-type-list]
   (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
         as2 (download-attachments! as1 ticket-dir)
         fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")]
     (spit-pretty fname2 as2)))
 
-;; Evaluate downloaded attachments.  DO this once for each OS/JDK
+;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
-(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+(doseq [cur-patch-type patch-type-list]
   (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
         as2 (read-safely fname2)
         as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure")
@@ -618,7 +621,7 @@ Check it to see if it was created incorrectly."})
 
 ;; After doing the above, if you edit data/people-data.clj and want to
 ;; redo the author evaluations only, do this:
-(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
+(doseq [cur-patch-type patch-type-list]
   (let [fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
         fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")
         as4 (read-safely fname4)
