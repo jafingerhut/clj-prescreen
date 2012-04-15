@@ -486,26 +486,23 @@ Check it to see if it was created incorrectly."})
               :patch-author-summary :not-git-patch})))
 
 
-(defn eval-patch! [p attach-dir idx num-patches]
-  (let [branch-name (str (:ticket p) "-" (:name p))
-        logfile-name (str (att-dir-name (:ticket p) attach-dir) "/"
+(defn eval-patch! [p attach-dir idx num-patches
+                   unmodified-clojure-dir temp-clojure-dir]
+  (let [logfile-name (str (att-dir-name (:ticket p) attach-dir) "/"
                           (:name p) "-log.txt")]
     (with-open [logf (io/writer logfile-name)]
       (binding [*cmd-log* logf]
         (iprintf "eval-patch! %d/%d %s %s\n"
                  (inc idx) num-patches (:ticket p) (:name p))
-        ;; (1) Get repo back to latest master with no changes.
-        (try-cmd :throw-on-error "git" "checkout" "-f" "master")
-        ;; (2) Delete any branch that already exists with the desired
-        ;; name.  Allow non-0 exit status, since that happens if the
-        ;; branch does not exist.
-        (try-cmd "git" "branch" "-D" branch-name)
-        ;; (3) create a new branch for applying this patch
-        (try-cmd :throw-on-error "git" "checkout" "-b" branch-name)
-        ;; (4) Try to apply the patch
-        (let [patch-filename (patch-file-name p attach-dir)
-              {:keys [patch-status patch-msg] :as p}
-              (case (patch-type p)
+        ;; (1) Copy unmodified Clojure tree to a temporary working copy.
+        (try-cmd :throw-on-error
+                 "cp" "-pr" unmodified-clojure-dir temp-clojure-dir)
+        ;; (2) Try to apply the patch
+        (try
+          (sh/with-sh-dir temp-clojure-dir
+            (let [patch-filename (patch-file-name p attach-dir)
+                  {:keys [patch-status patch-msg] :as p}
+                  (case (patch-type p)
                     :git-diff
                     (apply-git-patch p patch-filename idx num-patches)
                     :non-git-diff
@@ -513,42 +510,48 @@ Check it to see if it was created incorrectly."})
                     ;; default case:
                     (merge p {:patch-status :not-patch
                               :patch-msg "Attachment file not recognized as a patch."}))]
-          (when *cmd-log*
-            (iprintf *cmd-log* "Patch status: %s (%s)\n" patch-msg
-                     patch-status))
-          (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
-          (case patch-status
-           :ok ;; (5) Try to build and test
-           (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
-             (when *cmd-log*
-               (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
-                        ant-status))
-             (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
-             p)
+              (when *cmd-log*
+                (iprintf *cmd-log* "Patch status: %s (%s)\n" patch-msg
+                         patch-status))
+              (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
+              (case patch-status
+                :ok ;; (3) Try to build and test
+                (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
+                  (when *cmd-log*
+                    (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
+                             ant-status))
+                  (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
+                  p)
+                
+                :fail ;; patch attempt failed.
+                ;; Don't try to build, but try other patches if there are
+                ;; more.
+                p
+                
+                :not-patch  ;; file didn't look like a patch
+                p
+                
+                :unrecoverable-fail
+                ;; Throw exception to stop any attempt to apply later
+                ;; patches, if there are more.
+                (throw (Exception. ^String (:patch-msg p))))))
+          (finally
+           ;; (4) Clean up: remove temp Clojure tree
+           (iprintf (str "rm -fr " temp-clojure-dir "\n"))
+           (try-cmd :throw-on-error "rm" "-fr" temp-clojure-dir)))))))
 
-           :fail ;; patch attempt failed.
-           ;; Don't try to build, but try other patches if there are
-           ;; more.
-           p
 
-           :not-patch  ;; file didn't look like a patch
-           p
-
-           :unrecoverable-fail
-           ;; Throw exception to stop any attempt to apply later
-           ;; patches, if there are more.
-           (throw (Exception. ^String (:patch-msg p)))))))))
-
-
-(defn eval-patches! [patches attach-dir people-info-filename clojure-dir]
-  (if-not (clojure-git-dir? clojure-dir)
-    (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" clojure-dir)
-    (let [people-info (read-safely people-info-filename)]
-      (sh/with-sh-dir clojure-dir
-        (let [n (count patches)]
-          (doall
-           (map-indexed (fn [idx p] (eval-patch! p attach-dir idx n))
-                        patches)))))))
+(defn eval-patches! [patches attach-dir people-info-filename
+                     unmodified-clojure-dir temp-clojure-dir]
+  (if-not (clojure-git-dir? unmodified-clojure-dir)
+    (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" unmodified-clojure-dir)
+    (let [people-info (read-safely people-info-filename)
+          n (count patches)]
+      (doall
+       (map-indexed (fn [idx p] (eval-patch! p attach-dir idx n
+                                             unmodified-clojure-dir
+                                             temp-clojure-dir))
+                    patches)))))
 
 
 (defn name-or-default [p k deflt]
@@ -587,7 +590,8 @@ Check it to see if it was created incorrectly."})
 (def cur-eval-dir (str @fs/cwd "/2012-04-15-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
-(def patch-type-list [ "notclosed" ])
+;;(def patch-type-list [ "notclosed" ])
+(def patch-type-list [ "clj-803-only-for-testing" ])
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
 ;; so already.  Don't make it your favorite one, as many branches will
@@ -611,7 +615,9 @@ Check it to see if it was created incorrectly."})
 (doseq [cur-patch-type patch-type-list]
   (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
         as2 (read-safely fname2)
-        as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure")
+        as3 (eval-patches! as2 ticket-dir "data/people-data.clj"
+                           "./2012-04-15-clojure-to-prescreen/clojure"
+                           "./temp-clojure")
         as4 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as3))
         fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
