@@ -590,8 +590,8 @@ Check it to see if it was created incorrectly."})
 (def cur-eval-dir (str @fs/cwd "/2012-04-15-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
-;;(def patch-type-list [ "notclosed" ])
-(def patch-type-list [ "clj-803-only-for-testing" ])
+(def patch-type-list [ "notclosed" ])
+;;(def patch-type-list [ "clj-803-only-for-testing" ])
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
 ;; so already.  Don't make it your favorite one, as many branches will
@@ -616,7 +616,7 @@ Check it to see if it was created incorrectly."})
   (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
         as2 (read-safely fname2)
         as3 (eval-patches! as2 ticket-dir "data/people-data.clj"
-                           "./2012-04-15-clojure-to-prescreen/clojure"
+                           "./2012-04-15-clojure-to-prescreen/clojure-plus-clj-967-patch"
                            "./temp-clojure")
         as4 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as3))
