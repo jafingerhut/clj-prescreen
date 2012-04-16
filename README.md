@@ -11,7 +11,7 @@ Currently it performs these checks:
 2. For git format patches, verify that all authors listed in the patch
    are on the list of contributors.  Both names and email addresses
    are checked for exact matches to one of the names, aliases, or
-   email addresses in the file data/people-data.clj.  If the patch
+   email addresses in the file `data/people-data.clj`.  If the patch
    summary says it is "not-CA-clean", it may be that the file needs to
    have contributors added to it.
 
@@ -20,9 +20,9 @@ Currently it performs these checks:
    permitted), or a non-0 exit status, is considered a failure.  If no
    problems occur, it is considered a success.
 
-See the last (comment ...) block in core.clj for some instructions on
-how to do perform these steps.  It is currently only set up to run by
-copying and pasting some commands from that file to a Clojure REPL.
+See the last `(comment ...)` block in core.clj for some instructions
+on how to do perform these steps.  It is currently only set up to run
+by copying and pasting some commands from that file to a Clojure REPL.
 
 
 This code repeatedly makes copies of a Clojure source tree so that
@@ -31,7 +31,7 @@ attempts.
 
 git version 1.7.9.2 or later are recommended.  I've experienced
 failures using this code's patching method with git version 1.7.5.4:
-the command "git am -s --keep-cr < patch-file.txt" fails in the copied
+the command `git am -s --keep-cr < patch-file.txt` fails in the copied
 Clojure source tree, whereas it succeeds on a Clojure source tree
 created by git.  Likely earlier versions would have a similar problem
 (an unconfirmed guess).  I've had more success with git versions
@@ -39,7 +39,7 @@ created by git.  Likely earlier versions would have a similar problem
 
 ## Usage
 
-See last (comment ...) block in core.clj
+See last `(comment ...)` block in core.clj
 
 ## License
 
