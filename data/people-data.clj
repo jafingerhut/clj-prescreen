@@ -49,6 +49,12 @@
  :emails #{ "mail@ataggart.ca" "alex.taggart@expojure.com" }
  :contributor true
  }
+{:full-name "Brandon Bloom"
+ :aliases #{ }
+ :usernames #{ "bbloom" }
+ :emails #{ "brandon@brandonbloom.name" }
+ :contributor true
+ }
 {:full-name "Herwig Hochleitner"
  :aliases #{ }
  :usernames #{ "bendlas" }
@@ -246,6 +252,12 @@
  :aliases #{ }
  :usernames #{ "jeremyheiler" }
  :emails #{ "jeremyheiler@gmail.com" }
+ :contributor true
+ }
+{:full-name "Jim Blomo"
+ :aliases #{ }
+ :usernames #{ "jim.blomo" }
+ :emails #{ "jim.blomo@gmail.com" "jim.blomo+github@gmail.com" }
  :contributor true
  }
 {:full-name "Joseph Gallo"
