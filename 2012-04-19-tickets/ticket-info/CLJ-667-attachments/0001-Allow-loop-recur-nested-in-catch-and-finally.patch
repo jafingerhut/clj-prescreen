@@ -1,0 +1,52 @@
+From 61873b6b96fb33da4bec5c4274b99577d86eefd5 Mon Sep 17 00:00:00 2001
+From: Juha Arpiainen <jarpiain@iki.fi>
+Date: Sun, 31 Oct 2010 19:32:25 +0200
+Subject: [PATCH] Allow loop/recur nested in catch and finally
+
+---
+ src/jvm/clojure/lang/Compiler.java |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index d38d25e..f86ccb5 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -1976,7 +1976,7 @@ public static class TryExpr implements Expr{
+ 				else
+ 					{
+                     if(bodyExpr == null)
+-                        bodyExpr = (new BodyExpr.Parser()).parse(context, RT.seq(body));
++                        bodyExpr = (new BodyExpr.Parser()).parse(C.EXPRESSION, RT.seq(body));
+ 					if(Util.equals(op, CATCH))
+ 						{
+ 						Class c = HostExpr.maybeClass(RT.second(f), false);
+@@ -1999,7 +1999,7 @@ public static class TryExpr implements Expr{
+ 							                                (Symbol) (RT.second(f) instanceof Symbol ? RT.second(f)
+ 							                                                                         : null),
+ 							                                null,false);
+-							Expr handler = (new BodyExpr.Parser()).parse(context, RT.next(RT.next(RT.next(f))));
++							Expr handler = (new BodyExpr.Parser()).parse(C.EXPRESSION, RT.next(RT.next(RT.next(f))));
+ 							catches = catches.cons(new CatchClause(c, lb, handler));
+ 							}
+ 						finally
+@@ -2025,7 +2025,7 @@ public static class TryExpr implements Expr{
+ 					}
+ 				}
+             if(bodyExpr == null)
+-                bodyExpr = (new BodyExpr.Parser()).parse(context, RT.seq(body));
++                bodyExpr = (new BodyExpr.Parser()).parse(C.EXPRESSION, RT.seq(body));
+ 
+ 			return new TryExpr(bodyExpr, catches, finallyExpr, retLocal,
+ 			                   finallyLocal);
+@@ -5816,8 +5816,6 @@ public static class RecurExpr implements Expr{
+ 			IPersistentVector loopLocals = (IPersistentVector) LOOP_LOCALS.deref();
+ 			if(context != C.RETURN || loopLocals == null)
+ 				throw new UnsupportedOperationException("Can only recur from tail position");
+-			if(IN_CATCH_FINALLY.deref() != null)
+-				throw new UnsupportedOperationException("Cannot recur from catch/finally");
+ 			PersistentVector args = PersistentVector.EMPTY;
+ 			for(ISeq s = RT.seq(form.next()); s != null; s = s.next())
+ 				{
+-- 
+1.7.2.2
+

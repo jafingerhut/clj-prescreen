@@ -1,0 +1,123 @@
+From 128dc0ad376f1834836fc242333e49cb5a028692 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Daniel=20Solano=20G=C3=B3mez?= <clojure@sattvik.com>
+Date: Fri, 25 Feb 2011 13:43:28 -0600
+Subject: [PATCH] Allow protected final methods to be exposed via
+ exposes-methods
+
+Signed-off-by: Chouser <chouser@n01se.net>
+---
+ src/clj/clojure/genclass.clj                    |   28 +++++++++++++++++-----
+ test/clojure/test_clojure/genclass.clj          |    8 ++++++
+ test/clojure/test_clojure/genclass/examples.clj |   11 +++++++++
+ 3 files changed, 40 insertions(+), 7 deletions(-)
+
+diff --git a/src/clj/clojure/genclass.clj b/src/clj/clojure/genclass.clj
+index 93fa438..7394b2f 100644
+--- a/src/clj/clojure/genclass.clj
++++ b/src/clj/clojure/genclass.clj
+@@ -16,7 +16,7 @@
+ ;(defn method-sig [^java.lang.reflect.Method meth]
+ ;  [(. meth (getName)) (seq (. meth (getParameterTypes)))])
+ 
+-(defn- non-private-methods [^Class c]
++(defn- filter-methods [^Class c invalid-method?]
+   (loop [mm {}
+          considered #{}
+          c c]
+@@ -32,17 +32,30 @@
+                       mods (. meth (getModifiers))
+                       mk (method-sig meth)]
+                   (if (or (considered mk)
+-                          (not (or (Modifier/isPublic mods) (Modifier/isProtected mods)))
+-                          ;(. Modifier (isPrivate mods))
+-                          (. Modifier (isStatic mods))
+-                          (. Modifier (isFinal mods))
+-                          (= "finalize" (.getName meth)))
++                          (invalid-method? meth))
+                     (recur mm (conj considered mk) (next meths))
+                     (recur (assoc mm mk meth) (conj considered mk) (next meths))))
+                 [mm considered]))]
+         (recur mm considered (. c (getSuperclass))))
+       mm)))
+ 
++(defn- non-private-methods [^Class c]
++  (let [not-overridable? (fn [^java.lang.reflect.Method meth]
++                           (let [mods (. meth (getModifiers))]
++                             (or (not (or (Modifier/isPublic mods) (Modifier/isProtected mods)))
++                                 (. Modifier (isStatic mods))
++                                 (. Modifier (isFinal mods))
++                                 (= "finalize" (.getName meth)))))]
++    (filter-methods c not-overridable?)))
++
++(defn- protected-final-methods [^Class c]
++  (let [not-exposable? (fn [^java.lang.reflect.Method meth]
++                         (let [mods (. meth (getModifiers))]
++                           (not (and (Modifier/isProtected mods)
++                                     (Modifier/isFinal mods)
++                                     (not (Modifier/isStatic mods))))))]
++    (filter-methods c not-exposable?)))
++
+ (defn- ctor-sigs [^Class super]
+   (for [^Constructor ctor (. super (getDeclaredConstructors))
+         :when (not (. Modifier (isPrivate (. ctor (getModifiers)))))]
+@@ -415,7 +428,8 @@
+        (doseq [[local-mname ^java.lang.reflect.Method m] (reduce1 (fn [ms [[name _ _] m]]
+                               (if (contains? exposes-methods (symbol name))
+                                 (conj ms [((symbol name) exposes-methods) m])
+-                                ms)) [] (seq mm))]
++                                ms)) [] (concat (seq mm)
++                                                (seq (protected-final-methods super))))]
+          (let [ptypes (to-types (.getParameterTypes m))
+                rtype (totype (.getReturnType m))
+                exposer-m (new Method (str local-mname) rtype ptypes)
+diff --git a/test/clojure/test_clojure/genclass.clj b/test/clojure/test_clojure/genclass.clj
+index 2d95c17..8fe893b 100644
+--- a/test/clojure/test_clojure/genclass.clj
++++ b/test/clojure/test_clojure/genclass.clj
+@@ -13,6 +13,7 @@
+   (:import [clojure.test_clojure.genclass.examples
+             ExampleClass
+             ExampleAnnotationClass
++            ProtectedFinalTester
+             ArrayDefInterface
+             ArrayGenInterface]
+ 
+@@ -69,6 +70,13 @@
+   (is (fails-with-cause? IllegalArgumentException #"Not a valid method name: has-hyphen"
+         (@#'clojure.core/validate-generate-class-options {:methods '[[fine [] void] [has-hyphen [] void]]}))))
+ 
++(deftest protected-final-access
++  (let [obj (ProtectedFinalTester.)]
++    (testing "Protected final method visibility"
++      (is (thrown? IllegalArgumentException (.findSystemClass obj "java.lang.String"))))
++    (testing "Allow exposition of protected final method."
++      (is (= String (.superFindSystemClass obj "java.lang.String"))))))
++
+ (deftest interface-array-type-hints
+   (let [array-types       {:ints     (class (int-array 0))
+                            :bytes    (class (byte-array 0))
+diff --git a/test/clojure/test_clojure/genclass/examples.clj b/test/clojure/test_clojure/genclass/examples.clj
+index 158622f..5b2a62a 100644
+--- a/test/clojure/test_clojure/genclass/examples.clj
++++ b/test/clojure/test_clojure/genclass/examples.clj
+@@ -41,6 +41,17 @@
+                                                              java.lang.annotation.ElementType/PARAMETER]}
+                            String] void]])
+ 
++(gen-class :name clojure.test_clojure.genclass.examples.ProtectedFinalTester
++           :extends java.lang.ClassLoader
++           :main false
++           :prefix "pf-"
++           :exposes-methods {findSystemClass superFindSystemClass})
++
++(defn pf-findSystemClass
++  "This function should never be called."
++  [_ name]
++  clojure.lang.RT)
++
+ (definterface ArrayDefInterface
+   ; primitive array sugar
+   (^void takesByteArray [^bytes a])
+-- 
+1.7.5.4
+

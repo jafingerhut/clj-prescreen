@@ -1,0 +1,26 @@
+From e75d354da82903f6fc4be8add1607633450715e5 Mon Sep 17 00:00:00 2001
+From: Alan Malloy <alan@malloys.org>
+Date: Thu, 5 Jan 2012 18:48:10 -0800
+Subject: [PATCH 1/2] Add tests for #870
+
+---
+ test/clojure/test_clojure/string.clj |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/test/clojure/test_clojure/string.clj b/test/clojure/test_clojure/string.clj
+index d6f6469..c7f31b3 100644
+--- a/test/clojure/test_clojure/string.clj
++++ b/test/clojure/test_clojure/string.clj
+@@ -13,7 +13,8 @@
+ (deftest t-replace
+   (is (= "faabar" (s/replace "foobar" \o \a)))
+   (is (= "barbarbar" (s/replace "foobarfoo" "foo" "bar")))
+-  (is (= "FOObarFOO" (s/replace "foobarfoo" #"foo" s/upper-case))))
++  (is (= "FOObarFOO" (s/replace "foobarfoo" #"foo" s/upper-case)))
++  (is (= "baz\\bang" (s/replace "bazslashbang" #"slash" (constantly "\\")))))
+ 
+ (deftest t-replace-first
+   (is (= "barbarfoo" (s/replace-first "foobarfoo" "foo" "bar")))
+-- 
+1.7.4.1
+

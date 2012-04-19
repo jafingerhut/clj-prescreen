@@ -1,0 +1,171 @@
+From e87a41b5ffd0fe9d59a9c42a5385dec9f103d8f6 Mon Sep 17 00:00:00 2001
+From: John Szakmeister <john@szakmeister.net>
+Date: Sat, 14 Apr 2012 07:10:13 -0400
+Subject: [PATCH 1/4] tap: fix a typo in the docstring
+
+---
+ src/clj/clojure/test/tap.clj |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/clj/clojure/test/tap.clj b/src/clj/clojure/test/tap.clj
+index 37527e6..82109f3 100644
+--- a/src/clj/clojure/test/tap.clj
++++ b/src/clj/clojure/test/tap.clj
+@@ -23,7 +23,7 @@
+ (ns ^{:doc "clojure.test extensions for the Test Anything Protocol (TAP)
+ 
+   TAP is a simple text-based syntax for reporting test results.  TAP
+-  was originally develped for Perl, and now has implementations in
++  was originally developed for Perl, and now has implementations in
+   several languages.  For more information on TAP, see
+   http://testanything.org/ and
+   http://search.cpan.org/~petdance/TAP-1.0.0/TAP.pm
+-- 
+1.7.10.rc2
+
+
+From a3a39cc4938256ab5f8f0fd64f87b6702f48fd8c Mon Sep 17 00:00:00 2001
+From: John Szakmeister <john@szakmeister.net>
+Date: Sun, 15 Apr 2012 06:47:26 -0400
+Subject: [PATCH 2/4] tap: add missing paramater to testing-vars-str
+
+---
+ src/clj/clojure/test/tap.clj |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/clj/clojure/test/tap.clj b/src/clj/clojure/test/tap.clj
+index 82109f3..956ebc2 100644
+--- a/src/clj/clojure/test/tap.clj
++++ b/src/clj/clojure/test/tap.clj
+@@ -78,7 +78,7 @@
+ (defmethod tap-report :pass [data]
+   (t/with-test-out
+    (t/inc-report-counter :pass)
+-   (print-tap-pass (t/testing-vars-str))
++   (print-tap-pass (t/testing-vars-str data))
+    (when (seq t/*testing-contexts*)
+      (print-tap-diagnostic (t/testing-contexts-str)))
+    (when (:message data)
+@@ -89,7 +89,7 @@
+ (defmethod tap-report :error [data]
+   (t/with-test-out
+    (t/inc-report-counter :error)
+-   (print-tap-fail (t/testing-vars-str))
++   (print-tap-fail (t/testing-vars-str data))
+    (when (seq t/*testing-contexts*)
+      (print-tap-diagnostic (t/testing-contexts-str)))
+    (when (:message data)
+-- 
+1.7.10.rc2
+
+
+From 9dfab9feff2ee16c73415c4404da58aaf0b2f7e2 Mon Sep 17 00:00:00 2001
+From: John Szakmeister <john@szakmeister.net>
+Date: Sun, 15 Apr 2012 06:49:34 -0400
+Subject: [PATCH 3/4] tap: fix the expected result diagnostic for errors
+
+The arguments to print-tap-diagnostic need to be strung together and
+print-tap-diagnostic only accepts a single parameter.
+---
+ src/clj/clojure/test/tap.clj |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/clj/clojure/test/tap.clj b/src/clj/clojure/test/tap.clj
+index 956ebc2..316c784 100644
+--- a/src/clj/clojure/test/tap.clj
++++ b/src/clj/clojure/test/tap.clj
+@@ -94,7 +94,7 @@
+      (print-tap-diagnostic (t/testing-contexts-str)))
+    (when (:message data)
+      (print-tap-diagnostic (:message data)))
+-   (print-tap-diagnostic "expected:" (pr-str (:expected data)))
++   (print-tap-diagnostic (str "expected:" (pr-str (:expected data))))
+    (print-tap-diagnostic "  actual: ")
+    (print-tap-diagnostic
+     (with-out-str
+-- 
+1.7.10.rc2
+
+
+From 2b8d048e8acbe5235277a4ebe02448f73a499dfb Mon Sep 17 00:00:00 2001
+From: John Szakmeister <john@szakmeister.net>
+Date: Sun, 15 Apr 2012 07:04:32 -0400
+Subject: [PATCH 4/4] tap: handle :fail reports
+
+Consolidated much of the reporting, since it was effectively duplicated
+across three functions after handling failures.
+---
+ src/clj/clojure/test/tap.clj |   43 ++++++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
+
+diff --git a/src/clj/clojure/test/tap.clj b/src/clj/clojure/test/tap.clj
+index 316c784..c3a3a82 100644
+--- a/src/clj/clojure/test/tap.clj
++++ b/src/clj/clojure/test/tap.clj
+@@ -69,38 +69,45 @@
+   (println "not ok" msg))
+ 
+ ;; This multimethod will override test/report
+-(defmulti ^:dynamic tap-report (fn [data] (:type data)))
++(defmulti ^:dynamic tap-report :type)
+ 
+ (defmethod tap-report :default [data]
+   (t/with-test-out
+    (print-tap-diagnostic (pr-str data))))
+ 
++(defn print-diagnostics [data]
++  (when (seq t/*testing-contexts*)
++    (print-tap-diagnostic (t/testing-contexts-str)))
++  (when (:message data)
++    (print-tap-diagnostic (:message data)))
++  (print-tap-diagnostic (str "expected:" (pr-str (:expected data))))
++  (if (= :pass (:type data))
++    (print-tap-diagnostic (str "  actual:" (pr-str (:actual data))))
++    (do
++      (print-tap-diagnostic
++       (str "  actual:"
++        (with-out-str
++          (if (instance? Throwable (:actual data))
++            (stack/print-cause-trace (:actual data) t/*stack-trace-depth*)
++            (prn (:actual data)))))))))
++
+ (defmethod tap-report :pass [data]
+   (t/with-test-out
+    (t/inc-report-counter :pass)
+    (print-tap-pass (t/testing-vars-str data))
+-   (when (seq t/*testing-contexts*)
+-     (print-tap-diagnostic (t/testing-contexts-str)))
+-   (when (:message data)
+-     (print-tap-diagnostic (:message data)))
+-   (print-tap-diagnostic (str "expected:" (pr-str (:expected data))))
+-   (print-tap-diagnostic (str "  actual:" (pr-str (:actual data))))))
++   (print-diagnostics data)))
+ 
+ (defmethod tap-report :error [data]
+   (t/with-test-out
+    (t/inc-report-counter :error)
+    (print-tap-fail (t/testing-vars-str data))
+-   (when (seq t/*testing-contexts*)
+-     (print-tap-diagnostic (t/testing-contexts-str)))
+-   (when (:message data)
+-     (print-tap-diagnostic (:message data)))
+-   (print-tap-diagnostic (str "expected:" (pr-str (:expected data))))
+-   (print-tap-diagnostic "  actual: ")
+-   (print-tap-diagnostic
+-    (with-out-str
+-      (if (instance? Throwable (:actual data))
+-        (stack/print-cause-trace (:actual data) t/*stack-trace-depth*)
+-        (prn (:actual data)))))))
++   (print-diagnostics data)))
++
++(defmethod tap-report :fail [data]
++  (t/with-test-out
++   (t/inc-report-counter :fail)
++   (print-tap-fail (t/testing-vars-str data))
++   (print-diagnostics data)))
+ 
+ (defmethod tap-report :summary [data]
+   (t/with-test-out
+-- 
+1.7.10.rc2
+

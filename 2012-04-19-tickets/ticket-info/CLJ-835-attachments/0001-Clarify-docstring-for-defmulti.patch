@@ -1,0 +1,28 @@
+From 79ad49aaada8ae4364dd0127c23ef6a3c3fa06fc Mon Sep 17 00:00:00 2001
+From: Meikel Brandmeyer <mb@kotka.de>
+Date: Wed, 14 Sep 2011 22:09:52 +0200
+Subject: [PATCH 1/1] Clarify docstring for defmulti
+
+---
+ src/clj/clojure/core.clj |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 9c72e2f..d9c0ca9 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -1571,7 +1571,10 @@
+   Options are key-value pairs and may be one of:
+     :default    the default dispatch value, defaults to :default
+     :hierarchy  the isa? hierarchy to use for dispatching
+-                defaults to the global hierarchy"
++                defaults to the global hierarchy
++                the hierarchy must be provided in a reference type
++                eg. you stored the hierarchy n a Var, then provide
++                the Var directly by virtue of #'"
+   {:arglists '([name docstring? attr-map? dispatch-fn & options])
+    :added "1.0"}
+   [mm-name & options]
+-- 
+1.7.4.4
+

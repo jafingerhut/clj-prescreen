@@ -1,0 +1,433 @@
+From 3f71b95e9602c1505270147050b76e465285cf00 Mon Sep 17 00:00:00 2001
+From: Baishampayan Ghose <b.ghose@infinitelybeta.com>
+Date: Mon, 26 Sep 2011 12:49:16 +0530
+Subject: [PATCH] Migrate the metadata in clojure.pprint.* to the new style.
+
+---
+ src/clj/clojure/pprint/cl_format.clj     |   38 +++++++++++++++---------------
+ src/clj/clojure/pprint/column_writer.clj |    2 +-
+ src/clj/clojure/pprint/dispatch.clj      |   19 +++++++--------
+ src/clj/clojure/pprint/pprint_base.clj   |   27 +++++++++-----------
+ src/clj/clojure/pprint/pretty_writer.clj |   16 ++++++------
+ src/clj/clojure/pprint/utilities.clj     |    3 +-
+ 6 files changed, 50 insertions(+), 55 deletions(-)
+
+diff --git a/src/clj/clojure/pprint/cl_format.clj b/src/clj/clojure/pprint/cl_format.clj
+index ef5c981..fee4856 100644
+--- a/src/clj/clojure/pprint/cl_format.clj
++++ b/src/clj/clojure/pprint/cl_format.clj
+@@ -63,7 +63,7 @@ http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm
+         navigator (init-navigator args)]
+     (execute-format writer compiled-format navigator)))
+ 
+-(def ^:dynamic ^{:private true} *format-str* nil)
++(def ^:dynamic ^:private *format-str* nil)
+ 
+ (defn- format-error [message offset] 
+   (let [full-message (str message \newline *format-str* \newline 
+@@ -76,7 +76,7 @@ http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm
+ ;;; (possibly going forwards and backwards as it does so)
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(defstruct ^{:private true}
++(defstruct ^:private
+   arg-navigator :seq :rest :pos )
+ 
+ (defn- init-navigator 
+@@ -120,7 +120,7 @@ http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm
+       (absolute-reposition navigator newpos)
+       (struct arg-navigator (:seq navigator) (drop position (:rest navigator)) newpos))))
+ 
+-(defstruct ^{:private true}
++(defstruct ^:private
+   compiled-directive :func :def :params :offset)
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+@@ -162,7 +162,7 @@ http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm
+ 
+ (declare opt-base-str)
+ 
+-(def ^{:private true}
++(def ^:private
+      special-radix-markers {2 "#b" 8 "#o", 16 "#x"})
+ 
+ (defn- format-simple-number [n]
+@@ -239,7 +239,7 @@ http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm
+               #(if (< % 10) (char (+ (int \0) %)) (char (+ (int \a) (- % 10)))) 
+               (remainders base val))))))
+ 
+-(def ^{:private true}
++(def ^:private
+      java-base-formats {8 "%o", 10 "%d", 16 "%x"})
+ 
+ (defn- opt-base-str
+@@ -286,23 +286,23 @@ for improved performance"
+ ;;; Support for english formats (~R and ~:R)
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true}
++(def ^:private
+      english-cardinal-units 
+      ["zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"
+       "ten" "eleven" "twelve" "thirteen" "fourteen"
+       "fifteen" "sixteen" "seventeen" "eighteen" "nineteen"])
+ 
+-(def ^{:private true}
++(def ^:private
+      english-ordinal-units 
+      ["zeroth" "first" "second" "third" "fourth" "fifth" "sixth" "seventh" "eighth" "ninth"
+       "tenth" "eleventh" "twelfth" "thirteenth" "fourteenth"
+       "fifteenth" "sixteenth" "seventeenth" "eighteenth" "nineteenth"])
+ 
+-(def ^{:private true}
++(def ^:private
+      english-cardinal-tens
+      ["" "" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"])
+ 
+-(def ^{:private true}
++(def ^:private
+      english-ordinal-tens
+      ["" "" "twentieth" "thirtieth" "fortieth" "fiftieth"
+       "sixtieth" "seventieth" "eightieth" "ninetieth"])
+@@ -311,7 +311,7 @@ for improved performance"
+ ;; Number names from http://www.jimloy.com/math/billion.htm
+ ;; We follow the rules for writing numbers from the Blue Book
+ ;; (http://www.grammarbook.com/numbers/numbers.asp)
+-(def ^{:private true}
++(def ^:private
+      english-scale-numbers 
+      ["" "thousand" "million" "billion" "trillion" "quadrillion" "quintillion" 
+       "sextillion" "septillion" "octillion" "nonillion" "decillion" 
+@@ -436,14 +436,14 @@ Note this should only be used for the last one in the sequence"
+ ;;; Support for roman numeral formats (~@R and ~@:R)
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true}
++(def ^:private
+      old-roman-table
+      [[ "I" "II" "III" "IIII" "V" "VI" "VII" "VIII" "VIIII"]
+       [ "X" "XX" "XXX" "XXXX" "L" "LX" "LXX" "LXXX" "LXXXX"]
+       [ "C" "CC" "CCC" "CCCC" "D" "DC" "DCC" "DCCC" "DCCCC"]
+       [ "M" "MM" "MMM"]])
+ 
+-(def ^{:private true}
++(def ^:private
+      new-roman-table
+      [[ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX"]
+       [ "X" "XX" "XXX" "XL" "L" "LX" "LXX" "LXXX" "XC"]
+@@ -484,7 +484,7 @@ Note this should only be used for the last one in the sequence"
+ ;;; Support for character formats (~C)
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true} 
++(def ^:private 
+      special-chars { 8 "Backspace", 9 "Tab",  10 "Newline", 13 "Return", 32 "Space"})
+ 
+ (defn- pretty-character [params navigator offsets]
+@@ -1268,10 +1268,10 @@ not a pretty writer (which keeps track of columns), this function always outputs
+     :bracket-info bracket-info,
+     :generator-fn (concat '(fn [ params offset]) generator-fn) }])
+ 
+-(defmacro ^{:private true}
++(defmacro ^:private
+   defdirectives 
+   [ & directives ]
+-  `(def ^{:private true}
++  `(def ^:private
+         directive-table (hash-map ~@(mapcat process-directive-table-element directives))))
+ 
+ (defdirectives 
+@@ -1559,9 +1559,9 @@ not a pretty writer (which keeps track of columns), this function always outputs
+ ;;; directive in the format string.
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true}
++(def ^:private
+      param-pattern #"^([vV]|#|('.)|([+-]?\d+)|(?=,))")
+-(def ^{:private true}
++(def ^:private
+      special-params #{ :parameter-from-args :remaining-arg-count })
+ 
+ (defn- extract-param [[s offset saw-comma]]
+@@ -1594,7 +1594,7 @@ not a pretty writer (which keeps track of columns), this function always outputs
+     true (new Integer p))
+    offset])
+  
+-(def ^{:private true}
++(def ^:private
+      flag-defs { \: :colon, \@ :at })
+ 
+ (defn- extract-flags [s offset]
+@@ -1853,7 +1853,7 @@ column number or pretty printing"
+ 
+ ;;; This is a bad idea, but it prevents us from leaking private symbols
+ ;;; This should all be replaced by really compiled formats anyway.
+-(def ^{:private true} cached-compile (memoize compile-format))
++(def ^:private cached-compile (memoize compile-format))
+ 
+ (defmacro formatter
+   "Makes a function which can directly run format-in. The function is
+diff --git a/src/clj/clojure/pprint/column_writer.clj b/src/clj/clojure/pprint/column_writer.clj
+index 0449d43..c25f4f1 100644
+--- a/src/clj/clojure/pprint/column_writer.clj
++++ b/src/clj/clojure/pprint/column_writer.clj
+@@ -20,7 +20,7 @@
+ (import [clojure.lang IDeref]
+         [java.io Writer])
+ 
+-(def ^:dynamic ^{:private true} *default-page-width* 72)
++(def ^:dynamic ^:private *default-page-width* 72)
+ 
+ (defn- get-field [^Writer this sym]
+   (sym @@this))
+diff --git a/src/clj/clojure/pprint/dispatch.clj b/src/clj/clojure/pprint/dispatch.clj
+index 68d6d8a..0906db6 100644
+--- a/src/clj/clojure/pprint/dispatch.clj
++++ b/src/clj/clojure/pprint/dispatch.clj
+@@ -42,7 +42,7 @@
+ ;;; or directly by printing the objects using Clojure's built-in print functions (like
+ ;;; :keyword, \char, or ""). The notable exception is #() which is special-cased.
+ 
+-(def ^{:private true} reader-macros
++(def ^:private reader-macros
+      {'quote "'", 'clojure.core/deref "@", 
+       'var "#'", 'clojure.core/unquote "~"})
+ 
+@@ -88,7 +88,7 @@
+ 	  (pprint-newline :linear)
+ 	  (recur (next aseq)))))))
+ 
+-(def ^{:private true} pprint-array (formatter-out "~<[~;~@{~w~^, ~:_~}~;]~:>"))
++(def ^:private pprint-array (formatter-out "~<[~;~@{~w~^, ~:_~}~;]~:>"))
+ 
+ ;;; (def pprint-map (formatter-out "~<{~;~@{~<~w~^ ~_~w~:>~^, ~_~}~;}~:>"))
+ (defn- pprint-map [amap]
+@@ -106,9 +106,9 @@
+           (pprint-newline :linear)
+           (recur (next aseq)))))))
+ 
+-(def ^{:private true} pprint-set (formatter-out "~<#{~;~@{~w~^ ~:_~}~;}~:>"))
++(def ^:private pprint-set (formatter-out "~<#{~;~@{~w~^ ~:_~}~;}~:>"))
+ 
+-(def ^{:private true} 
++(def ^:private 
+      type-map {"core$future_call" "Future",
+                "core$promise" "Promise"})
+ 
+@@ -135,7 +135,7 @@
+                                        (and (instance? clojure.lang.IPending o) (not (.isRealized o))) :not-delivered
+                                        :else @o)))))
+ 
+-(def ^{:private true} pprint-pqueue (formatter-out "~<<-(~;~@{~w~^ ~_~}~;)-<~:>"))
++(def ^:private pprint-pqueue (formatter-out "~<<-(~;~@{~w~^ ~_~}~;)-<~:>"))
+ 
+ (defn- pprint-simple-default [obj]
+   (cond 
+@@ -170,7 +170,7 @@
+ ;;; won't give it to us now).
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true} pprint-hold-first (formatter-out "~:<~w~^ ~@_~w~^ ~_~@{~w~^ ~_~}~:>"))
++(def ^:private pprint-hold-first (formatter-out "~:<~w~^ ~@_~w~^ ~_~@{~w~^ ~_~}~:>"))
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;; Format something that looks like a defn or defmacro
+@@ -247,7 +247,7 @@
+ ;;; Format something that looks like "if"
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def ^{:private true} pprint-if (formatter-out "~:<~1I~w~^ ~@_~w~@{ ~_~w~}~:>"))
++(def ^:private pprint-if (formatter-out "~:<~1I~w~^ ~@_~w~@{ ~_~w~}~:>"))
+ 
+ (defn- pprint-cond [alis]
+   (pprint-logical-block :prefix "(" :suffix ")"
+@@ -289,7 +289,7 @@
+     (pprint-simple-code-list alis)))
+ 
+ ;;; The map of symbols that are defined in an enclosing #() anonymous function
+-(def ^:dynamic ^{:private true} *symbol-map* {})
++(def ^:dynamic ^:private *symbol-map* {})
+ 
+ (defn- pprint-anon-func [alis]
+   (let [args (second alis)
+@@ -342,7 +342,7 @@
+                     %))
+                amap))))
+ 
+-(def ^:dynamic ^{:private true} *code-table*
++(def ^:dynamic ^:private *code-table*
+      (two-forms
+       (add-core-ns
+        {'def pprint-hold-first, 'defonce pprint-hold-first, 
+@@ -464,4 +464,3 @@
+         (pprint-simple-code-list writer alis)))))
+ )
+ nil
+-
+diff --git a/src/clj/clojure/pprint/pprint_base.clj b/src/clj/clojure/pprint/pprint_base.clj
+index ea035d4..38de14f 100644
+--- a/src/clj/clojure/pprint/pprint_base.clj
++++ b/src/clj/clojure/pprint/pprint_base.clj
+@@ -52,21 +52,18 @@ levels of nesting.",
+  *print-miser-width* 40)
+ 
+ ;;; TODO implement output limiting
+-(def ^:dynamic
+- ^{:private true,
+-   :doc "Maximum number of lines to print in a pretty print instance (N.B. This is not yet used)"}
++(def ^:dynamic ^:private
++ ^{:doc "Maximum number of lines to print in a pretty print instance (N.B. This is not yet used)"}
+  *print-lines* nil)
+ 
+ ;;; TODO: implement circle and shared
+-(def ^:dynamic
+- ^{:private true,
+-   :doc "Mark circular structures (N.B. This is not yet used)"}
++(def ^:dynamic ^:private
++ ^{:doc "Mark circular structures (N.B. This is not yet used)"}
+  *print-circle* nil)
+ 
+ ;;; TODO: should we just use *print-dup* here?
+-(def ^:dynamic
+- ^{:private true,
+-   :doc "Mark repeated structures rather than repeat them (N.B. This is not yet used)"}
++(def ^:dynamic ^:private
++ ^{:doc "Mark repeated structures rather than repeat them (N.B. This is not yet used)"}
+  *print-shared* nil)
+ 
+ (def ^:dynamic
+@@ -96,9 +93,9 @@ radix specifier is in the form #XXr where XX is the decimal value of *print-base
+ ;; structure
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(def  ^:dynamic ^{ :private true } *current-level* 0)
++(def  ^:dynamic ^:private *current-level* 0)
+ 
+-(def ^:dynamic ^{ :private true } *current-length* nil)
++(def ^:dynamic ^:private *current-length* nil)
+ 
+ ;; TODO: add variables for length, lines.
+ 
+@@ -108,14 +105,14 @@ radix specifier is in the form #XXr where XX is the decimal value of *print-base
+ 
+ (declare format-simple-number)
+ 
+-(def ^{:private true} orig-pr pr)
++(def ^:private orig-pr pr)
+ 
+ (defn- pr-with-base [x]
+   (if-let [s (format-simple-number x)]
+     (print s)
+     (orig-pr x)))
+ 
+-(def ^{:private true} write-option-table
++(def ^:private write-option-table
+      {;:array            *print-array*
+       :base             'clojure.pprint/*print-base*,
+       ;;:case             *print-case*,
+@@ -134,7 +131,7 @@ radix specifier is in the form #XXr where XX is the decimal value of *print-base
+       :suppress-namespaces 'clojure.pprint/*print-suppress-namespaces*})
+ 
+ 
+-(defmacro ^{:private true} binding-map [amap & body]
++(defmacro ^:private binding-map [amap & body]
+   (let []
+     `(do
+        (. clojure.lang.Var (pushThreadBindings ~amap))
+@@ -157,7 +154,7 @@ radix specifier is in the form #XXr where XX is the decimal value of *print-base
+   [base-writer right-margin miser-width]
+   (pretty-writer base-writer right-margin miser-width))
+ 
+-(defmacro ^{:private true} with-pretty-writer [base-writer & body]
++(defmacro ^:private with-pretty-writer [base-writer & body]
+   `(let [base-writer# ~base-writer
+          new-writer# (not (pretty-writer? base-writer#))]
+      (binding [*out* (if new-writer#
+diff --git a/src/clj/clojure/pprint/pretty_writer.clj b/src/clj/clojure/pprint/pretty_writer.clj
+index 8b6aba4..eafc631 100644
+--- a/src/clj/clojure/pprint/pretty_writer.clj
++++ b/src/clj/clojure/pprint/pretty_writer.clj
+@@ -34,18 +34,18 @@
+ ;;; really utilities, but I'm experimenting with them here.
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(defmacro ^{:private true} 
++(defmacro ^:private 
+   getf 
+   "Get the value of the field a named by the argument (which should be a keyword)."
+   [sym]
+   `(~sym @@~'this))
+ 
+-(defmacro ^{:private true} 
++(defmacro ^:private 
+   setf [sym new-val] 
+   "Set the value of the field SYM to NEW-VAL"
+   `(alter @~'this assoc ~sym ~new-val))
+ 
+-(defmacro ^{:private true} 
++(defmacro ^:private 
+   deftype [type-name & fields]
+   (let [name-str (name type-name)]
+     `(do
+@@ -59,7 +59,7 @@
+ ;;; The data structures used by pretty-writer
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+-(defstruct ^{:private true} logical-block
++(defstruct ^:private logical-block
+            :parent :section :start-col :indent
+            :done-nl :intra-block-nl
+            :prefix :per-line-prefix :suffix
+@@ -72,7 +72,7 @@
+      (identical? parent child) true
+      :else (recur (:parent child)))))
+ 
+-(defstruct ^{:private true} section :parent)
++(defstruct ^:private section :parent)
+ 
+ (defn- buffer-length [l] 
+   (let [l (seq l)]
+@@ -100,7 +100,7 @@
+ 
+ (declare emit-nl)
+ 
+-(defmulti ^{:private true} write-token #(:type-tag %2))
++(defmulti ^:private write-token #(:type-tag %2))
+ (defmethod write-token :start-block-t [^Writer this token]
+    (when-let [cb (getf :logical-block-callback)] (cb :start))
+    (let [lb (:logical-block token)]
+@@ -175,7 +175,7 @@
+          (>= @(:start-col lb) (- maxcol miser-width))
+          (linear-nl? this lb section))))
+ 
+-(defmulti ^{:private true} emit-nl? (fn [t _ _ _] (:type t)))
++(defmulti ^:private emit-nl? (fn [t _ _ _] (:type t)))
+ 
+ (defmethod emit-nl? :linear [newl this section _]
+   (let [lb (:logical-block newl)]
+@@ -242,7 +242,7 @@
+ 
+ ;;; Methods for showing token strings for debugging
+ 
+-(defmulti ^{:private true} tok :type-tag)
++(defmulti ^:private tok :type-tag)
+ (defmethod tok :nl-t [token]
+   (:type token))
+ (defmethod tok :buffer-blob [token]
+diff --git a/src/clj/clojure/pprint/utilities.clj b/src/clj/clojure/pprint/utilities.clj
+index 0385fd3..44c6c8b 100644
+--- a/src/clj/clojure/pprint/utilities.clj
++++ b/src/clj/clojure/pprint/utilities.clj
+@@ -97,8 +97,7 @@ beginning of aseq"
+   (binding [*out* *err*]
+     (apply println args)))
+        
+-(defmacro ^{:private true} prlabel [prefix arg & more-args]
++(defmacro ^:private prlabel [prefix arg & more-args]
+   "Print args to *err* in name = value format"
+   `(prerr ~@(cons (list 'quote prefix) (mapcat #(list (list 'quote %) "=" %) 
+                                                   (cons arg (seq more-args))))))
+-
+-- 
+1.7.1
+
