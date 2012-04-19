@@ -1,4 +1,4 @@
-(ns evalpatch.core
+(ns clj-prescreen.core
   (:import java.io.File)
   (:require [clojure.xml :as xml]
             [clojure.data.zip.xml :as dzx]
@@ -585,13 +585,12 @@ Check it to see if it was created incorrectly."})
 ;; will be shown.  Save the page as a file.  That is how I created the
 ;; file rfs.xml (abbreviation of "Ready For Screening").
 
-(use 'evalpatch.core 'clojure.pprint)
+(use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-04-15-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-04-19-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
-;;(def patch-type-list [ "clj-803-only-for-testing" ])
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
 ;; so already.  Don't make it your favorite one, as many branches will
@@ -669,7 +668,7 @@ Check it to see if it was created incorrectly."})
 
 
 ;; Testing with 1 patch at a time.
-(use 'evalpatch.core 'clojure.pprint)
+(use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io])
 (def as2 (read-safely "att-1-non-git-wrong-opts.txt"))
 (def as3 (eval-patches! as2 ticket-dir "../clojure"))
@@ -725,7 +724,7 @@ Check it to see if it was created incorrectly."})
 
 
 ;; ======================================================================
-;; Information evalpatch should add to each attachment:
+;; Information clj-prescreen should add to each attachment:
 
 ;; (0) TBD: When was the evaluation done?  Against what version of
 ;; Clojure source code?  What OS and JVM were used?

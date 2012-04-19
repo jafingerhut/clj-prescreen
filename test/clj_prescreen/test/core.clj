@@ -1,5 +1,5 @@
-(ns evalpatch.test.core
-  (:use [evalpatch.core])
+(ns clj-prescreen.test.core
+  (:use [clj-prescreen.core])
   (:use [clojure.test])
   (:require [clojure.java.io :as io]))
 
