@@ -61,6 +61,12 @@
  :emails #{ "hhochleitner@gmail.com" }
  :contributor true
  }
+{:full-name "Brenton Ashworth"
+ :aliases #{ "" }
+ :usernames #{ "brentonashworth" }
+ :emails #{ "brenton@thinkrelevance.com" "bashwort@gmail.com" }
+ :contributor true
+ }
 {:full-name "Nicola Mometto"
  :aliases #{ "Bronsa" }
  :usernames #{ "bronsa" }
@@ -294,6 +300,12 @@
  :aliases #{ }
  :usernames #{ "lvanderhart" }
  :emails #{ "luke@vanderhart.net" }
+ :contributor true
+ }
+{:full-name "Hubert Iwaniuk"
+ :aliases #{ }
+ :usernames #{ "neotyk" }
+ :emails #{ "neotyk@kungfoo.pl" "hubert@happyhacking.nl" }
  :contributor true
  }
 {:full-name "Meikel Brandmeyer"
