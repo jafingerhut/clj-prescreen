@@ -587,7 +587,7 @@ Check it to see if it was created incorrectly."})
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-04-19-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-04-26-tickets/"))
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])

@@ -1,0 +1,96 @@
+Abbreviations:
+
+BP: Before Patch
+AP: After Patch
+
+
+replace (to replace all occurrences of a match with replacement)
+
+replace Case 1: match and replacement both Char
+
+No change.  Uses String replace(char oldChar, char newChar) method.
+No special treatment of any characters.
+
+
+replace Case 2: match and replacement both CharSequence
+
+No change.  Uses String replace(CharSequence target, CharSequence
+replacement) method.  No special treatment of any characters.
+
+
+replace Case 3: match is Pattern, replacement CharSequence
+
+No change.  Uses Matcher replaceAll(String replacement) method.  $ and
+\ treated specially in replacement string BP and AP, now documented AP
+explicitly in doc string of replace.
+
+
+replace Case 4: match is Pattern, replacement is function of match
+
+Implemented in private function replace-by, which is changed because
+of probably-surprising behavior that the return value of the function
+is a string where $ and \ are treated specially (the reason for filing
+CLJ-870).
+
+Performance is faster AP in the case when the pattern does not match
+at all in the string.  BP would create a StringBuffer, copy the string
+into it, and return toString of it.  AP just returns the input string
+without constructing anything except a Matcher, which is necessary to
+determine that there is no match.  This performance improvement could
+be done independently of fixing CLJ-870 if desired.
+
+Performance is slower AP in the case when there are one or more
+matches to be replaced, because every time the caller-supplied
+function is invoked, its return value is fixed up by calling
+Matcher/quoteReplacement on it.  This is not ideal for performance,
+but is the point of CLJ-870, and I can't think of any way to improve
+it.
+
+
+replace-first
+
+replace-first Case 1: match and replacement both Char
+
+No change.  Implemented in replace-first-char which uses String's
+indexOf(int ch) method to find a match, and subs to construct the
+return result if a match is found.  No special treatment of any
+characters.
+
+
+replace-first Case 2: match and replacement both CharSequence
+
+BP implemented by converting the match to a regex, and then using
+replaceFirst to find if there is a match and replace it with the
+replacement.  The replacement had $ and \ treated specially because
+that is what replaceFirst does.
+
+AP it is implemented in a new private function replace-first-str,
+which is nearly identical to replace-first-char.  It uses String's
+indexOf(String str) to find a match, and str to concatenate the pieces
+of the result together.  As long as this indexOf method is implemented
+well, this should be faster than constructing and using a regex
+matcher.  No special treatment of any chars in match or replacement.
+This fixes CLJ-905.
+
+
+replace-first Case 3: match is Pattern, replacement CharSequence
+
+No change.  Implemented using Matcher's replaceFirst(String
+replacement) method.  $ and \ treated specially in replacement string
+BP and AP, now documented AP explicitly in replace-first's doc string.
+
+
+replace-first Case 4: match is Pattern, replacement is function of
+match
+
+Implemented in private function replace-first-by, which is changed
+both because of bug CLJ-753 (return nil instead of input string if no
+match) and because of CLJ-870 (return value of user-supplied fn has $
+and \ treated specially).
+
+Performance is faster AP in the case when the pattern does not match
+at all in the string, because no StringBuffer is allocated or copied
+into.
+
+Performance is slower if there are one or more matches, for the same
+reason as for replace Case 4 described earlier.

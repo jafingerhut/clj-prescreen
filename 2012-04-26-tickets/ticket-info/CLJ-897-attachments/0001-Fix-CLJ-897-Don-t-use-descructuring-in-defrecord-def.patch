@@ -1,0 +1,53 @@
+From 75104529e02e300c0634d364e17be4218442adde Mon Sep 17 00:00:00 2001
+From: Tassilo Horn <tassilo@member.fsf.org>
+Date: Fri, 23 Dec 2011 11:24:30 +0100
+Subject: [PATCH] Fix CLJ-897: Don't use descructuring in defrecord/deftype
+ arglists to get a slightly better error message when
+ forgetting to specify the fields vector.
+
+---
+ src/clj/clojure/core_deftype.clj |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/clj/clojure/core_deftype.clj b/src/clj/clojure/core_deftype.clj
+index 042c242..72b37cf 100644
+--- a/src/clj/clojure/core_deftype.clj
++++ b/src/clj/clojure/core_deftype.clj
+@@ -263,6 +263,8 @@
+ (defn- validate-fields
+   ""
+   [fields]
++  (when-not (vector? fields)
++    (throw (AssertionError. "No fields vector given.")))
+   (let [specials #{'__meta '__extmap}]
+     (when (some specials fields)
+       (throw (AssertionError. (str "The names in " specials " cannot be used as field names for types or records."))))))
+@@ -330,9 +332,10 @@
+   meta and extension fields). Note that the field names __meta
+   and __extmap are currently reserved and should not be used when
+   defining your own records."
+-  {:added "1.2"}
++  {:added "1.2"
++   :arglists '([name [& fields] & opts+specs])}
+ 
+-  [name [& fields] & opts+specs]
++  [name fields & opts+specs]
+   (validate-fields fields)
+   (let [gname name
+         [interfaces methods opts] (parse-opts+specs opts+specs)
+@@ -419,9 +422,10 @@
+   One constructor will be defined, taking the designated fields.  Note
+   that the field names __meta and __extmap are currently reserved and
+   should not be used when defining your own types."
+-  {:added "1.2"}
++  {:added "1.2"
++   :arglists '([name [& fields] & opts+specs])}
+ 
+-  [name [& fields] & opts+specs]
++  [name fields & opts+specs]
+   (validate-fields fields)
+   (let [gname name
+         [interfaces methods opts] (parse-opts+specs opts+specs)
+-- 
+1.7.8.1
+
