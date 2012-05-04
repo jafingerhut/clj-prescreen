@@ -587,7 +587,8 @@ Check it to see if it was created incorrectly."})
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-04-26-tickets/"))
+(def cur-eval-dir (str @fs/cwd "/2012-05-04-tickets/"))
+(def latest-clojure-tree "./2012-05-04-clojure-to-prescreen/clojure-plus-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
@@ -606,16 +607,20 @@ Check it to see if it was created incorrectly."})
 (doseq [cur-patch-type patch-type-list]
   (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
         as2 (download-attachments! as1 ticket-dir)
-        fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")]
-    (spit-pretty fname2 as2)))
+        as2b (let [people-info (read-safely "data/people-data.clj")]
+               (map #(add-author-info % ticket-dir people-info) as2))
+        fname2b (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+        fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")]
+    (spit-pretty fname2b as2b)
+    (spit fname-sum (with-out-str (eval-patches-summary as2b)))
+    ))
 
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
 (doseq [cur-patch-type patch-type-list]
   (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
         as2 (read-safely fname2)
-        as3 (eval-patches! as2 ticket-dir "data/people-data.clj"
-                           "./2012-04-15-clojure-to-prescreen/clojure-plus-clj-967-patch"
+        as3 (eval-patches! as2 ticket-dir "data/people-data.clj" latest-clojure-tree
                            "./temp-clojure")
         as4 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as3))
