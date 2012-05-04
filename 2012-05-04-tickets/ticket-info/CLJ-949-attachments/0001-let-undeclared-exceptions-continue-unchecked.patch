@@ -1,0 +1,332 @@
+From c4a1dbb14926ef289133242708a9c09c5b4cb7f4 Mon Sep 17 00:00:00 2001
+From: Brian Taylor <el.wubo@gmail.com>
+Date: Wed, 7 Mar 2012 19:56:24 -0500
+Subject: [PATCH] let undeclared exceptions continue unchecked
+
+The recent modifications regarding checked exceptions have
+eliminated the need for several try/catch blocks. This
+commit removes the blocks that no longer serve a purpose.
+---
+ src/jvm/clojure/lang/AFn.java                  |    9 +----
+ src/jvm/clojure/lang/AFunction.java            |   25 +++++---------
+ src/jvm/clojure/lang/ARef.java                 |   30 ++--------------
+ src/jvm/clojure/lang/Compiler.java             |   29 +++-------------
+ src/jvm/clojure/lang/LazySeq.java              |   15 +-------
+ src/jvm/clojure/lang/TransactionalHashMap.java |   18 +---------
+ src/jvm/clojure/lang/Var.java                  |   43 ++---------------------
+ 7 files changed, 27 insertions(+), 142 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/AFn.java b/src/jvm/clojure/lang/AFn.java
+index ca4d39d..22298b3 100644
+--- a/src/jvm/clojure/lang/AFn.java
++++ b/src/jvm/clojure/lang/AFn.java
+@@ -19,14 +19,7 @@ public Object call() {
+ }
+ 
+ public void run(){
+-	try
+-		{
+-		invoke();
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
++        invoke();
+ }
+ 
+ 
+diff --git a/src/jvm/clojure/lang/AFunction.java b/src/jvm/clojure/lang/AFunction.java
+index 2963d0e..4f69ec4 100644
+--- a/src/jvm/clojure/lang/AFunction.java
++++ b/src/jvm/clojure/lang/AFunction.java
+@@ -44,23 +44,16 @@ public IObj withMeta(final IPersistentMap meta){
+ }
+ 
+ public int compare(Object o1, Object o2){
+-	try
+-		{
+-		Object o = invoke(o1, o2);
++        Object o = invoke(o1, o2);
+ 
+-		if(o instanceof Boolean)
+-			{
+-			if(RT.booleanCast(o))
+-				return -1;
+-			return RT.booleanCast(invoke(o2,o1))? 1 : 0;
+-			}
++        if(o instanceof Boolean)
++                {
++                if(RT.booleanCast(o))
++                        return -1;
++                return RT.booleanCast(invoke(o2,o1))? 1 : 0;
++                }
+ 
+-		Number n = (Number) o;
+-		return n.intValue();
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
++        Number n = (Number) o;
++        return n.intValue();
+ }
+ }
+diff --git a/src/jvm/clojure/lang/ARef.java b/src/jvm/clojure/lang/ARef.java
+index 44dc2ad..e10aca3 100644
+--- a/src/jvm/clojure/lang/ARef.java
++++ b/src/jvm/clojure/lang/ARef.java
+@@ -47,14 +47,7 @@ void validate(Object val){
+ }
+ 
+ public void setValidator(IFn vf){
+-	try
+-		{
+-		validate(vf, deref());
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
++	validate(vf, deref());
+ 	validator = vf;
+ }
+ 
+@@ -72,15 +65,7 @@ synchronized public IRef addWatch(Object key, IFn callback){
+ }
+ 
+ synchronized public IRef removeWatch(Object key){
+-	try
+-		{
+-		watches = watches.without(key);
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
+-
++	watches = watches.without(key);
+ 	return this;
+ }
+ 
+@@ -92,15 +77,8 @@ public void notifyWatches(Object oldval, Object newval){
+ 			{
+ 			Map.Entry e = (Map.Entry) s.first();
+ 			IFn fn = (IFn) e.getValue();
+-			try
+-				{
+-				if(fn != null)
+-					fn.invoke(e.getKey(), this, oldval, newval);
+-				}
+-			catch(Exception e1)
+-				{
+-				throw Util.sneakyThrow(e1);
+-				}
++			if(fn != null)
++                                fn.invoke(e.getKey(), this, oldval, newval);
+ 			}
+ 		}
+ }
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index e06bcde..55e3f43 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -1220,18 +1220,11 @@ static class StaticFieldExpr extends FieldExpr implements AssignableExpr{
+ }
+ 
+ static Class maybePrimitiveType(Expr e){
+-	try
+-		{
+-		if(e instanceof MaybePrimitiveExpr && e.hasJavaClass() && ((MaybePrimitiveExpr)e).canEmitPrimitive())
+-			{
+-			Class c = e.getJavaClass();
+-			if(Util.isPrimitive(c))
+-				return c;
+-			}
+-		}
+-	catch(Exception ex)
+-		{
+-		throw Util.sneakyThrow(ex);
++        if(e instanceof MaybePrimitiveExpr && e.hasJavaClass() && ((MaybePrimitiveExpr)e).canEmitPrimitive())
++                {
++                Class c = e.getJavaClass();
++                if(Util.isPrimitive(c))
++                        return c;
+ 		}
+ 	return null;
+ }
+@@ -6596,25 +6589,13 @@ static PathNode commonPath(PathNode n1, PathNode n2){
+ }
+ 
+ static void addAnnotation(Object visitor, IPersistentMap meta){
+-	try{
+ 	if(meta != null && ADD_ANNOTATIONS.isBound())
+ 		 ADD_ANNOTATIONS.invoke(visitor, meta);
+-	}
+-	catch (Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
+ }
+ 
+ static void addParameterAnnotation(Object visitor, IPersistentMap meta, int i){
+-	try{
+ 	if(meta != null && ADD_ANNOTATIONS.isBound())
+ 		 ADD_ANNOTATIONS.invoke(visitor, meta, i);
+-	}
+-	catch (Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
+ }
+ 
+ private static Expr analyzeSymbol(Symbol sym) {
+diff --git a/src/jvm/clojure/lang/LazySeq.java b/src/jvm/clojure/lang/LazySeq.java
+index 914cc52..f9127e4 100644
+--- a/src/jvm/clojure/lang/LazySeq.java
++++ b/src/jvm/clojure/lang/LazySeq.java
+@@ -37,19 +37,8 @@ public Obj withMeta(IPersistentMap meta){
+ final synchronized Object sval(){
+ 	if(fn != null)
+ 		{
+-		try
+-			{
+-			sv = fn.invoke();
+-			fn = null;
+-			}
+-		catch(RuntimeException e)
+-			{
+-			throw e;
+-			}
+-		catch(Exception e)
+-			{
+-			throw Util.sneakyThrow(e);
+-			}
++                sv = fn.invoke();
++                fn = null;
+ 		}
+ 	if(sv != null)
+ 		return sv;
+diff --git a/src/jvm/clojure/lang/TransactionalHashMap.java b/src/jvm/clojure/lang/TransactionalHashMap.java
+index c8e3080..d90f668 100644
+--- a/src/jvm/clojure/lang/TransactionalHashMap.java
++++ b/src/jvm/clojure/lang/TransactionalHashMap.java
+@@ -87,14 +87,7 @@ public V remove(Object k){
+ 	IPersistentMap map = (IPersistentMap) r.deref();
+ 	Object ret = map.valAt(k);
+ 	//checked exceptions are a bad idea, especially in an interface
+-	try
+-		{
+-		r.set(map.without(k));
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
++	r.set(map.without(k));
+ 	return (V) ret;
+ }
+ 
+@@ -157,14 +150,7 @@ public boolean remove(Object k, Object v){
+ 	if(e != null && e.getValue().equals(v))
+ 		{
+ 		//checked exceptions are a bad idea, especially in an interface
+-		try
+-			{
+-			r.set(map.without(k));
+-			}
+-		catch(Exception ex)
+-			{
+-			throw Util.sneakyThrow(ex);
+-			}
++		r.set(map.without(k));
+ 		return true;
+ 		}
+ 	return false;
+diff --git a/src/jvm/clojure/lang/Var.java b/src/jvm/clojure/lang/Var.java
+index 1630889..260280c 100644
+--- a/src/jvm/clojure/lang/Var.java
++++ b/src/jvm/clojure/lang/Var.java
+@@ -248,14 +248,7 @@ public void setMeta(IPersistentMap m) {
+ }
+ 
+ public void setMacro() {
+-    try
+-        {
+-        alterMeta(assoc, RT.list(macroKey, RT.T));
+-        }
+-    catch (Exception e)
+-        {
+-        throw Util.sneakyThrow(e);
+-        }
++    alterMeta(assoc, RT.list(macroKey, RT.T));
+ }
+ 
+ public boolean isMacro(){
+@@ -279,14 +272,7 @@ public Object getTag(){
+ }
+ 
+ public void setTag(Symbol tag) {
+-    try
+-        {
+-        alterMeta(assoc, RT.list(RT.TAG_KEY, tag));
+-        }
+-    catch (Exception e)
+-        {
+-        throw Util.sneakyThrow(e);
+-        }
++    alterMeta(assoc, RT.list(RT.TAG_KEY, tag));
+ }
+ 
+ final public boolean hasRoot(){
+@@ -299,14 +285,7 @@ synchronized public void bindRoot(Object root){
+ 	Object oldroot = this.root;
+ 	this.root = root;
+ 	++rev;
+-    try
+-        {
+         alterMeta(dissoc, RT.list(macroKey));
+-        }
+-    catch (Exception e)
+-        {
+-        throw Util.sneakyThrow(e);
+-        }
+     notifyWatches(oldroot,this.root);
+ }
+ 
+@@ -397,14 +376,7 @@ public Object call() {
+ }
+ 
+ public void run(){
+-	try
+-		{
+-		invoke();
+-		}
+-	catch(Exception e)
+-		{
+-		throw Util.sneakyThrow(e);
+-		}
++        invoke();
+ }
+ 
+ public Object invoke() {
+@@ -541,14 +513,7 @@ static IFn assoc = new AFn(){
+ static IFn dissoc = new AFn() {
+     @Override
+     public Object invoke(Object c, Object k)  {
+-	    try
+-		    {
+-		    return RT.dissoc(c, k);
+-		    }
+-	    catch(Exception e)
+-		    {
+-            throw Util.sneakyThrow(e);
+-		    }
++            return RT.dissoc(c, k);
+     }
+ };
+ }
+-- 
+1.7.5.4
+

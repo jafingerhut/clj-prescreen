@@ -1,0 +1,39 @@
+From 5808cb4d35468b0dd2717e903cc4782642136a53 Mon Sep 17 00:00:00 2001
+From: Brenton Ashworth <brenton@thinkrelevance.com>
+Date: Sat, 21 Apr 2012 18:12:50 -0400
+Subject: [PATCH] CLJ-867: Records implement IHashEq to incorporate record
+ name into hash code
+
+---
+ src/clj/clojure/core_deftype.clj |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/clj/clojure/core_deftype.clj b/src/clj/clojure/core_deftype.clj
+index cca4501..1dfe8f3 100644
+--- a/src/clj/clojure/core_deftype.clj
++++ b/src/clj/clojure/core_deftype.clj
+@@ -148,7 +148,8 @@
+         hinted-fields fields
+         fields (vec (map #(with-meta % nil) fields))
+         base-fields fields
+-        fields (conj fields '__meta '__extmap)]
++        fields (conj fields '__meta '__extmap)
++        type-hash (hash classname)]
+     (when (some #{:volatile-mutable :unsynchronized-mutable} (mapcat (comp keys meta) hinted-fields))
+       (throw (IllegalArgumentException. ":volatile-mutable or :unsynchronized-mutable not supported for record fields")))
+     (let [gs (gensym)]
+@@ -157,8 +158,9 @@
+         [(conj i 'clojure.lang.IRecord)
+          m])
+       (eqhash [[i m]] 
+-        [i
+-         (conj m 
++        [(conj i 'clojure.lang.IHashEq)
++         (conj m
++               `(hasheq [this#] (bit-xor ~type-hash (.hashCode this#)))
+                `(hashCode [this#] (clojure.lang.APersistentMap/mapHash this#))
+                `(equals [this# ~gs] (clojure.lang.APersistentMap/mapEquals this# ~gs)))])
+       (iobj [[i m]] 
+-- 
+1.7.5.4
+

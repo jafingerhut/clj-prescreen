@@ -1,0 +1,41 @@
+From d47535a3a222d245512e610efa7006203b383746 Mon Sep 17 00:00:00 2001
+From: Federico Brubacher <fbrubacher@gmail.com>
+Date: Mon, 21 Mar 2011 09:12:24 -0300
+Subject: [PATCH] clojure.string/replace-first now returns the original string if the regex doesn't match
+
+---
+ src/clj/clojure/string.clj           |    3 ++-
+ test/clojure/test_clojure/string.clj |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/clj/clojure/string.clj b/src/clj/clojure/string.clj
+index 188b518..8b04ef3 100644
+--- a/src/clj/clojure/string.clj
++++ b/src/clj/clojure/string.clj
+@@ -90,7 +90,8 @@ Design notes for clojure.string:
+         (let [rep (f (re-groups m))]
+           (.appendReplacement m buffer rep)
+           (.appendTail m buffer)
+-          (str buffer))))))
++          (str buffer))
++        s))))
+ 
+ (defn- replace-first-char
+   [^CharSequence s ^Character match replace]
+diff --git a/test/clojure/test_clojure/string.clj b/test/clojure/test_clojure/string.clj
+index d6f6469..23ea995 100644
+--- a/test/clojure/test_clojure/string.clj
++++ b/test/clojure/test_clojure/string.clj
+@@ -19,7 +19,8 @@
+   (is (= "barbarfoo" (s/replace-first "foobarfoo" "foo" "bar")))
+   (is (= "barbarfoo" (s/replace-first "foobarfoo" #"foo" "bar")))
+   (is (= "z.ology" (s/replace-first "zoology" \o \.)))
+-  (is (= "FOObarfoo" (s/replace-first "foobarfoo" #"foo" s/upper-case))))
++  (is (= "FOObarfoo" (s/replace-first "foobarfoo" #"foo" s/upper-case)))
++  (is (= "foobarfoo" (s/replace-first "foobarfoo" #"baz" s/upper-case))))
+ 
+ (deftest t-join
+   (are [x coll] (= x (s/join coll))
+-- 
+1.7.3.5
+

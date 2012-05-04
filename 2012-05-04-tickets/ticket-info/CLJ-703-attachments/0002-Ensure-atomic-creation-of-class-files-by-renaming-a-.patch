@@ -1,0 +1,45 @@
+From 641194614097f732606e81dd5f0ae99dedd47ed2 Mon Sep 17 00:00:00 2001
+From: Juergen Hoetzel <juergen@archlinux.org>
+Date: Tue, 4 Jan 2011 19:47:47 +0100
+Subject: [PATCH 2/2] Ensure atomic creation of class files by renaming a temporary class
+
+Also remove "sync IO" (which commits als kernel file buffers to disk)
+and isn't necessary for userspace processes to "see" up2date files.
+
+Signed-off-by: Juergen Hoetzel <juergen@archlinux.org>
+---
+ src/jvm/clojure/lang/Compiler.java |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index 68f29b9..4c90d6c 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -6675,19 +6675,19 @@ static public void writeClassFile(String internalName, byte[] bytecode) throws E
+ 		throw new Exception("*compile-path* not set");
+ 	String path = genPath + File.separator + internalName + ".class";
+ 	File cf = new File(path);
+-	cf.getParentFile().mkdirs();
+-	cf.createNewFile();
+-	FileOutputStream cfs = new FileOutputStream(cf);
++	File dir = cf.getParentFile();
++	dir.mkdirs();
++	File tmp = File.createTempFile("compile-", ".tmp", dir);
++	FileOutputStream cfs = new FileOutputStream(tmp);
+ 	try
+ 		{
+ 		cfs.write(bytecode);
+-		cfs.flush();
+-		cfs.getFD().sync();
+ 		}
+ 	finally
+ 		{
+ 		cfs.close();
+ 		}
++	tmp.renameTo(cf);
+ }
+ 
+ public static void pushNS(){
+-- 
+1.7.3.2
+

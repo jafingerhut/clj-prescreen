@@ -1,0 +1,34 @@
+From 5cdb12f417fc445a458c5672859619cfbea66a9f Mon Sep 17 00:00:00 2001
+From: Tassilo Horn <tassilo@member.fsf.org>
+Date: Thu, 8 Mar 2012 10:55:18 +0100
+Subject: [PATCH] Make memfn allow for type-hinting the method receiver.
+
+---
+ src/clj/clojure/core.clj |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index e1aa2df..e313c9e 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -3415,11 +3415,14 @@
+   "Expands into code that creates a fn that expects to be passed an
+   object and any args and calls the named instance method on the
+   object passing the args. Use when you want to treat a Java method as
+-  a first-class fn."
++  a first-class fn. name may be type-hinted with the method receiver's
++  type in order to avoid reflective calls."
+   {:added "1.0"}
+   [name & args]
+-  `(fn [target# ~@args]
+-     (. target# (~name ~@args))))
++  (let [t (with-meta (gensym "target")
++            (meta name))]
++    `(fn [~t ~@args]
++       (. ~t (~name ~@args)))))
+ 
+ (defmacro time
+   "Evaluates expr and prints the time it took.  Returns the value of
+-- 
+1.7.8.5
+

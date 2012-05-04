@@ -1,0 +1,98 @@
+From ce74a12c2584642e3a5e0f9bb3b4940e060df542 Mon Sep 17 00:00:00 2001
+From: fogus <mefogus@gmail.com>
+Date: Fri, 27 Apr 2012 11:49:14 -0400
+Subject: [PATCH] Tagged literal support only.
+
+---
+ src/clj/clojure/core.clj             |    8 +++++---
+ src/clj/clojure/queue.clj            |   21 +++++++++++++++++++++
+ test/clojure/test_clojure/reader.clj |   16 ++++++++++++++++
+ 3 files changed, 42 insertions(+), 3 deletions(-)
+ create mode 100644 src/clj/clojure/queue.clj
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 336be78..105b285 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -6009,8 +6009,6 @@
+ (load "core_deftype")
+ (load "core/protocols")
+ (load "gvec")
+-(load "instant")
+-(load "uuid")
+ 
+ ;; redefine reduce with internal-reduce
+ (defn reduce
+@@ -6607,12 +6605,16 @@
+   [^clojure.lang.IPending x] (.isRealized x))
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; data readers ;;;;;;;;;;;;;;;;;;
++(load "instant")
++(load "uuid")
++(load "queue")
+ 
+ (def ^{:added "1.4"} default-data-readers
+   "Default map of data reader functions provided by Clojure. May be
+   overridden by binding *data-readers*."
+   {'inst #'clojure.instant/read-instant-date
+-   'uuid #'clojure.uuid/default-uuid-reader})
++   'uuid #'clojure.uuid/default-uuid-reader
++   'queue #'clojure.queue/default-queue-reader})
+ 
+ (def ^{:added "1.4" :dynamic true} *data-readers*
+   "Map from reader tag symbols to data reader Vars.
+diff --git a/src/clj/clojure/queue.clj b/src/clj/clojure/queue.clj
+new file mode 100644
+index 0000000..62803ff
+--- /dev/null
++++ b/src/clj/clojure/queue.clj
+@@ -0,0 +1,21 @@
++;   Copyright (c) Rich Hickey. All rights reserved.
++;   The use and distribution terms for this software are covered by the
++;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
++;   which can be found in the file epl-v10.html at the root of this distribution.
++;   By using this software in any fashion, you are agreeing to be bound by
++;   the terms of this license.
++;   You must not remove this notice, or any other, from this software.
++
++(ns clojure.queue)
++
++(defn- default-queue-reader [queue-elements]
++  {:pre [(vector? queue-elements)]}
++  (into clojure.lang.PersistentQueue/EMPTY queue-elements))
++
++(defmethod print-method clojure.lang.PersistentQueue [q ^java.io.Writer w]
++  (.write w (str "#queue "))
++  (print-method (vec (seq q)) w))
++
++(defmethod print-dup clojure.lang.PersistentQueue [o w]
++  (print-method o w))
++
+diff --git a/test/clojure/test_clojure/reader.clj b/test/clojure/test_clojure/reader.clj
+index d6178dc..4d05746 100644
+--- a/test/clojure/test_clojure/reader.clj
++++ b/test/clojure/test_clojure/reader.clj
+@@ -501,3 +501,19 @@
+   (is (= 4 (.version #uuid "550e8400-e29b-41d4-a716-446655440000")))
+   (is (= (print-str #uuid "550e8400-e29b-41d4-a716-446655440000")
+          "#uuid \"550e8400-e29b-41d4-a716-446655440000\"")))
++
++;; Queue Literals
++;; #queue [1 2 3]
++
++(deftest queue-literals
++  (testing "that queue printing looks as we expect"
++    (is (= (print-str clojure.lang.PersistentQueue/EMPTY)
++           "#queue []"))
++    (is (= (print-str (into clojure.lang.PersistentQueue/EMPTY [1 2 3]))
++           "#queue [1 2 3]")))
++  (testing "that queue print-dupping looks as we expect"
++    (binding [*print-dup* true]
++      (is (= (print-str clojure.lang.PersistentQueue/EMPTY)
++             "#queue []"))
++      (is (= (print-str (into clojure.lang.PersistentQueue/EMPTY [1 2 3]))
++             "#queue [1 2 3]")))))
+\ No newline at end of file
+-- 
+1.7.4.1
+

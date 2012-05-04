@@ -1,0 +1,56 @@
+From 94f4d3ea42836a369ea23f98b397b7cb8361b7c9 Mon Sep 17 00:00:00 2001
+From: Jasper Lievisse Adriaanse <jasper@humppa.nl>
+Date: Wed, 14 Dec 2011 00:14:46 +0100
+Subject: [PATCH] Try harder on non-Mac OS systems to find a program for
+ browse-url to before falling back to open-url-in-swing.
+ This allows the usage of freedesktop.org's xdg-open which
+ is present on basically any Linux and BSD system nowadays.
+
+---
+ src/clj/clojure/java/browse.clj |   27 ++++++++++++++++++++++-----
+ 1 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/src/clj/clojure/java/browse.clj b/src/clj/clojure/java/browse.clj
+index 1acda37..659b2b6 100644
+--- a/src/clj/clojure/java/browse.clj
++++ b/src/clj/clojure/java/browse.clj
+@@ -10,14 +10,31 @@
+   ^{:author "Christophe Grand",
+     :doc "Start a web browser from Clojure"}
+   clojure.java.browse
+-  (:require [clojure.java.shell :as sh]) 
+-  (:import (java.net URI)))
++  (:use [clojure.string :only (split)])
++  (:require [clojure.java.shell :as sh])
++  (:import (java.net URI)
++           (java.io File)))
+ 
+-(defn- macosx? []
++(defn- macosx?
++  "Determine if we're currently running on Mac OS X."
++  []
+   (-> "os.name" System/getProperty .toLowerCase
+-    (.startsWith "mac os x")))
++      (.startsWith "mac os x")))
+ 
+-(def ^:dynamic *open-url-script* (when (macosx?) "/usr/bin/open"))
++(defn- exec-file
++  [x]
++  (and (.exists (File. x)) x))
++
++(defn- get-xdg-open
++  "Determine the path to freedesktop.org's xdg-open, which is used on various
++   platforms such as GNU/Linux and BSD to open URIs"
++  []
++  (some exec-file (map (partial format "%s/xdg-open")
++                       (-> (System/getenv) (get "PATH") (split #":")))))
++
++(def ^:dynamic *open-url-script* (if (macosx?)
++                                   "/usr/bin/open"
++                                    (get-xdg-open)))
+ 
+ (defn- open-url-in-browser
+   "Opens url (a string) in the default system web browser.  May not
+-- 
+1.7.6
+

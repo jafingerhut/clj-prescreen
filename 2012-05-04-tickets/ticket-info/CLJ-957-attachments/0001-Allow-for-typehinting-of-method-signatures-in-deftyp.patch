@@ -1,0 +1,70 @@
+From f559b68ac2bdd91b90da0a1bb4ed970de3195b00 Mon Sep 17 00:00:00 2001
+From: Chris Gray <chrismgray@gmail.com>
+Date: Thu, 22 Mar 2012 16:13:40 -0600
+Subject: [PATCH] Allow for typehinting of method signatures in deftype
+
+Previously, protocols used typehints when generating interfaces, but
+deftype discarded typehints when generating the code that implemented
+the intefaces.  This would cause the compiler to barf, saying that it
+couldn't find the matching method for a variadic method with
+typehints.
+
+The test fails to compile without the change to core_deftype.clj and
+passes with the change.
+---
+ src/clj/clojure/core_deftype.clj        |    3 ++-
+ test/clojure/test_clojure/protocols.clj |   17 ++++++++++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/src/clj/clojure/core_deftype.clj b/src/clj/clojure/core_deftype.clj
+index d5eceaa..a217416 100644
+--- a/src/clj/clojure/core_deftype.clj
++++ b/src/clj/clojure/core_deftype.clj
+@@ -568,7 +568,8 @@
+                      {} sigs)
+         meths (mapcat (fn [sig]
+                         (let [m (munge (:name sig))]
+-                          (map #(vector m (vec (repeat (dec (count %))'Object)) 'Object) 
++                          (map #(vector m (vec (map (fn [arg]
++                                                        (or (-> (meta arg) :tag) 'Object)) (rest %))) 'Object) 
+                                (:arglists sig))))
+                       (vals sigs))]
+   `(do
+diff --git a/test/clojure/test_clojure/protocols.clj b/test/clojure/test_clojure/protocols.clj
+index 1613291..3e62513 100644
+--- a/test/clojure/test_clojure/protocols.clj
++++ b/test/clojure/test_clojure/protocols.clj
+@@ -438,6 +438,17 @@
+ (defrecord RecordToTestCovariantHint [^String a]) ;; same for arrays also
+ (deftype TypeToTestLongHint [^long a])
+ (deftype TypeToTestByteHint [^byte a])
++(defprotocol ProtocolToTestMethodLongHint
++  (method-with-long-hint [this ^long arg]))
++(defprotocol ProtocolToTestMethodArgHints
++  (method-with-multiple-sigs [this ^long arg1 ^boolean arg2] [this ^boolean arg1 ^boolean arg2 ^boolean arg3]))
++(deftype TypeToTestMethodHints []
++  ProtocolToTestMethodLongHint
++  (method-with-long-hint [this ^long arg] arg)
++  ProtocolToTestMethodArgHints
++  (method-with-multiple-sigs [this ^long arg1 ^boolean arg2] arg1)
++  (method-with-multiple-sigs [this ^boolean arg1 ^boolean arg2 ^boolean arg3] arg2))
++
+ 
+ (deftest hinting-test
+   (testing "that primitive hinting requiring no coercion works as expected"
+@@ -477,7 +488,11 @@
+     (is (= (RecordToTestBoolHint. true) (clojure.test_clojure.protocols.RecordToTestBoolHint/create {:a true})))
+     (is (= (RecordToTestBoolHint. true) (map->RecordToTestBoolHint {:a true})))
+     (is (= (RecordToTestBoolHint. true) (->RecordToTestBoolHint true))))
+-  (testing "covariant hints -- deferred"))
++  (testing "covariant hints -- deferred")
++  (testing "that method argument typehints work as expected"
++    (is (= (.method-with-long-hint (TypeToTestMethodHints.) 1) 1))
++    (is (= (.method-with-multiple-sigs (TypeToTestMethodHints.) 1 true) 1))
++    (is (= (.method-with-multiple-sigs (TypeToTestMethodHints.) true false true) false))))
+ 
+ (deftest reify-test
+   (testing "of an interface"
+-- 
+1.7.9
+
