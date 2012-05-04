@@ -115,6 +115,12 @@
  :emails #{ "christophe@cgrand.net" }
  :contributor true
  }
+{:full-name "Charles Duffy"
+ :aliases #{ "" }
+ :usernames #{ "charles-dyfis-net" }
+ :emails #{ "charles@dyfis.net" }
+ :contributor true
+ }
 {:full-name "Chris Houser"
  :aliases #{ "Chouser" }
  :usernames #{ "chouser@n01se.net" }
@@ -195,9 +201,9 @@
  :contributor true
  }
 {:full-name "Michael Fogus"
- :aliases #{ "Fogus" }
+ :aliases #{ "Fogus" "fogus" }
  :usernames #{ "fogus" }
- :emails #{ "michael.fogus@gmail.com" }
+ :emails #{ "michael.fogus@gmail.com" "mefogus@gmail.com" }
  :contributor true
  }
 {:full-name "George Jahad"
