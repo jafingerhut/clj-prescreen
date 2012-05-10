@@ -380,6 +380,12 @@
  :emails #{ "senior.ryan@gmail.com" }
  :contributor true
  }
+{:full-name "Scott Lowe"
+ :aliases #{ }
+ :usernames #{ "scottlowe" }
+ :emails #{ "scottwithtwotees@gmail.com" }
+ :contributor true
+ }
 {:full-name "Stefan Kamphausen"
  :aliases #{ }
  :usernames #{ "ska2342" }
