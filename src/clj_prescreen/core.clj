@@ -575,6 +575,43 @@ Check it to see if it was created incorrectly."})
               (partition-by :ticket patches))))
 
 
+(defn dl-patches-check-ca!
+  "Download all attachments for selected tickets.  Do this once on one
+machine, not once for each OS/JDK combo I want to test."
+  [cur-eval-dir ticket-dir patch-type-list]
+  (doseq [cur-patch-type patch-type-list]
+    (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
+          as2 (download-attachments! as1 ticket-dir)
+          as2b (let [people-info (read-safely "data/people-data.clj")]
+                 (map #(add-author-info % ticket-dir people-info) as2))
+          fname2b (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+          fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")]
+      (spit-pretty fname2b as2b)
+      (spit fname-sum (with-out-str (eval-patches-summary as2b))))))
+
+
+(defn do-eval-check-ca!
+  "Assume dl-patches-check-ca! has already been run, and we have a
+file <patch_type>-downloaded-only.txt containing a big Clojure map
+describing them all, and separate files for each downloaded patch in
+the directory structure created by dl-patches-check-ca!  For the
+version of the Clojure repo in the local directory whose path name is
+given by clojure-tree, for each patch to evaluate copy it, try to
+apply the patch, and try to build with 'ant' in that copy."
+  [cur-eval-dir ticket-dir clojure-tree patch-type-list]
+  (doseq [cur-patch-type patch-type-list]
+    (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+          as2 (read-safely fname2)
+          as3 (eval-patches! as2 ticket-dir "data/people-data.clj" clojure-tree
+                             "./temp-clojure")
+          as4 (let [people-info (read-safely "data/people-data.clj")]
+                (map #(add-author-info % ticket-dir people-info) as3))
+          fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
+          fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")]
+      (spit-pretty fname4 as4)
+      (spit fname-sum (with-out-str (eval-patches-summary as4))))))
+
+
 (comment
 
 ;; Go to the Clojure Jira page, then to the filters, and look at the
@@ -587,8 +624,8 @@ Check it to see if it was created incorrectly."})
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-05-04-tickets/"))
-(def latest-clojure-tree "./2012-05-04-clojure-to-prescreen/clojure-plus-967-patch")
+(def cur-eval-dir (str @fs/cwd "/2012-05-10-tickets/"))
+(def clojure-tree "./2012-05-10-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
@@ -602,32 +639,14 @@ Check it to see if it was created incorrectly."})
 ;; Automate things a bit more
 
 ;; Download all attachments for selected tickets.  Do this once on one
-;; machine, not once for each OS/JDK combo I want to test.
-;;(doseq [cur-patch-type ["screened" "incomplete" "np" "rfs"]]
-(doseq [cur-patch-type patch-type-list]
-  (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
-        as2 (download-attachments! as1 ticket-dir)
-        as2b (let [people-info (read-safely "data/people-data.clj")]
-               (map #(add-author-info % ticket-dir people-info) as2))
-        fname2b (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
-        fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")]
-    (spit-pretty fname2b as2b)
-    (spit fname-sum (with-out-str (eval-patches-summary as2b)))
-    ))
+;; machine, not once for each OS/JDK combo I want to test.  Also, for
+;; all git format patches, check people data to see if they have
+;; signed a Clojure CA.
+(dl-patches-check-ca! cur-eval-dir ticket-dir patch-type-list)
 
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
-(doseq [cur-patch-type patch-type-list]
-  (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
-        as2 (read-safely fname2)
-        as3 (eval-patches! as2 ticket-dir "data/people-data.clj" latest-clojure-tree
-                           "./temp-clojure")
-        as4 (let [people-info (read-safely "data/people-data.clj")]
-              (map #(add-author-info % ticket-dir people-info) as3))
-        fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
-        fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")]
-    (spit-pretty fname4 as4)
-    (spit fname-sum (with-out-str (eval-patches-summary as4)))))
+(do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list)
 
 ;; After doing the above, if you edit data/people-data.clj and want to
 ;; redo the author evaluations only, do this:
@@ -641,7 +660,9 @@ Check it to see if it was created incorrectly."})
     (spit fname-sum (with-out-str (eval-patches-summary as4)))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Beginning of older copy-and-paste one-step-at-a-time method
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;(def cur-patch-type "screened")
 ;;(def cur-patch-type "incomplete")

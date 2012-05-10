@@ -1,0 +1,159 @@
+From 057ab23d62c2f53837381cd1f5b7fa9cc0e09ae8 Mon Sep 17 00:00:00 2001
+From: David Powell <djpowell@djpowell.net>
+Date: Mon, 7 May 2012 15:31:50 +0100
+Subject: [PATCH] pprint now flushes the underlying stream similarly to prn.
+ pprint was using .flush as a method to push and reset its
+ own internal data, but not to flush the underlying stream.
+ The current .flush functionality has been moved into a
+ .ppflush method, and .flush now additionally flushes the
+ underlying stream.
+
+---
+ src/clj/clojure/pprint/column_writer.clj         |    2 +
+ src/clj/clojure/pprint/pprint_base.clj           |    2 +-
+ src/clj/clojure/pprint/pretty_writer.clj         |   10 +++-
+ src/clj/clojure/pprint/utilities.clj             |    3 +
+ test/clojure/test_clojure/pprint.clj             |    2 +-
+ test/clojure/test_clojure/pprint/test_pretty.clj |   46 ++++++++++++++++++++++
+ 6 files changed, 60 insertions(+), 5 deletions(-)
+
+diff --git a/src/clj/clojure/pprint/column_writer.clj b/src/clj/clojure/pprint/column_writer.clj
+index 0449d43..7e75445 100644
+--- a/src/clj/clojure/pprint/column_writer.clj
++++ b/src/clj/clojure/pprint/column_writer.clj
+@@ -58,6 +58,8 @@
+      (let [fields (ref {:max max-columns, :cur 0, :line 0 :base writer})]
+        (proxy [Writer IDeref] []
+          (deref [] fields)
++         (flush []
++           (.flush writer))
+          (write
+           ([^chars cbuf ^Integer off ^Integer len] 
+              (let [^Writer writer (get-field this :base)] 
+diff --git a/src/clj/clojure/pprint/pprint_base.clj b/src/clj/clojure/pprint/pprint_base.clj
+index ea035d4..2d450d8 100644
+--- a/src/clj/clojure/pprint/pprint_base.clj
++++ b/src/clj/clojure/pprint/pprint_base.clj
+@@ -164,7 +164,7 @@ radix specifier is in the form #XXr where XX is the decimal value of *print-base
+                       (make-pretty-writer base-writer# *print-right-margin* *print-miser-width*)
+                       base-writer#)]
+        ~@body
+-       (.flush *out*))))
++       (.ppflush *out*))))
+ 
+ 
+ ;;;TODO: if pretty print is not set, don't use pr but rather something that respects *print-base*, etc.
+diff --git a/src/clj/clojure/pprint/pretty_writer.clj b/src/clj/clojure/pprint/pretty_writer.clj
+index 8b6aba4..c31142c 100644
+--- a/src/clj/clojure/pprint/pretty_writer.clj
++++ b/src/clj/clojure/pprint/pretty_writer.clj
+@@ -380,7 +380,7 @@
+                      :miser-width miser-width
+                      :trailing-white-space nil
+                      :pos 0})]
+-    (proxy [Writer IDeref] []
++    (proxy [Writer IDeref PrettyFlush] []
+       (deref [] fields)
+ 
+       (write 
+@@ -408,13 +408,17 @@
+             Long
+             (p-write-char this x))))
+ 
+-      (flush []
++      (ppflush []
+              (if (= (getf :mode) :buffering)
+-               (dosync 
++               (dosync
+                 (write-tokens this (getf :buffer) true)
+                 (setf :buffer []))
+                (write-white-space this)))
+ 
++      (flush []
++             (.ppflush this)
++             (.flush (getf :base)))
++
+       (close []
+              (.flush this)))))
+ 
+diff --git a/src/clj/clojure/pprint/utilities.clj b/src/clj/clojure/pprint/utilities.clj
+index 0385fd3..53c4e97 100644
+--- a/src/clj/clojure/pprint/utilities.clj
++++ b/src/clj/clojure/pprint/utilities.clj
+@@ -102,3 +102,6 @@ beginning of aseq"
+   `(prerr ~@(cons (list 'quote prefix) (mapcat #(list (list 'quote %) "=" %) 
+                                                   (cons arg (seq more-args))))))
+ 
++;; Flush the pretty-print buffer without flushing the underlying stream
++(definterface PrettyFlush
++  (^void ppflush []))
+diff --git a/test/clojure/test_clojure/pprint.clj b/test/clojure/test_clojure/pprint.clj
+index 066d1b5..4fdbf69 100644
+--- a/test/clojure/test_clojure/pprint.clj
++++ b/test/clojure/test_clojure/pprint.clj
+@@ -10,7 +10,7 @@
+ 
+ (ns clojure.test-clojure.pprint
+   (:refer-clojure :exclude [format])
+-  (:use [clojure.test :only (deftest are run-tests)]
++  (:use [clojure.test :only (deftest is are run-tests)]
+         [clojure.test-helper :only [platform-newlines]]
+         clojure.test-clojure.pprint.test-helper
+         clojure.pprint))
+diff --git a/test/clojure/test_clojure/pprint/test_pretty.clj b/test/clojure/test_clojure/pprint/test_pretty.clj
+index fb3bd34..34adccf 100644
+--- a/test/clojure/test_clojure/pprint/test_pretty.clj
++++ b/test/clojure/test_clojure/pprint/test_pretty.clj
+@@ -316,3 +316,49 @@ Usage: *hello*
+   "[1, 2, 3, 4, 5, 6]\n"
+   )
+ 
++(defn- flush-alerting-writer
++  [o]
++  (let [flush-count-atom (atom 0)]
++    [
++      (proxy [java.io.BufferedWriter] [o]
++        (flush []
++          (proxy-super flush)
++          (swap! flush-count-atom inc)))
++      flush-count-atom]))
++
++(deftest test-flush-underlying-prn
++  []
++  (let [[out flush-count-atom] (flush-alerting-writer (java.io.StringWriter.))]
++    (binding [*out* out
++              *flush-on-newline* true]
++      (prn (range 50))
++      (prn (range 50)))
++    (is (= @flush-count-atom 2) "println flushes on newline")))
++
++(deftest test-flush-underlying-pprint
++  []
++  (let [[out flush-count-atom] (flush-alerting-writer (java.io.StringWriter.))]
++    (binding [*out* out
++              *flush-on-newline* true]
++      (prn (range 50))
++      (prn (range 50)))
++    (is (= @flush-count-atom 2) "pprint flushes on newline")))
++
++(deftest test-noflush-underlying-prn
++  []
++  (let [[out flush-count-atom] (flush-alerting-writer (java.io.StringWriter.))]
++    (binding [*out* out
++              *flush-on-newline* nil]
++      (prn (range 50))
++      (prn (range 50)))
++    (is (= @flush-count-atom 0) "println flushes on newline")))
++
++(deftest test-noflush-underlying-pprint
++  []
++  (let [[out flush-count-atom] (flush-alerting-writer (java.io.StringWriter.))]
++    (binding [*out* out
++              *flush-on-newline* nil]
++      (prn (range 50))
++      (prn (range 50)))
++    (is (= @flush-count-atom 0) "pprint flushes on newline")))
++
+-- 
+1.7.7.msysgit.1
+

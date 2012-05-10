@@ -1,0 +1,145 @@
+From 1aa223b32e26aa61be44dcbcd43bbfeccde133c4 Mon Sep 17 00:00:00 2001
+From: gigasquid <cmeier@gigasquidsoftware.com>
+Date: Sat, 28 Apr 2012 23:25:38 -0400
+Subject: [PATCH 1/2] Added error messaging for destructuring unsupported forms in nth ref#5
+
+---
+ src/clj/clojure/core.clj          |    8 ++++-
+ test/clojure/test_clojure/let.clj |   64 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 71 insertions(+), 1 deletions(-)
+ create mode 100644 test/clojure/test_clojure/let.clj
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 336be78..fdc4a79 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -3896,6 +3896,12 @@
+   ([] (. clojure.lang.PersistentArrayMap EMPTY))
+   ([& keyvals] (clojure.lang.PersistentArrayMap/createWithCheck (to-array keyvals))))
+ 
++(defn check-nth-errors [gvec n]
++  `(try
++    (nth ~gvec ~n nil)
++    (catch UnsupportedOperationException ~(gensym "e__")
++      (throw (new UnsupportedOperationException (str "let cannot destructure " (.getClass ~gvec) "."))))))
++
+ ;redefine let and loop  with destructuring
+ (defn destructure [bindings]
+   (let [bents (partition 2 bindings)
+@@ -3917,7 +3923,7 @@
+                                 (= firstb :as) (pb ret (second bs) gvec)
+                                 :else (if seen-rest?
+                                         (throw (new Exception "Unsupported binding form, only :as can follow & parameter"))
+-                                        (recur (pb ret firstb  (list `nth gvec n nil))
++                                        (recur (pb ret firstb (check-nth-errors gvec n))
+                                                (inc n)
+                                                (next bs)
+                                                seen-rest?))))
+diff --git a/test/clojure/test_clojure/let.clj b/test/clojure/test_clojure/let.clj
+new file mode 100644
+index 0000000..ba0a729
+--- /dev/null
++++ b/test/clojure/test_clojure/let.clj
+@@ -0,0 +1,64 @@
++;   Copyright (c) Rich Hickey. All rights reserved.
++;   The use and distribution terms for this software are covered by the
++;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
++;   which can be found in the file epl-v10.html at the root of this distribution.
++;   By using this software in any fashion, you are agreeing to be bound by
++;   the terms of this license.
++;   You must not remove this notice, or any other, from this software.
++
++; Author: Carin Meier
++
++(ns clojure.test-clojure.let
++  (:use clojure.test))
++
++(deftest let-basic-uses
++  (testing "simple binding"
++    (is (= 1
++          (eval '(let [x 1 y x] x)))))
++
++  (testing "let vector bindings"
++    (is (= [1 2 3 '(4 5 6 7) [1 2 3 4 5 6 7]]
++          (eval '(let [[a b c & d :as e] [1 2 3 4 5 6 7]]
++                   [a b c d e])) )))
++
++  (testing "let nested vector bindings"
++    (is (= [1 2 3 4]
++          (eval '(let [[[x1 y1][x2 y2]] [[1 2] [3 4]]]
++                   [x1 y1 x2 y2])))))
++  
++  (testing "let string to vector binding"
++    (is (= [\a \s '(\d \j \h \h \f \d \a \s) "asdjhhfdas"]
++          (eval '(let [[a b & c :as str] "asdjhhfdas"]
++                   [a b c str])))))
++
++  (testing "let map bindings"
++    (is (= [5 3 6 {:c 6, :a 5}]
++          (eval '(let [{a :a, b :b, c :c, :as m :or {a 2 b 3}} {:a 5 :c 6}]
++                   [a b c m])))))
++  
++  (testing "let nested map bindings"
++    (is (= [12 15 16 22 23 '(24 25) [22 23 24 25]]
++          (eval '(let [{j :j, k :k, i :i, [r s & t :as v] :ivec, :or {i 12 j 13}}
++                        {:j 15 :k 16 :ivec [22 23 24 25]}]
++                   [i j k r s t v]))))))
++
++
++(deftest let-error-checking
++ (testing "destructuring map to vector error"
++    (is (fails-with-cause? java.lang.UnsupportedOperationException
++          #"let cannot destructure class clojure.lang.PersistentArrayMap."
++          (eval '(let [[x y] {}] x)))))
++  (testing "destructuring set to vector error"
++    (is (fails-with-cause? java.lang.UnsupportedOperationException
++          #"let cannot destructure class clojure.lang.PersistentHashSet."
++          (eval '(let [[x y] #{}] x)))))
++  (testing "destructuring long to vector error"
++    (is (fails-with-cause? java.lang.UnsupportedOperationException
++          #"let cannot destructure class java.lang.Long."
++          (eval '(let [[x y] 1] x)))))
++  (testing "nested destructing"
++    (is (fails-with-cause? java.lang.UnsupportedOperationException
++          #"let cannot destructure class clojure.lang.PersistentArrayMap."
++          (eval
++            '(let [[[x1 y1][x2 y2]] [[1 2] {}]]
++                  [x1 y1 x2 y2]))))))
+-- 
+1.7.3.5
+
+
+From cad3fe237178ba1976213f6b95758cf3582be860 Mon Sep 17 00:00:00 2001
+From: gigasquid <cmeier@gigasquidsoftware.com>
+Date: Sat, 28 Apr 2012 23:31:47 -0400
+Subject: [PATCH 2/2] fix spacing in test
+
+---
+ test/clojure/test_clojure/let.clj |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/clojure/test_clojure/let.clj b/test/clojure/test_clojure/let.clj
+index ba0a729..7f997a2 100644
+--- a/test/clojure/test_clojure/let.clj
++++ b/test/clojure/test_clojure/let.clj
+@@ -25,7 +25,7 @@
+     (is (= [1 2 3 4]
+           (eval '(let [[[x1 y1][x2 y2]] [[1 2] [3 4]]]
+                    [x1 y1 x2 y2])))))
+-  
++
+   (testing "let string to vector binding"
+     (is (= [\a \s '(\d \j \h \h \f \d \a \s) "asdjhhfdas"]
+           (eval '(let [[a b & c :as str] "asdjhhfdas"]
+@@ -35,7 +35,7 @@
+     (is (= [5 3 6 {:c 6, :a 5}]
+           (eval '(let [{a :a, b :b, c :c, :as m :or {a 2 b 3}} {:a 5 :c 6}]
+                    [a b c m])))))
+-  
++
+   (testing "let nested map bindings"
+     (is (= [12 15 16 22 23 '(24 25) [22 23 24 25]]
+           (eval '(let [{j :j, k :k, i :i, [r s & t :as v] :ivec, :or {i 12 j 13}}
+-- 
+1.7.3.5
+

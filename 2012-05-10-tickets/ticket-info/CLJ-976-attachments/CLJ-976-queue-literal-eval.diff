@@ -1,0 +1,376 @@
+From 4cd2e09a54522bd61a4c2897fc6b3e415ee39bc0 Mon Sep 17 00:00:00 2001
+From: fogus <mefogus@gmail.com>
+Date: Fri, 4 May 2012 13:55:58 -0400
+Subject: [PATCH] Added overridable queue literal support of the form #queue [1 2]
+
+---
+ .gitignore                                |    1 +
+ src/clj/clojure/core.clj                  |    8 ++-
+ src/clj/clojure/queue.clj                 |   21 +++++++
+ src/jvm/clojure/lang/Compiler.java        |   85 ++++++++++++++++++++++++++++-
+ src/jvm/clojure/lang/IQueue.java          |   16 ++++++
+ src/jvm/clojure/lang/PersistentQueue.java |   37 ++++++++-----
+ test/clojure/test_clojure/reader.clj      |   45 +++++++++++++++-
+ 7 files changed, 191 insertions(+), 22 deletions(-)
+ create mode 100644 src/clj/clojure/queue.clj
+ create mode 100644 src/jvm/clojure/lang/IQueue.java
+
+diff --git a/.gitignore b/.gitignore
+index 2f67a91..0f92b4d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -3,3 +3,4 @@ target
+ clojure.iws
+ clojure.ipr
+ nbproject/private/
++.idea
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index afeb3b1..ec93545 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -6024,8 +6024,6 @@
+ (load "core_deftype")
+ (load "core/protocols")
+ (load "gvec")
+-(load "instant")
+-(load "uuid")
+ 
+ (defn reduce
+   "f should be a function of 2 arguments. If val is not supplied,
+@@ -6621,12 +6619,16 @@
+   [^clojure.lang.IPending x] (.isRealized x))
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; data readers ;;;;;;;;;;;;;;;;;;
++(load "instant")
++(load "uuid")
++(load "queue")
+ 
+ (def ^{:added "1.4"} default-data-readers
+   "Default map of data reader functions provided by Clojure. May be
+   overridden by binding *data-readers*."
+   {'inst #'clojure.instant/read-instant-date
+-   'uuid #'clojure.uuid/default-uuid-reader})
++   'uuid #'clojure.uuid/default-uuid-reader
++   'queue #'clojure.queue/default-queue-reader})
+ 
+ (def ^{:added "1.4" :dynamic true} *data-readers*
+   "Map from reader tag symbols to data reader Vars.
+diff --git a/src/clj/clojure/queue.clj b/src/clj/clojure/queue.clj
+new file mode 100644
+index 0000000..7f8c21a
+--- /dev/null
++++ b/src/clj/clojure/queue.clj
+@@ -0,0 +1,21 @@
++;   Copyright (c) Rich Hickey. All rights reserved.
++;   The use and distribution terms for this software are covered by the
++;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
++;   which can be found in the file epl-v10.html at the root of this distribution.
++;   By using this software in any fashion, you are agreeing to be bound by
++;   the terms of this license.
++;   You must not remove this notice, or any other, from this software.
++
++(ns clojure.queue)
++
++(defn- default-queue-reader [queue-elements]
++  {:pre [(vector? queue-elements)]}
++  (into clojure.lang.PersistentQueue/EMPTY queue-elements))
++
++(defmethod print-method clojure.lang.PersistentQueue [q ^java.io.Writer w]
++  (.write w "#queue ")
++  (print-method (vec (seq q)) w))
++
++(defmethod print-dup clojure.lang.PersistentQueue [o w]
++  (print-method o w))
++
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index 0898f07..5d27e02 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -2977,7 +2977,71 @@ public static class VectorExpr implements Expr{
+ 
+ }
+ 
+-static class KeywordInvokeExpr implements Expr{
++public static class QueueExpr implements Expr{
++    public final IQueue args;
++    public final Type t;
++    final static Method queueMethod = Method.getMethod("clojure.lang.IQueue create(Object[])");
++
++    public QueueExpr(IQueue args){
++        this.args = args;
++        this.t = getType(args.getClass());
++    }
++
++    public Object eval() {
++        IQueue ret = (IQueue) args.empty();
++        for(IQueue q = args; RT.seq(q) != null; q = (IQueue) q.pop())
++            ret = (IQueue) ret.cons(((Expr) q.peek()).eval());
++        return ret;
++    }
++
++    public void emit(C context, ObjExpr objx, GeneratorAdapter gen){
++        MethodExpr.emitArgsAsArray(PersistentVector.create(RT.seq(args)), objx, gen);
++        gen.invokeStatic(t, queueMethod);
++        if(context == C.STATEMENT)
++            gen.pop();
++    }
++
++    public boolean hasJavaClass() {
++        return true;
++    }
++
++    public Class getJavaClass() {
++        return IQueue.class;
++    }
++
++    static public Expr parse(C context, IQueue form) {
++        boolean constant = true;
++
++        IQueue args = (IQueue) form.empty();
++        for(IQueue q = form; RT.seq(q) != null; q = (IQueue) q.pop())
++        {
++            Expr v = analyze(context == C.EVAL ? context : C.EXPRESSION, q.peek());
++            args = (IQueue) args.cons(v);
++            if(!(v instanceof LiteralExpr))
++                constant = false;
++        }
++        Expr ret = new QueueExpr(args);
++        if(form instanceof IObj && ((IObj) form).meta() != null)
++            return new MetaExpr(ret, MapExpr
++                    .parse(context == C.EVAL ? context : C.EXPRESSION, ((IObj) form).meta()));
++        else if (constant)
++        {
++            IQueue rq = (IQueue) form.empty();
++            for(IQueue q = args; RT.seq(q) != null; q = (IQueue) q.pop())
++            {
++                LiteralExpr ve = (LiteralExpr)q.peek();
++                rq = (IQueue) rq.cons(ve.val());
++            }
++            return new ConstantExpr(rq);
++        }
++        else
++            return ret;
++    }
++
++}
++
++
++    static class KeywordInvokeExpr implements Expr{
+ 	public final KeywordExpr kw;
+ 	public final Object tag;
+ 	public final Expr target;
+@@ -4429,7 +4493,20 @@ static public class ObjExpr implements Expr{
+             emitValue(PersistentArrayMap.create((java.util.Map) value), gen);
+ 			gen.invokeStatic(getType(value.getClass()), createMethod);
+ 			}
+-		else if(value instanceof IPersistentMap)
++        else if(value instanceof IQueue)
++		    {
++			ISeq vs = RT.seq(value);
++			Type t = getType(value.getClass());
++
++			if(vs == null)
++				gen.getStatic(t,"EMPTY",t);
++			else
++				{
++					emitListAsObjectArray(vs, gen);
++					gen.invokeStatic(t, Method.getMethod("clojure.lang.IQueue create(Object[])"));
++				}
++			}
++        else if(value instanceof IPersistentMap)
+ 			{
+ 			List entries = new ArrayList();
+ 			for(Map.Entry entry : (Set<Map.Entry>) ((Map) value).entrySet())
+@@ -6250,7 +6327,9 @@ private static Expr analyze(C context, Object form, String name) {
+ 				return new StringExpr(((String) form).intern());
+ //	else if(fclass == Character.class)
+ //		return new CharExpr((Character) form);
+-		else if(form instanceof IPersistentCollection && ((IPersistentCollection) form).count() == 0)
++		else if(form instanceof IQueue)
++			return QueueExpr.parse(context, (IQueue) form);
++        else if(form instanceof IPersistentCollection && ((IPersistentCollection) form).count() == 0)
+ 				{
+ 				Expr ret = new EmptyExpr(form);
+ 				if(RT.meta(form) != null)
+diff --git a/src/jvm/clojure/lang/IQueue.java b/src/jvm/clojure/lang/IQueue.java
+new file mode 100644
+index 0000000..5fb453a
+--- /dev/null
++++ b/src/jvm/clojure/lang/IQueue.java
+@@ -0,0 +1,16 @@
++/**
++ *   Copyright (c) Rich Hickey. All rights reserved.
++ *   The use and distribution terms for this software are covered by the
++ *   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
++ *   which can be found in the file epl-v10.html at the root of this distribution.
++ *   By using this software in any fashion, you are agreeing to be bound by
++ * 	 the terms of this license.
++ *   You must not remove this notice, or any other, from this software.
++ **/
++
++package clojure.lang;
++
++import java.util.Collection;
++
++public interface IQueue extends IPersistentList, Collection, Counted{
++}
+diff --git a/src/jvm/clojure/lang/PersistentQueue.java b/src/jvm/clojure/lang/PersistentQueue.java
+index fed7e40..36d8a98 100644
+--- a/src/jvm/clojure/lang/PersistentQueue.java
++++ b/src/jvm/clojure/lang/PersistentQueue.java
+@@ -17,28 +17,37 @@ import java.util.Iterator;
+ /**
+  * conses onto rear, peeks/pops from front
+  * See Okasaki's Batched Queues
+- * This differs in that it uses a PersistentVector as the rear, which is in-order,
++ * This differs in that it uses a PersistentVector as the rear, which is in-order,
+  * so no reversing or suspensions required for persistent use
+  */
+ 
+-public class PersistentQueue extends Obj implements IPersistentList, Collection, Counted{
++public class PersistentQueue extends Obj implements IQueue{
+ 
+-final public static PersistentQueue EMPTY = new PersistentQueue(null, 0, null, null);
++final public static PersistentQueue EMPTY = new PersistentQueue(null, 0, null, null);
+ 
+ //*
+-final int cnt;
++final int cnt;
+ final ISeq f;
+ final PersistentVector r;
+ //static final int INITIAL_REAR_SIZE = 4;
+ int _hash = -1;
+ 
+-PersistentQueue(IPersistentMap meta, int cnt, ISeq f, PersistentVector r){
++PersistentQueue(IPersistentMap meta, int cnt, ISeq f, PersistentVector r){
+ 	super(meta);
+-	this.cnt = cnt;
++	this.cnt = cnt;
+ 	this.f = f;
+ 	this.r = r;
+ }
+ 
++public static IQueue create(Object... init){
++    PersistentQueue ret = EMPTY;
++    for(int i = 0; i < init.length; i++)
++        {
++            ret = (PersistentQueue) ret.cons(init[i]);
++        }
++    return ret;
++}
++
+ public boolean equiv(Object obj){
+ 
+ 	if(!(obj instanceof Sequential))
+@@ -84,7 +93,7 @@ public Object peek(){
+ 	return RT.first(f);
+ }
+ 
+-public PersistentQueue pop(){
++public IQueue pop(){
+ 	if(f == null)  //hmmm... pop of empty queue -> empty queue?
+ 		return this;
+ 	//throw new IllegalStateException("popping empty queue");
+@@ -95,11 +104,11 @@ public PersistentQueue pop(){
+ 		f1 = RT.seq(r);
+ 		r1 = null;
+ 		}
+-	return new PersistentQueue(meta(), cnt - 1, f1, r1);
++	return new PersistentQueue(meta(), cnt - 1, f1, r1);
+ }
+ 
+ public int count(){
+-	return cnt;
++	return cnt;
+ }
+ 
+ public ISeq seq(){
+@@ -108,19 +117,19 @@ public ISeq seq(){
+ 	return new Seq(f, RT.seq(r));
+ }
+ 
+-public PersistentQueue cons(Object o){
++public IQueue cons(Object o){
+ 	if(f == null)     //empty
+-		return new PersistentQueue(meta(), cnt + 1, RT.list(o), null);
++		return new PersistentQueue(meta(), cnt + 1, RT.list(o), null);
+ 	else
+-		return new PersistentQueue(meta(), cnt + 1, f, (r != null ? r : PersistentVector.EMPTY).cons(o));
++		return new PersistentQueue(meta(), cnt + 1, f, (r != null ? r : PersistentVector.EMPTY).cons(o));
+ }
+ 
+ public IPersistentCollection empty(){
+-	return EMPTY.withMeta(meta());
++	return EMPTY.withMeta(meta());
+ }
+ 
+ public PersistentQueue withMeta(IPersistentMap meta){
+-	return new PersistentQueue(meta, cnt, f, r);
++	return new PersistentQueue(meta, cnt, f, r);
+ }
+ 
+ static class Seq extends ASeq{
+diff --git a/test/clojure/test_clojure/reader.clj b/test/clojure/test_clojure/reader.clj
+index d6178dc..2212762 100644
+--- a/test/clojure/test_clojure/reader.clj
++++ b/test/clojure/test_clojure/reader.clj
+@@ -35,8 +35,7 @@
+   (is (= 'abc.def/ghi (symbol "abc.def" "ghi")))
+   (is (= 'abc/def.ghi (symbol "abc" "def.ghi")))
+   (is (= 'abc:def/ghi:jkl.mno (symbol "abc:def" "ghi:jkl.mno")))
+-  (is (instance? clojure.lang.Symbol 'alphabet))
+-  )
++  (is (instance? clojure.lang.Symbol 'alphabet)))
+ 
+ ;; Literals
+ 
+@@ -501,3 +500,45 @@
+   (is (= 4 (.version #uuid "550e8400-e29b-41d4-a716-446655440000")))
+   (is (= (print-str #uuid "550e8400-e29b-41d4-a716-446655440000")
+          "#uuid \"550e8400-e29b-41d4-a716-446655440000\"")))
++
++;; Queue Literals
++;; #queue [1 2 3]
++
++(deftype FakeQ [q]
++  clojure.lang.IQueue
++  (empty [_] (FakeQ. clojure.lang.PersistentQueue/EMPTY))
++  (seq [_] (seq q))
++  (cons [_ o] (FakeQ. (conj q o)))
++  (peek [_] (peek q))
++  (pop [_] (FakeQ. (pop q))))
++
++(deftest queue-literals
++  (testing "that queues with constants are readable"
++    (let [Q #queue [1 2 3]]
++      (is (instance? clojure.lang.PersistentQueue Q))
++      (is (= (into clojure.lang.PersistentQueue/EMPTY [1 2 3]) Q))
++      (is (= #queue [2 3] (pop Q)))
++      (is (= 1 (peek Q)))
++      (is (= 3 (-> #queue [1 2 3] pop pop peek)))
++      (is (= (seq Q) (seq #queue [1 2 3])))))
++  (testing "that queues can eval its elements"
++    (let [Qeval #queue [1 2 (/ 300 100)]]      
++      (is (= (into clojure.lang.PersistentQueue/EMPTY [1 2 3]) Qeval))
++      (is (= #queue [2 3] (pop Qeval)))
++      (is (= 1 (peek Qeval)))
++      (is (= 3 (-> Qeval pop pop peek)))
++      (is (= (seq Qeval) (seq #queue [1 2 (+ 1 2)])))))
++  (testing "that queue printing looks as we expect"
++    (is (= (print-str clojure.lang.PersistentQueue/EMPTY)
++           "#queue []"))
++    (is (= (print-str (into clojure.lang.PersistentQueue/EMPTY [1 2 3]))
++           "#queue [1 2 3]")))
++  (testing "that queue print-dupping looks as we expect"
++    (binding [*print-dup* true]
++      (is (= (print-str clojure.lang.PersistentQueue/EMPTY)
++             "#queue []"))
++      (is (= (print-str (into clojure.lang.PersistentQueue/EMPTY [1 2 3]))
++             "#queue [1 2 3]"))))
++  (binding [*data-readers* {'queue (fn [v] (into (FakeQ. #queue []) v))}]
++    (testing "Overriding the queue read function"
++      (is (instance? FakeQ (read-string "#queue [1 2]"))))))
+\ No newline at end of file
+-- 
+1.7.4.1
+

@@ -1,0 +1,34 @@
+From 18d84a1126fde359bc5e895e53bd728e355ac928 Mon Sep 17 00:00:00 2001
+From: Stuart Sierra <mail@stuartsierra.com>
+Date: Tue, 29 Nov 2011 19:36:59 -0500
+Subject: [PATCH] CLJ-322: Compile interop forms only when *compile-files* is :interop
+
+---
+ src/jvm/clojure/lang/Compiler.java |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/Compiler.java b/src/jvm/clojure/lang/Compiler.java
+index 17835aa..133e23d 100644
+--- a/src/jvm/clojure/lang/Compiler.java
++++ b/src/jvm/clojure/lang/Compiler.java
+@@ -78,6 +78,7 @@ static final Symbol ISEQ = Symbol.intern("clojure.lang.ISeq");
+ 
+ static final Keyword inlineKey = Keyword.intern(null, "inline");
+ static final Keyword inlineAritiesKey = Keyword.intern(null, "inline-arities");
++static final Keyword interopKey = Keyword.intern(null, "interop");
+ static final Keyword staticKey = Keyword.intern(null, "static");
+ static final Keyword arglistsKey = Keyword.intern(null, "arglists");
+ static final Symbol INVOKE_STATIC = Symbol.intern("invokeStatic");
+@@ -4229,7 +4230,8 @@ static public class ObjExpr implements Expr{
+ 		cv.visitEnd();
+ 
+ 		bytecode = cw.toByteArray();
+-		if(RT.booleanCast(COMPILE_FILES.deref()))
++		Object compile_files = COMPILE_FILES.deref();
++		if(Boolean.TRUE.equals(compile_files) || (isDeftype() && interopKey.equals(compile_files)))
+ 			writeClassFile(internalName, bytecode);
+ //		else
+ //			getCompiledClass();
+-- 
+1.7.4.1
+

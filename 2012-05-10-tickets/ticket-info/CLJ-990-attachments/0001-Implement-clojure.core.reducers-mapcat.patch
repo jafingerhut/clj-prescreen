@@ -1,0 +1,43 @@
+From 6254772ff216fdd889180ba26d9ee3935a326b4b Mon Sep 17 00:00:00 2001
+From: Tassilo Horn <tassilo@member.fsf.org>
+Date: Thu, 10 May 2012 12:07:38 +0200
+Subject: [PATCH 1/2] Implement clojure.core.reducers/mapcat.
+
+---
+ src/clj/clojure/core/reducers.clj |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/src/clj/clojure/core/reducers.clj b/src/clj/clojure/core/reducers.clj
+index 21d8cd3..4d740bf 100644
+--- a/src/clj/clojure/core/reducers.clj
++++ b/src/clj/clojure/core/reducers.clj
+@@ -13,7 +13,7 @@
+       dependency info."
+       :author "Rich Hickey"}
+   clojure.core.reducers
+-  (:refer-clojure :exclude [reduce map filter remove take take-while drop flatten])
++  (:refer-clojure :exclude [reduce map mapcat filter remove take take-while drop flatten])
+   (:require [clojure.walk :as walk]))
+ 
+ (alias 'core 'clojure.core)
+@@ -168,6 +168,17 @@
+           ([ret k v]
+              (f1 ret (f k v)))))))
+ 
++(defcurried mapcat
++  "Applies f to every value in the reduction of coll, concatenating the result
++  colls of (f val). Foldable."
++  {:added "1.5"}
++  [f coll]
++  (folder coll
++   (fn [f1]
++     (rfn [f1 k]
++          ([ret k v]
++             (reduce f1 ret (f k v)))))))
++
+ (defcurried filter
+   "Retains values in the reduction of coll for which (pred val)
+   returns logical true. Foldable."
+-- 
+1.7.8.6
+

@@ -1,0 +1,13 @@
+diff --git a/src/clj/clojure/core_deftype.clj b/src/clj/clojure/core_deftype.clj
+index cca4501..98594d9 100644
+--- a/src/clj/clojure/core_deftype.clj
++++ b/src/clj/clojure/core_deftype.clj
+@@ -770,7 +770,7 @@
+    Countable
+      {:cnt (fn [c] ...)}
+    Foo
+-     {:baz (fn ([x] ...) ([x y & zs] ...))
++     {:baz (fn ([x] ...) ([x y ...] ...))
+       :bar (fn [x y] ...)})"
+   {:added "1.2"} 
+   [t & specs]
