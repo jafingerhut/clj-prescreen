@@ -118,7 +118,7 @@
 {:full-name "Charles Duffy"
  :aliases #{ "" }
  :usernames #{ "charles-dyfis-net" }
- :emails #{ "charles@dyfis.net" }
+ :emails #{ "charles@dyfis.net" "duffy@indeed.com" }
  :contributor true
  }
 {:full-name "Chris Houser"
@@ -378,6 +378,12 @@
  :aliases #{ }
  :usernames #{ "ryansenior" }
  :emails #{ "senior.ryan@gmail.com" }
+ :contributor true
+ }
+{:full-name "David Santiago"
+ :aliases #{ }
+ :usernames #{ "santiago" }
+ :emails #{ "david.santiago@gmail.com" }
  :contributor true
  }
 {:full-name "Scott Lowe"
