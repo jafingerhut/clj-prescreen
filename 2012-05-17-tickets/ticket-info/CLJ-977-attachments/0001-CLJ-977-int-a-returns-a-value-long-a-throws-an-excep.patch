@@ -1,0 +1,26 @@
+From 66245fa51f5dde33a61c8ed79e96c00aab610c36 Mon Sep 17 00:00:00 2001
+From: Scott Lowe <scottwithtwotees@gmail.com>
+Date: Sun, 13 May 2012 04:35:13 +0100
+Subject: [PATCH] CLJ-977 (int \a) returns a value, (long \a) throws an
+ exception
+
+---
+ src/jvm/clojure/lang/RT.java |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/RT.java b/src/jvm/clojure/lang/RT.java
+index 6595fc6..60db36a 100644
+--- a/src/jvm/clojure/lang/RT.java
++++ b/src/jvm/clojure/lang/RT.java
+@@ -1134,6 +1134,8 @@ static public long longCast(Object x){
+ 	    return ((Number) x).longValue();
+ 	else if (x instanceof Ratio)
+ 	    return longCast(((Ratio)x).bigIntegerValue());
++	else if (x instanceof Character)
++	    return longCast(((Character) x).charValue());
+ 	else
+ 	    return longCast(((Number)x).doubleValue());
+ }
+-- 
+1.7.8.3
+

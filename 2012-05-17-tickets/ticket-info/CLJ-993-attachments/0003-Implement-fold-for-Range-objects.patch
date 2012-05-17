@@ -1,0 +1,185 @@
+From dab27dd9a1bbd824b68e45cfb93da6b87df4eeb1 Mon Sep 17 00:00:00 2001
+From: Alan Malloy <alan@malloys.org>
+Date: Fri, 11 May 2012 12:14:07 -0700
+Subject: [PATCH] Implement fold for Range objects.
+
+I also generalized foldvec to work for anything you can split in half,
+and used that implementation for Range.
+---
+ src/clj/clojure/core/reducers.clj      |   83 +++++++++++++++++++++++--------
+ test/clojure/test_clojure/reducers.clj |   20 +++++--
+ 2 files changed, 75 insertions(+), 28 deletions(-)
+
+diff --git a/src/clj/clojure/core/reducers.clj b/src/clj/clojure/core/reducers.clj
+index 2cb2465..f730226 100644
+--- a/src/clj/clojure/core/reducers.clj
++++ b/src/clj/clojure/core/reducers.clj
+@@ -13,7 +13,7 @@
+       dependency info."
+       :author "Rich Hickey"}
+   clojure.core.reducers
+-  (:refer-clojure :exclude [reduce map mapcat filter remove take take-while drop flatten iterate range])
++  (:refer-clojure :exclude [reduce map mapcat filter remove take take-while drop drop-while flatten iterate range])
+   (:require [clojure.walk :as walk]))
+ 
+ (alias 'core 'clojure.core)
+@@ -129,6 +129,29 @@
+       (coll-fold [_ n combinef reducef]
+                  (coll-fold coll n combinef (xf reducef))))))
+ 
++(defn- fold-by-halves
++  "Creates an implementation of CollFold which works by halving the collection
++  until it is smaller than the requested size, and folding each subsection.
++  halving-fn will be passed as input a collection and its size (so you need not
++  recompute the size); it should return the left and right halves of the
++  collection as a pair. Those halves will normally be of the same type as the
++  parent collection, but anything foldable is sufficient."
++  [halving-fn]
++  {:coll-fold
++   (fn [coll n combinef reducef]
++     (let [size (count coll)]
++       (cond
++         (zero? size) (combinef)
++         (<= size n) (reduce reducef (combinef) coll)
++         :else
++         (let [[left right] (halving-fn coll size)
++               fc (fn [child] #(coll-fold child n combinef reducef))]
++           (fjinvoke
++            #(let [f1 (fc left)
++                   t2 (fjtask (fc right))]
++               (fjfork t2)
++               (combinef (f1) (fjjoin t2))))))))})
++
+ (defn- do-curried
+   [name doc meta args body]
+   (let [cargs (vec (butlast args))]
+@@ -254,6 +277,20 @@
+               (f1 ret k v)
+               ret)))))))
+ 
++(defcurried drop-while
++  "Skips values from the reduction of coll while (pred val) returns logical true."
++  {:added "1.5"}
++  [pred coll]
++  (reducer coll
++    (fn [f1]
++      (let [keeping? (atom false)]
++        (rfn [f1 k]
++          ([ret k v]
++             (if (or @keeping?
++                     (reset! keeping? (not (pred k v))))
++               (f1 ret k v)
++               ret)))))))
++
+ ;;do not construct this directly, use cat
+ (deftype Cat [cnt left right]
+   clojure.lang.Counted
+@@ -337,7 +374,22 @@
+           @ret
+           (if (cmp i end)
+             (recur (f1 ret i) (+ i step))
+-            ret))))))
++            ret)))))
++
++  ;; CollFold will be extended to this type in just a moment
++  )
++
++(extend Range
++  CollFold
++  (fold-by-halves (fn [^Range r size]
++                    (let [start (.-start r)
++                          step (.-step r)
++                          end (.-end r)
++                          split (-> (quot size 2)
++                                    (* step)
++                                    (+ start))]
++                      [(Range. start split step)
++                       (Range. split end step)]))))
+ 
+ (defn range
+   "Returns a reducible collection of nums from start (inclusive) to end
+@@ -372,21 +424,13 @@
+     ([a b] (op a b))))
+ 
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; fold impls ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+-(defn- foldvec
+-  [v n combinef reducef]
+-  (cond
+-   (empty? v) (combinef)
+-   (<= (count v) n) (reduce reducef (combinef) v)
+-   :else
+-   (let [split (quot (count v) 2)
+-         v1 (subvec v 0 split)
+-         v2 (subvec v split (count v))
+-         fc (fn [child] #(foldvec child n combinef reducef))]
+-     (fjinvoke
+-      #(let [f1 (fc v1)
+-             t2 (fjtask (fc v2))]
+-         (fjfork t2)
+-         (combinef (f1) (fjjoin t2)))))))
++
++(extend clojure.lang.IPersistentVector
++  CollFold
++  (fold-by-halves (fn [v size]
++                    (let [split (quot size 2)]
++                      [(subvec v 0 split)
++                       (subvec v split size)]))))
+ 
+ (extend-protocol CollFold
+  Object
+@@ -395,11 +439,6 @@
+   ;;can't fold, single reduce
+   (reduce reducef (combinef) coll))
+ 
+- clojure.lang.IPersistentVector
+- (coll-fold
+-  [v n combinef reducef]
+-  (foldvec v n combinef reducef))
+-
+  clojure.lang.PersistentHashMap
+  (coll-fold
+   [m n combinef reducef]
+diff --git a/test/clojure/test_clojure/reducers.clj b/test/clojure/test_clojure/reducers.clj
+index ed440a8..a2f0b14 100644
+--- a/test/clojure/test_clojure/reducers.clj
++++ b/test/clojure/test_clojure/reducers.clj
+@@ -40,6 +40,10 @@
+   [filter r/filter #(into [] %)]
+   [even? odd? #(< 200 %) identity])
+ 
++(defequivtest test-drop-while
++  [drop-while r/drop-while #(into [] %)]
++  [neg? pos? #(< % 200) #(> % 200) #{-100}])
++
+ (deftest test-iterate
+   (is (= [100000]
+          (->> (r/iterate inc 0)
+@@ -53,15 +57,19 @@
+               (r/take 10000)
+               (into []))))
+   (is (not (counted? (r/range))))
+-  (doseq [argvec [[10]
+-                  [4 31]
+-                  [10 2 -2]
+-                  [0 23 5]
+-                  [1 -8 -2]]]
++  (doseq [argvec [[7000]
++                  [0 5736]
++                  [10000 21 -2]
++                  [0 3710 2/3]
++                  [1 -8642 -2]]]
+     (let [seq-version (apply range argvec)
+           reduce-version (apply r/range argvec)
+           reduced-vector (into [] reduce-version)]
+       (is (counted? reduce-version))
+       (is (= seq-version reduced-vector))
+       (is (= (count reduce-version)
+-             (count reduced-vector))))))
++             (count reduced-vector)))
++      (let [seq-sum (reduce + seq-version)
++            folded-sum (r/fold + reduce-version)
++            vector-fold-sum (r/fold + reduced-vector)]
++        (is (= seq-sum folded-sum vector-fold-sum))))))
+-- 
+1.7.4.1
+

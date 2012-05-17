@@ -1,0 +1,73 @@
+From 1f16635a97de0b97ba4f2ce59dea81acf9012a02 Mon Sep 17 00:00:00 2001
+From: Kevin Downey <redchin@gmail.com>
+Date: Thu, 10 May 2012 18:05:15 -0700
+Subject: [PATCH] reducer partition-by
+
+---
+ src/clj/clojure/core/reducers.clj      |   30 +++++++++++++++++++++++++++++-
+ test/clojure/test_clojure/reducers.clj |    4 ++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+
+diff --git a/src/clj/clojure/core/reducers.clj b/src/clj/clojure/core/reducers.clj
+index efe6118..6e07678 100644
+--- a/src/clj/clojure/core/reducers.clj
++++ b/src/clj/clojure/core/reducers.clj
+@@ -13,7 +13,7 @@
+       dependency info."
+       :author "Rich Hickey"}
+   clojure.core.reducers
+-  (:refer-clojure :exclude [reduce map mapcat filter remove take take-while drop flatten])
++  (:refer-clojure :exclude [reduce map mapcat filter remove take take-while drop flatten partition-by])
+   (:require [clojure.walk :as walk]))
+ 
+ (alias 'core 'clojure.core)
+@@ -254,6 +254,34 @@
+               (f1 ret k v)
+               ret)))))))
+ 
++(defcurried partition-by
++  "Applies f to each value in coll, splitting it each time f returns
++  a new value."
++  {:added "1.5"}
++  [fun coll]
++  (reify
++    clojure.core.protocols/CollReduce
++    (coll-reduce [this f1]
++      (clojure.core.protocols/coll-reduce this f1 (f1)))
++    (coll-reduce [_ f1 init]
++      (let [sentinel (Object.)
++            result (clojure.core.protocols/coll-reduce
++                    coll
++                    (fn [accum v]
++                      (let [r (fun v)]
++                        (if (or (= r (:last accum))
++                                (= sentinel (:last accum)))
++                          (-> accum
++                              (update-in [:values] conj v)
++                              (assoc :last r))
++                          (-> accum
++                              (update-in [:init] f1 (:values accum))
++                              (assoc :values [v] :last r)))))
++                    {:init init
++                     :last sentinel
++                     :values []})]
++        (f1 (:init result) (:values result))))))
++
+ ;;do not construct this directly, use cat
+ (deftype Cat [cnt left right]
+   clojure.lang.Counted
+diff --git a/test/clojure/test_clojure/reducers.clj b/test/clojure/test_clojure/reducers.clj
+index 1123c36..c2f6b2d 100644
+--- a/test/clojure/test_clojure/reducers.clj
++++ b/test/clojure/test_clojure/reducers.clj
+@@ -39,3 +39,7 @@
+ (defequivtest test-filter
+   [filter r/filter #(into [] %)]
+   [even? odd? #(< 200 %) identity])
++
++(defequivtest test-partition-by
++  [partition-by r/partition-by (partial into [])]
++  [even? odd? #(< 200 %) identity])
+-- 
+1.7.10.1
+

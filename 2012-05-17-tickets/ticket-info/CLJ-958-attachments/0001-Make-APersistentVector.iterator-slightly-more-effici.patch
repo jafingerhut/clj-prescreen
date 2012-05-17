@@ -1,0 +1,46 @@
+From 23bdd6222baf99cf00a4866a24d75a3d1e6ed19a Mon Sep 17 00:00:00 2001
+From: Chris Gray <chrismgray@gmail.com>
+Date: Fri, 23 Mar 2012 12:07:03 -0600
+Subject: [PATCH] Make APersistentVector.iterator slightly more efficient
+
+Since nth on a PersistentVector has running time O(log_32(n)), and
+calling next on a chunked sequence costs O(log_32(n)) 1/32 of the
+time, it should be a bit more efficient to use sequences than
+repeatedly calling nth.
+
+Since calling next on a sequence causes a new object to be created,
+there may be some values of n for which log_32(n) is less than the
+number of operations needed for object creation.
+---
+ src/jvm/clojure/lang/APersistentVector.java |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/jvm/clojure/lang/APersistentVector.java b/src/jvm/clojure/lang/APersistentVector.java
+index ef73c5b..8ebb874 100644
+--- a/src/jvm/clojure/lang/APersistentVector.java
++++ b/src/jvm/clojure/lang/APersistentVector.java
+@@ -262,16 +262,17 @@ public Object invoke(Object arg1) {
+ }
+ 
+ public Iterator iterator(){
+-	//todo - something more efficient
+ 	return new Iterator(){
+-		int i = 0;
++		ISeq s = seq();
+ 
+ 		public boolean hasNext(){
+-			return i < count();
++			return s != null;
+ 		}
+ 
+ 		public Object next(){
+-			return nth(i++);
++			Object f = s.first();
++			s = s.next();
++			return f;
+ 		}
+ 
+ 		public void remove(){
+-- 
+1.7.9
+

@@ -1,0 +1,107 @@
+From f23c49a19043394593f0b6303e60f2621a225ece Mon Sep 17 00:00:00 2001
+From: Alan Malloy <alan@malloys.org>
+Date: Sun, 13 Nov 2011 16:54:10 -0800
+Subject: [PATCH] Another stab at implementing this
+
+---
+ src/clj/clojure/core.clj |   63 ++++++++++++++++++++++++++++++---------------
+ 1 files changed, 42 insertions(+), 21 deletions(-)
+
+diff --git a/src/clj/clojure/core.clj b/src/clj/clojure/core.clj
+index 3c48eee..1fac810 100644
+--- a/src/clj/clojure/core.clj
++++ b/src/clj/clojure/core.clj
+@@ -402,6 +402,46 @@
+    :inline (fn [x] (list 'clojure.lang.Util/identical x nil))}
+   [x] (clojure.lang.Util/identical x nil))
+ 
++(defn dissoc
++  "dissoc[iate]. Returns a new map of the same (hashed/sorted) type,
++  that does not contain a mapping for key(s)."
++  {:added "1.0"
++   :static true}
++  ([map] map)
++  ([map key]
++   (. clojure.lang.RT (dissoc map key)))
++  ([map key & ks]
++   (let [ret (dissoc map key)]
++     (if ks
++       (recur ret (first ks) (next ks))
++       ret))))
++
++(defn alter-var-root
++  "Atomically alters the root binding of var v by applying f to its
++  current value plus any args"
++  {:added "1.0"
++   :static true}
++  [^clojure.lang.Var v f & args] (.alterRoot v f args))
++
++(defn keep-meta
++  "Wrap a macro implementation so that it respects &form metadata."
++  {:private true
++   :added "1.4"}
++  [^clojure.lang.IFn f]
++  (fn [&form &env & args]
++    (let [ret (.applyTo f (cons &form (cons &env args)))]
++      (if (instance? clojure.lang.IObj ret)
++        (let [m (meta ret)
++              m (if m, m, {})]
++          (loop [m m, changes (seq
++                               (dissoc (meta &form)
++                                       :line, :file))]
++            (if changes
++              (recur (conj m (first changes))
++                     (next changes))
++              (with-meta ret m))))
++        ret))))      ; can't change meta if it's not IObj
++
+ (def
+ 
+  ^{:doc "Like defn, but the resulting function name is declared as a
+@@ -446,6 +486,8 @@
+                (list 'do
+                      (cons `defn decl)
+                      (list '. (list 'var name) '(setMacro))
++                     (list `alter-var-root (list 'var name)
++                           (list 'var `keep-meta))
+                      (list 'var name)))))
+ 
+ 
+@@ -1394,20 +1436,6 @@
+   ([map key not-found]
+    (. clojure.lang.RT (get map key not-found))))
+ 
+-(defn dissoc
+-  "dissoc[iate]. Returns a new map of the same (hashed/sorted) type,
+-  that does not contain a mapping for key(s)."
+-  {:added "1.0"
+-   :static true}
+-  ([map] map)
+-  ([map key]
+-   (. clojure.lang.RT (dissoc map key)))
+-  ([map key & ks]
+-   (let [ret (dissoc map key)]
+-     (if ks
+-       (recur ret (first ks) (next ks))
+-       ret))))
+-
+ (defn disj
+   "disj[oin]. Returns a new set of the same (hashed/sorted) type, that
+   does not contain key(s)."
+@@ -4808,13 +4836,6 @@
+                (process-annotation av v)
+                (.visitEnd av))))))))
+ 
+-(defn alter-var-root
+-  "Atomically alters the root binding of var v by applying f to its
+-  current value plus any args"
+-  {:added "1.0"
+-   :static true}
+-  [^clojure.lang.Var v f & args] (.alterRoot v f args))
+-
+ (defn bound?
+   "Returns true if all of the vars provided as arguments have any bound value, root or thread-local.
+    Implies that deref'ing the provided vars will succeed. Returns true if no vars are provided."
+-- 
+1.7.0.4
+

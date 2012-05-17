@@ -1,0 +1,86 @@
+From 92c653525830f8c420a7d2cfb6c8a252bcd65c39 Mon Sep 17 00:00:00 2001
+From: Hugo Duncan <hugo@hugoduncan.org>
+Date: Fri, 21 Oct 2011 23:24:39 -0400
+Subject: [PATCH] Add *test-var* to make the current test var accessible in
+ clojure.test
+
+In order to allow use of the meta information on the test var, allow the fixtures
+access to the currently executing test var.
+---
+ src/clj/clojure/test.clj               |    4 +++-
+ src/script/run_tests.clj               |    1 +
+ test/clojure/test_clojure/test_var.clj |   28 ++++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 1 deletions(-)
+ create mode 100644 test/clojure/test_clojure/test_var.clj
+
+diff --git a/src/clj/clojure/test.clj b/src/clj/clojure/test.clj
+index 2725e20..2835582 100644
+--- a/src/clj/clojure/test.clj
++++ b/src/clj/clojure/test.clj
+@@ -264,6 +264,7 @@
+      {:test 0, :pass 0, :fail 0, :error 0})
+ 
+ (def ^:dynamic *testing-vars* (list))  ; bound to hierarchy of vars being tested
++(def ^:dynamic *test-var* nil)  ; bound to the var being tested
+ 
+ (def ^:dynamic *testing-contexts* (list)) ; bound to hierarchy of "testing" strings
+ 
+@@ -706,7 +707,8 @@
+      (fn []
+        (doseq [v (vals (ns-interns ns))]
+          (when (:test (meta v))
+-           (each-fixture-fn (fn [] (test-var v)))))))))
++           (binding [*test-var* v]
++             (each-fixture-fn (fn [] (test-var v))))))))))
+ 
+ (defn test-ns
+   "If the namespace defines a function named test-ns-hook, calls that.
+diff --git a/src/script/run_tests.clj b/src/script/run_tests.clj
+index 6720abd..660dc22 100644
+--- a/src/script/run_tests.clj
++++ b/src/script/run_tests.clj
+@@ -49,6 +49,7 @@ clojure.test-clojure.special
+ clojure.test-clojure.string
+ clojure.test-clojure.test
+ clojure.test-clojure.test-fixtures
++clojure.test-clojure.test-var
+ clojure.test-clojure.transients
+ clojure.test-clojure.vars
+ clojure.test-clojure.vectors
+diff --git a/test/clojure/test_clojure/test_var.clj b/test/clojure/test_clojure/test_var.clj
+new file mode 100644
+index 0000000..f9a1a01
+--- /dev/null
++++ b/test/clojure/test_clojure/test_var.clj
+@@ -0,0 +1,28 @@
++;   Copyright (c) Rich Hickey. All rights reserved.
++;   The use and distribution terms for this software are covered by the
++;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
++;   which can be found in the file epl-v10.html at the root of this distribution.
++;   By using this software in any fashion, you are agreeing to be bound by
++;   the terms of this license.
++;   You must not remove this notice, or any other, from this software.
++;
++;;; test_var.clj: unit tests for *test-var* in test.clj
++
++;; Hugo Duncan
++;; October 21, 2011
++
++(ns clojure.test-clojure.test-var
++  (:use clojure.test))
++
++(declare test-var-test)
++
++(def v (atom nil))
++(defn fixture [f]
++  (reset! v *test-var*)
++  (f))
++
++(use-fixtures :each fixture)
++
++(deftest test-var-test
++  (is (= *test-var* #'test-var-test))
++  (is (= @v #'test-var-test)))
+-- 
+1.7.5.4
+

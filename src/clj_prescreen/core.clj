@@ -620,23 +620,20 @@ apply the patch, and try to build with 'ant' in that copy."
 
 ;; Pick the XML view from that menu.  An XML form of the ticket list
 ;; will be shown.  Save the page as a file.  That is how I created the
-;; file rfs.xml (abbreviation of "Ready For Screening").
+;; file notclosed.xml, which I saved in the directory named by the
+;; string cur-eval-dir below.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-05-10-tickets/"))
-(def clojure-tree "./2012-05-10-clojure-to-prescreen/clojure-plus-clj-967-patch")
+(def cur-eval-dir (str @fs/cwd "/2012-05-17-tickets/"))
+(def clojure-tree "./2012-05-17-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
 
 ;; Also need to pull a clone of the Clojure repo if you haven't done
-;; so already.  Don't make it your favorite one, as many branches will
-;; be created and deleted in it, and it will erase any local changes
-;; you have made in its current branch.
+;; so already.  Put it in the directory called clojure-tree above.
 ;; git clone git://github.com/clojure/clojure.git
-
-;; Automate things a bit more
 
 ;; Download all attachments for selected tickets.  Do this once on one
 ;; machine, not once for each OS/JDK combo I want to test.  Also, for

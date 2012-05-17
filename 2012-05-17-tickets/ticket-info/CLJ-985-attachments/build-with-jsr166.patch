@@ -1,0 +1,92 @@
+From d98cc59349f72a75e03d7cc09cbf0833d6922370 Mon Sep 17 00:00:00 2001
+From: Stuart Halloway <stu@thinkrelevance.com>
+Date: Sun, 6 May 2012 20:04:09 -0400
+Subject: [PATCH] build-time use of jsr166 from ant or maven, ant requires one-time setup
+
+---
+ .gitignore |    2 ++
+ build.xml  |    3 ++-
+ pom.xml    |   12 +++++++++++-
+ readme.txt |    4 +++-
+ 4 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 2f67a91..7383fdb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -3,3 +3,5 @@ target
+ clojure.iws
+ clojure.ipr
+ nbproject/private/
++maven-classpath
++maven-classpath.properties
+diff --git a/build.xml b/build.xml
+index 031c2e6..374610e 100644
+--- a/build.xml
++++ b/build.xml
+@@ -17,6 +17,7 @@
+   <property name="build" location="${target}/classes"/>
+   <property name="test-classes" location="${target}/test-classes"/>
+   <property name="dist" location="dist"/>
++  <property file="maven-classpath.properties"/>
+ 
+   <!-- Get the version string out of the POM -->
+   <xmlproperty file="pom.xml" prefix="pom"/>
+@@ -43,7 +44,7 @@
+   <target name="compile-clojure"
+           description="Compile Clojure sources.">
+     <java classname="clojure.lang.Compile"
+-          classpath="${build}:${cljsrc}"
++          classpath="${maven.compile.classpath}:${build}:${cljsrc}"
+           failonerror="true"
+           fork="true">
+       <sysproperty key="clojure.compile.path" value="${build}"/>
+diff --git a/pom.xml b/pom.xml
+index 71b9667..3329d2c 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -38,6 +38,15 @@
+     <url>git@github.com:clojure/clojure.git</url>
+   </scm>
+ 
++  <dependencies>
++    <dependency>
++      <groupId>org.codehaus.jsr166-mirror</groupId>
++      <artifactId>jsr166y</artifactId>
++      <version>1.7.0</version>
++      <scope>provided</scope>
++    </dependency>
++  </dependencies>
++
+   <build>
+     <resources>
+       <resource>
+@@ -72,7 +81,8 @@
+ 	    </goals>
+ 	    <configuration>
+ 	      <target>
+-		<ant target="compile-clojure" />
++                <property name="maven.compile.classpath" refid="maven.compile.classpath"/>
++		<ant target="compile-clojure"/>
+ 	      </target>
+ 	    </configuration>
+ 	  </execution>
+diff --git a/readme.txt b/readme.txt
+index 41c8c2a..f0d9fb3 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -13,8 +13,10 @@ Getting Started: http://dev.clojure.org/display/doc/Getting+Started
+ 
+ To run:  java -cp clojure-${VERSION}.jar clojure.main
+ 
+-To build locally with Ant:  ant
++To build locally with Ant:  
+ 
++   One-time setup:    ./antsetup.sh
++   To build:          ant
+ 
+ Maven 2 build instructions:
+ 
+-- 
+1.7.3.5
+

@@ -1,0 +1,40 @@
+From c01c5246b88550e32f12f0a7d134732fb6ada4ae Mon Sep 17 00:00:00 2001
+From: Alan Malloy <alan@malloys.org>
+Date: Thu, 10 May 2012 20:44:29 -0700
+Subject: [PATCH 2/2] Make iterate and range Seqable.
+
+---
+ src/clj/clojure/core/reducers.clj |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
+
+diff --git a/src/clj/clojure/core/reducers.clj b/src/clj/clojure/core/reducers.clj
+index 620ebe6..2cb2465 100644
+--- a/src/clj/clojure/core/reducers.clj
++++ b/src/clj/clojure/core/reducers.clj
+@@ -312,7 +312,11 @@
+         (if (reduced? ret)
+           @ret
+           (let [next (f seed)]
+-            (recur (f1 ret next) next)))))))
++            (recur (f1 ret next) next)))))
++
++    clojure.lang.Seqable
++    (seq [this]
++      (seq (clojure.core/iterate f seed)))))
+ 
+ ;;do not construct this directly, use range
+ (deftype Range [start end step]
+@@ -320,6 +324,10 @@
+   (count [this]
+     (int (Math/ceil (/ (- end start) step))))
+ 
++  clojure.lang.Seqable
++  (seq [this]
++    (seq (clojure.core/range start end step)))
++
+   clojure.core.protocols/CollReduce
+   (coll-reduce [this f1] (clojure.core.protocols/coll-reduce this f1 (f1)))
+   (coll-reduce [this f1 init]
+-- 
+1.7.4.1
+
