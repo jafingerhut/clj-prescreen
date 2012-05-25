@@ -182,6 +182,12 @@
  :emails #{ "clojure@sattvik.com" }
  :contributor true
  }
+{:full-name "Ed Bowler"
+ :aliases #{ }
+ :usernames #{ "ed.bowler@gmail.com" }
+ :emails #{ "ed.bowler@gmail.com" }
+ :contributor true
+ }
 {:full-name "Eugene Koontz"
  :aliases #{ }
  :usernames #{ "ekoontz" }
