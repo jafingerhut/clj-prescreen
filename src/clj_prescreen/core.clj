@@ -625,8 +625,8 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/2012-05-19-tickets/"))
-(def clojure-tree "./2012-05-19-clojure-to-prescreen/clojure-plus-clj-967-patch")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2012-05-24/"))
+(def clojure-tree "./2012-05-24-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
@@ -645,16 +645,17 @@ apply the patch, and try to build with 'ant' in that copy."
 ;; combo.
 (do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list)
 
-;; After doing the above, if you edit data/people-data.clj and want to
-;; redo the author evaluations only, do this:
+;; After doing the dl-patches-check-ca! above, if you edit
+;; data/people-data.clj and want to redo the author evaluations only,
+;; do this:
 (doseq [cur-patch-type patch-type-list]
-  (let [fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
-        fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")
-        as4 (read-safely fname4)
-        as4 (let [people-info (read-safely "data/people-data.clj")]
-              (map #(add-author-info % ticket-dir people-info) as4))]
-    (spit-pretty fname4 as4)
-    (spit fname-sum (with-out-str (eval-patches-summary as4)))))
+  (let [fname1 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+        fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")
+        as1 (read-safely fname1)
+        as1 (let [people-info (read-safely "data/people-data.clj")]
+              (map #(add-author-info % ticket-dir people-info) as1))]
+    (spit-pretty fname1 as1)
+    (spit fname-sum (with-out-str (eval-patches-summary as1)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
