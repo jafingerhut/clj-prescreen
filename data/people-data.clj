@@ -327,7 +327,7 @@
  :contributor true
  }
 {:full-name "Michał Marczyk"
- :aliases #{ }
+ :aliases #{ "=?UTF-8?q?Micha=C5=82=20Marczyk?=" }
  :usernames #{ "michalmarczyk" }
  :emails #{ "michal.marczyk@gmail.com" }
  :contributor true
