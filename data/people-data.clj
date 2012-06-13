@@ -230,6 +230,12 @@
  :emails #{ "glchapman1@yahoo.com" }
  :contributor false
  }
+{:full-name "Michel Alexandre Salim"
+ :aliases #{ }
+ :usernames #{ "hircus" }
+ :emails #{ "michel@sylvestre.me" }
+ :contributor true
+ }
 {:full-name "Kevin Downey"
  :aliases #{ }
  :usernames #{ "hiredman" }
