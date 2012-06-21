@@ -364,7 +364,7 @@ Check it to see if it was created incorrectly."})
   (let [p (System/getProperties)
         orig-s s
         s (if (and (= "Oracle Corporation" (get p "java.vendor"))
-                   (= "1.7.0_02" (get p "java.version")))
+                   (.startsWith (get p "java.version") "1.7.0"))
             (-> s
                 (str/replace #"(?xms)
 (^ compile-java: \s* $
