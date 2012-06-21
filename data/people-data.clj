@@ -356,6 +356,12 @@
  :emails #{ "pepijndevos@gmail.com" }
  :contributor true
  }
+{:full-name "Philip Aston"
+ :aliases #{ }
+ :usernames #{ "phiipa" }
+ :emails #{ "philipa@mail.com" }
+ :contributor true
+ }
 {:full-name "Paul Stadig"
  :aliases #{ }
  :usernames #{ "pjstadig" }
