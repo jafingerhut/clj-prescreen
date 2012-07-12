@@ -133,6 +133,12 @@
  :emails #{ "chrismgray@gmail.com" }
  :contributor true
  }
+{:full-name "Gabriel Horner"
+ :aliases #{ }
+ :usernames #{ "cldwalker" }
+ :emails #{ "gabriel.horner@gmail.com" }
+ :contributor true
+ }
 {:full-name "Cosmin Stejerean"
  :aliases #{ }
  :usernames #{ "cosmin" }
@@ -155,6 +161,12 @@
  :aliases #{ }
  :usernames #{ "davidrupp" }
  :emails #{ "david@ruppworks.com" }
+ :contributor true
+ }
+{:full-name "Devin Walters"
+ :aliases #{ }
+ :usernames #{ "devn" }
+ :emails #{ "devinw@gmail.com" }
  :contributor true
  }
 {:full-name "Dmitry"
@@ -216,6 +228,12 @@
  :aliases #{ }
  :usernames #{ "george" }
  :emails #{ "clojure@blackbirdsystems.net" }
+ :contributor true
+ }
+{:full-name "Gary Fredericks"
+ :aliases #{ }
+ :usernames #{ "gfredericks" }
+ :emails #{ "garyf@groupon.com" "fredericksgary@gmail.com" }
  :contributor true
  }
 {:full-name "Baishampayan Ghose"
@@ -282,6 +300,12 @@
  :aliases #{ }
  :usernames #{ "jim.blomo" }
  :emails #{ "jim.blomo@gmail.com" "jim.blomo+github@gmail.com" }
+ :contributor true
+ }
+{:full-name "Dimitrios Piliouras"
+ :aliases #{ }
+ :usernames #{ "jimpil" }
+ :emails #{ "jimpil1985@gmail.com" }
  :contributor true
  }
 {:full-name "Joseph Gallo"
