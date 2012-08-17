@@ -308,6 +308,12 @@
  :emails #{ "jimpil1985@gmail.com" }
  :contributor true
  }
+{:full-name "Justin Kramer"
+ :aliases #{ }
+ :usernames #{ "jkkramer" }
+ :emails #{ "jkkramer@gmail.com" }
+ :contributor true
+ }
 {:full-name "Joseph Gallo"
  :aliases #{ "Joe Gallo" }
  :usernames #{ "joegallo" }
