@@ -364,7 +364,7 @@ Check it to see if it was created incorrectly."})
   (let [p (System/getProperties)
         orig-s s
         s (if (and (= "Oracle Corporation" (get p "java.vendor"))
-                   (.startsWith (get p "java.version") "1.7.0"))
+                   (.startsWith ^String (get p "java.version") "1.7.0"))
             (-> s
                 (str/replace #"(?xms)
 (^ compile-java: \s* $
@@ -625,8 +625,8 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2012-08-16/"))
-(def clojure-tree "./eval-results/2012-08-16-clojure-to-prescreen/clojure-plus-clj-967-patch")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2012-08-18/"))
+(def clojure-tree "./eval-results/2012-08-18-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
