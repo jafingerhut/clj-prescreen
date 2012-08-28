@@ -487,7 +487,8 @@ Check it to see if it was created incorrectly."})
 
 
 (defn eval-patch! [p attach-dir idx num-patches
-                   unmodified-clojure-dir temp-clojure-dir]
+                   unmodified-clojure-dir temp-clojure-dir
+                   try-to-build?]
   (let [logfile-name (str (att-dir-name (:ticket p) attach-dir) "/"
                           (:name p) "-log.txt")]
     (with-open [logf (io/writer logfile-name)]
@@ -515,12 +516,16 @@ Check it to see if it was created incorrectly."})
                          patch-status))
               (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
               (case patch-status
-                :ok ;; (3) Try to build and test
-                (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
-                  (when *cmd-log*
-                    (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
-                             ant-status))
-                  (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
+                :ok
+                (if try-to-build?
+                  ;; (3) Try to build and test
+                  (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
+                    (when *cmd-log*
+                      (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
+                               ant-status))
+                    (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
+                    p)
+                  ;; otherwise don't try to build and test
                   p)
                 
                 :fail ;; patch attempt failed.
@@ -541,16 +546,15 @@ Check it to see if it was created incorrectly."})
            (try-cmd :throw-on-error "rm" "-fr" temp-clojure-dir)))))))
 
 
-(defn eval-patches! [patches attach-dir people-info-filename
-                     unmodified-clojure-dir temp-clojure-dir]
+(defn eval-patches! [patches attach-dir unmodified-clojure-dir
+                     temp-clojure-dir try-to-build?]
   (if-not (clojure-git-dir? unmodified-clojure-dir)
     (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" unmodified-clojure-dir)
-    (let [people-info (read-safely people-info-filename)
-          n (count patches)]
+    (let [n (count patches)]
       (doall
        (map-indexed (fn [idx p] (eval-patch! p attach-dir idx n
                                              unmodified-clojure-dir
-                                             temp-clojure-dir))
+                                             temp-clojure-dir try-to-build?))
                     patches)))))
 
 
@@ -578,16 +582,20 @@ Check it to see if it was created incorrectly."})
 (defn dl-patches-check-ca!
   "Download all attachments for selected tickets.  Do this once on one
 machine, not once for each OS/JDK combo I want to test."
-  [cur-eval-dir ticket-dir patch-type-list]
+  [cur-eval-dir ticket-dir patch-type-list clojure-tree]
   (doseq [cur-patch-type patch-type-list]
-    (let [as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml"))
+    (let [base (str cur-eval-dir cur-patch-type)
+          as1 (xml->attach-info (str base ".xml"))
           as2 (download-attachments! as1 ticket-dir)
-          as2b (let [people-info (read-safely "data/people-data.clj")]
-                 (map #(add-author-info % ticket-dir people-info) as2))
-          fname2b (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
-          fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")]
-      (spit-pretty fname2b as2b)
-      (spit fname-sum (with-out-str (eval-patches-summary as2b))))))
+          as3 (if clojure-tree
+                (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure"
+                               false)
+                as2)
+          as4 (let [people-info (read-safely "data/people-data.clj")]
+                (map #(add-author-info % ticket-dir people-info) as3))]
+      (spit-pretty (str base "-downloaded-only.txt") as4)
+      (spit (str base "-author-info.txt")
+            (with-out-str (eval-patches-summary as4))))))
 
 
 (defn do-eval-check-ca!
@@ -600,16 +608,15 @@ given by clojure-tree, for each patch to evaluate copy it, try to
 apply the patch, and try to build with 'ant' in that copy."
   [cur-eval-dir ticket-dir clojure-tree patch-type-list]
   (doseq [cur-patch-type patch-type-list]
-    (let [fname2 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
+    (let [base (str cur-eval-dir cur-patch-type)
+          fname2 (str base "-downloaded-only.txt")
           as2 (read-safely fname2)
-          as3 (eval-patches! as2 ticket-dir "data/people-data.clj" clojure-tree
-                             "./temp-clojure")
+          as3 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure" true)
           as4 (let [people-info (read-safely "data/people-data.clj")]
-                (map #(add-author-info % ticket-dir people-info) as3))
-          fname4 (str cur-eval-dir cur-patch-type "-evaled-authors.txt")
-          fname-sum (str cur-eval-dir cur-patch-type "-patch-summary.txt")]
-      (spit-pretty fname4 as4)
-      (spit fname-sum (with-out-str (eval-patches-summary as4))))))
+                (map #(add-author-info % ticket-dir people-info) as3))]
+      (spit-pretty (str base "-evaled-authors.txt") as4)
+      (spit (str base "-patch-summary.txt")
+            (with-out-str (eval-patches-summary as4))))))
 
 
 (comment
@@ -625,8 +632,8 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2012-08-18/"))
-(def clojure-tree "./eval-results/2012-08-18-clojure-to-prescreen/clojure-plus-clj-967-patch")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2012-08-28/"))
+(def clojure-tree "./eval-results/2012-08-25-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 (def patch-type-list [ "notclosed" ])
@@ -639,7 +646,7 @@ apply the patch, and try to build with 'ant' in that copy."
 ;; machine, not once for each OS/JDK combo I want to test.  Also, for
 ;; all git format patches, check people data to see if they have
 ;; signed a Clojure CA.
-(dl-patches-check-ca! cur-eval-dir ticket-dir patch-type-list)
+(dl-patches-check-ca! cur-eval-dir ticket-dir patch-type-list clojure-tree)
 
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
@@ -649,8 +656,9 @@ apply the patch, and try to build with 'ant' in that copy."
 ;; data/people-data.clj and want to redo the author evaluations only,
 ;; do this:
 (doseq [cur-patch-type patch-type-list]
-  (let [fname1 (str cur-eval-dir cur-patch-type "-downloaded-only.txt")
-        fname-sum (str cur-eval-dir cur-patch-type "-author-info.txt")
+  (let [base (str cur-eval-dir cur-patch-type)
+        fname1 (str base "-downloaded-only.txt")
+        fname-sum (str base "-author-info.txt")
         as1 (read-safely fname1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as1))]
@@ -676,7 +684,7 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (def as2 (read-safely (str cur-eval-dir cur-patch-type "-info.txt")))
 ;; Evaluate all patches:
-(def as3 (eval-patches! as2 ticket-dir "data/people-data.clj" "./clojure"))
+(def as3 (eval-patches! as2 ticket-dir "./clojure" true))
 ;; Evaluate one patch:
 ;; TBD
 
