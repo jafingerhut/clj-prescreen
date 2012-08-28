@@ -151,6 +151,12 @@
  :emails #{ "chrisperkins99@gmail.com" }
  :contributor true
  }
+{:full-name "Craig Brozefsky"
+ :aliases #{ }
+ :usernames #{ "craigbrozefsky" }
+ :emails #{ "craig@red-bean.com" }
+ :contributor true
+ }
 {:full-name "David McNeil"
  :aliases #{ }
  :usernames #{ "david-mcneil" }
@@ -266,6 +272,12 @@
  :emails #{ "hugo@hugoduncan.org" }
  :contributor true
  }
+{:full-name "Ian Eure"
+ :aliases #{ }
+ :usernames #{ "ieure" }
+ :emails #{ "ian.eure@gmail.com" }
+ :contributor true
+ }
 {:full-name "Jason Wolfe"
  :aliases #{ }
  :usernames #{  }
@@ -282,6 +294,12 @@
  :aliases #{ }
  :usernames #{ "jarpiain" }
  :emails #{ "juha.arpiainen@iki.fi" "jarpiain@iki.fi" }
+ :contributor true
+ }
+{:full-name "Jason Jackson"
+ :aliases #{ }
+ :usernames #{ "jasonjckn" }
+ :emails #{ "jasonjckn@gmail.com" "jason@cvk.ca" }
  :contributor true
  }
 {:full-name "Jasper Lievisse Adriaanse"
@@ -354,6 +372,12 @@
  :aliases #{ }
  :usernames #{ "neotyk" }
  :emails #{ "neotyk@kungfoo.pl" "hubert@happyhacking.nl" }
+ :contributor true
+ }
+{:full-name "Nicolas Oury"
+ :aliases #{ }
+ :usernames #{ "nicolasoury" }
+ :emails #{ "Nicolas.Oury@gmail.com" }
  :contributor true
  }
 {:full-name "Meikel Brandmeyer"
