@@ -163,6 +163,12 @@
  :emails #{ "mcneil.david@gmail.com" "dmcneil@revelytix.com" }
  :contributor true
  }
+{:full-name "Dave Sann"
+ :aliases #{ }
+ :usernames #{ "davesann" }
+ :emails #{ "davesann.p@gmail.com" }
+ :contributor true
+ }
 {:full-name "David Rupp"
  :aliases #{ }
  :usernames #{ "davidrupp" }
@@ -428,6 +434,12 @@
  :emails #{ "paul.michael.bauer@gmail.com" }
  :contributor true
  }
+{:full-name "Philip Potter"
+ :aliases #{ }
+ :usernames #{ "ppotter" }
+ :emails #{ "philipgpotter@gmail.com" }
+ :contributor true
+ }
 {:full-name "Rahul Pilani"
  :aliases #{ }
  :usernames #{ "rahulpilani" }
@@ -530,6 +542,12 @@
  :emails #{ "tomfaulhaber@gmail.com" "git_net@infolace.com" }
  :contributor true
  }
+{:full-name "Thomas Jack"
+ :aliases #{ "Tom Jack" }
+ :usernames #{ "tomoj" }
+ :emails #{ "tom@tomoj.la" }
+ :contributor true
+ }
 {:full-name "Colin Jones"
  :aliases #{ }
  :usernames #{ "trptcolin" }
@@ -539,7 +557,7 @@
 {:full-name "Tassilo Horn"
  :aliases #{ }
  :usernames #{ "tsdh" }
- :emails #{ "tassilo@member.fsf.org" }
+ :emails #{ "tassilo@member.fsf.org" "tsdh@gnu.org" }
  :contributor true
  }
 {:full-name "Vyacheslav Dimitrov"
