@@ -260,6 +260,12 @@
  :emails #{ "glchapman1@yahoo.com" }
  :contributor false
  }
+{:full-name "Timothy Baldridge"
+ :aliases #{ }
+ :usernames #{ "halgari" }
+ :emails #{ "tbaldridge@gmail.com" }
+ :contributor true
+ }
 {:full-name "Michel Alexandre Salim"
  :aliases #{ }
  :usernames #{ "hircus" }
