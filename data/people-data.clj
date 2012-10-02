@@ -106,7 +106,7 @@
 {:full-name "Chas Emerick"
  :aliases #{ }
  :usernames #{ "cemerick" }
- :emails #{ "cemerick@snowtide.com" }
+ :emails #{ "cemerick@snowtide.com" "chas@cemerick.com" }
  :contributor true
  }
 {:full-name "Christophe Grand"
