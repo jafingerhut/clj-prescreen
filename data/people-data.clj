@@ -31,10 +31,10 @@
  :emails #{ "abonnairesergeant@gmail.com" }
  :contributor true
  }
-{:full-name "Anthony Simpson"
+{:full-name "Anthony Grimes"
  :aliases #{ }
- :usernames #{ "anthonysimpson" }
- :emails #{ "DiscipleRayne@gmail.com" }
+ :usernames #{ "anthonygrimes" }
+ :emails #{ "i@raynes.me" }
  :contributor true
  }
 {:full-name "Alex Redington"
