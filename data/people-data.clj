@@ -375,9 +375,9 @@
  :contributor true
  }
 {:full-name "Luke VanderHart"
- :aliases #{ }
+ :aliases #{ "Luke VanderHart and Ghadi Shayban" }
  :usernames #{ "lvanderhart" }
- :emails #{ "luke@vanderhart.net" }
+ :emails #{ "luke@vanderhart.net" "luke@thinkrelevance.com" }
  :contributor true
  }
 {:full-name "Hubert Iwaniuk"
