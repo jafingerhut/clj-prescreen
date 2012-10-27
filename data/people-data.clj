@@ -263,7 +263,7 @@
 {:full-name "Timothy Baldridge"
  :aliases #{ }
  :usernames #{ "halgari" }
- :emails #{ "tbaldridge@gmail.com" }
+ :emails #{ "tbaldridge@gmail.com" "timothy@thinkrelevance.com" }
  :contributor true
  }
 {:full-name "Michel Alexandre Salim"
