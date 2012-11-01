@@ -632,7 +632,7 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2012-10-25/"))
+(def cur-eval-dir (str @fs/cwd "/eval-results/2012-11-01/"))
 (def clojure-tree "./eval-results/2012-10-23-clojure-to-prescreen/clojure")
 ;;(def clojure-tree "./eval-results/2012-09-22-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
