@@ -260,6 +260,12 @@
  :emails #{ "glchapman1@yahoo.com" }
  :contributor false
  }
+{:full-name "Ghadi Shayban"
+ :aliases #{ }
+ :usernames #{ "gshayban" }
+ :emails #{ "gshayban@gmail.com" }
+ :contributor true
+ }
 {:full-name "Timothy Baldridge"
  :aliases #{ }
  :usernames #{ "halgari" }
