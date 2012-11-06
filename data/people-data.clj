@@ -386,6 +386,12 @@
  :emails #{ "luke@vanderhart.net" "luke@thinkrelevance.com" }
  :contributor true
  }
+{:full-name "Kevin Lynagh"
+ :aliases #{ "\"Kevin J. Lynagh\"" }
+ :usernames #{ "lynaghk" }
+ :emails #{ "kevin@keminglabs.com" }
+ :contributor true
+ }
 {:full-name "Hubert Iwaniuk"
  :aliases #{ }
  :usernames #{ "neotyk" }
