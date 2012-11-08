@@ -374,6 +374,12 @@
  :emails #{ "juergen@archlinux.org" }
  :contributor true
  }
+{:full-name "Shantanu Kumar"
+ :aliases #{ }
+ :usernames #{ "kumarshantanu" }
+ :emails #{ "kumar.shantanu@gmail.com" }
+ :contributor true
+ }
 {:full-name "Kurt Harriger"
  :aliases #{ }
  :usernames #{ "kurtharriger" }
