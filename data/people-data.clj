@@ -139,6 +139,12 @@
  :emails #{ "gabriel.horner@gmail.com" }
  :contributor true
  }
+{:full-name "Peter Siewert"
+ :aliases #{ }
+ :usernames #{ "cninja" }
+ :emails #{ "cninja@gmail.com" }
+ :contributor true
+ }
 {:full-name "Cosmin Stejerean"
  :aliases #{ }
  :usernames #{ "cosmin" }
