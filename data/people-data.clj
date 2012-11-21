@@ -434,6 +434,12 @@
  :emails #{ "mike_r_anderson@yahoo.co.uk" }
  :contributor true
  }
+{:full-name "Maximilien Penet"
+ :aliases #{ "Max Penet" }
+ :usernames #{ "mpenet" }
+ :emails #{ "m@qbits.cc" }
+ :contributor true
+ }
 {:full-name "Brian Taylor"
  :aliases #{ }
  :usernames #{ "netguy204" }
