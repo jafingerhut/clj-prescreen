@@ -392,6 +392,12 @@
  :emails #{ "kurtharriger@gmail.com" }
  :contributor true
  }
+{:full-name "Marshall T. Vandegrift"
+ :aliases #{ "\"Marshall T. Vandegrift\"" }
+ :usernames #{ "llasram" }
+ :emails #{ "llasram@gmail.com" }
+ :contributor true
+ }
 {:full-name "Luke VanderHart"
  :aliases #{ "Luke VanderHart and Ghadi Shayban" }
  :usernames #{ "lvanderhart" }
@@ -414,6 +420,12 @@
  :aliases #{ }
  :usernames #{ "nicolasoury" }
  :emails #{ "Nicolas.Oury@gmail.com" }
+ :contributor true
+ }
+{:full-name "Mark Engelberg"
+ :aliases #{ }
+ :usernames #{ "markengelberg" }
+ :emails #{ "mark.engelberg@gmail.com" }
  :contributor true
  }
 {:full-name "Meikel Brandmeyer"
