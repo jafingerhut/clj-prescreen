@@ -392,6 +392,12 @@
  :emails #{ "kurtharriger@gmail.com" }
  :contributor true
  }
+{:full-name "Laurent Petit"
+ :aliases #{ "" }
+ :usernames #{ "laurentpetit" }
+ :emails #{ "laurent.petit@gmail.com" }
+ :contributor true
+ }
 {:full-name "Marshall T. Vandegrift"
  :aliases #{ "\"Marshall T. Vandegrift\"" }
  :usernames #{ "llasram" }
