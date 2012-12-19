@@ -212,6 +212,12 @@
  :emails #{ "clojure@sattvik.com" }
  :contributor true
  }
+{:full-name "Edward Tsech"
+ :aliases #{ }
+ :usernames #{ "edtsech" }
+ :emails #{ "edtsech@gmail.com" }
+ :contributor true
+ }
 {:full-name "Ed Bowler"
  :aliases #{ }
  :usernames #{ "ed.bowler@gmail.com" }
@@ -294,6 +300,12 @@
  :aliases #{ }
  :usernames #{ "hugoduncan" }
  :emails #{ "hugo@hugoduncan.org" }
+ :contributor true
+ }
+{:full-name "Jean Niklas L'orange"
+ :aliases #{ }
+ :usernames #{ "hypirion" }
+ :emails #{ "jeannikl@hypirion.com" }
  :contributor true
  }
 {:full-name "Ian Eure"
@@ -570,6 +582,12 @@
  :aliases #{ }
  :usernames #{ }
  :emails #{ "pair@thinkrelevance.com" }
+ :contributor true
+ }
+{:full-name "Toby Crawley"
+ :aliases #{ "Tobias Crawley" }
+ :usernames #{ "tcrawley" }
+ :emails #{ "toby@tcrawley.org" "tcrawley@gmail.com" }
  :contributor true
  }
 {:full-name "Phil Hagelberg"
