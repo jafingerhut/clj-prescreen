@@ -1,13 +1,21 @@
 [
- {:full-name "Hudson"
+;; This one is clearly not a person, but this name and email address
+;; show up frequently in the Clojure commit log when new Clojure
+;; releases are made.
+{:full-name "Hudson"
  :aliases #{ "Hudson @ build.clojure.org" }
  :usernames #{ "hudson" }
  :emails #{ "build@clojure.com" }
  :contributor true
  }
- {:full-name "Aaron Bedra"
+{:full-name "Aaron Bedra"
  :usernames #{ "aaron" }
  :emails #{ "aaron@thinkrelevance.com" "aaron@aaronbedra.com" }
+ :contributor true
+ }
+{:full-name "Achim Passen"
+ :usernames #{ "achimpassen" }
+ :emails #{ "achim.passen@gmail.com" }
  :contributor true
  }
 {:full-name "Alan Dipert"
@@ -43,10 +51,22 @@
  :emails #{ "i@raynes.me" }
  :contributor true
  }
+{:full-name "Alex Osborne"
+ :aliases #{ }
+ :usernames #{ "aosborne" }
+ :emails #{ "ato@meshy.org" }
+ :contributor true
+ }
 {:full-name "Alex Redington"
  :aliases #{ "Alexander Redington" }
  :usernames #{ "aredington" }
  :emails #{ "alex.redington@thinkrelevance.com" }
+ :contributor true
+ }
+{:full-name "Allen Rohner"
+ :aliases #{ }
+ :usernames #{ "arohner" }
+ :emails #{ "arohner@gmail.com" }
  :contributor true
  }
 {:full-name "Alex Taggart"
@@ -68,9 +88,15 @@
  :contributor true
  }
 {:full-name "Brenton Ashworth"
- :aliases #{ "" }
+ :aliases #{ }
  :usernames #{ "brentonashworth" }
  :emails #{ "brenton@thinkrelevance.com" "bashwort@gmail.com" }
+ :contributor true
+ }
+{:full-name "Brian Hurt"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "bhurt42@gmail.com" }
  :contributor true
  }
 {:full-name "Nicola Mometto"
@@ -122,7 +148,7 @@
  :contributor true
  }
 {:full-name "Charles Duffy"
- :aliases #{ "" }
+ :aliases #{ }
  :usernames #{ "charles-dyfis-net" }
  :emails #{ "charles@dyfis.net" "duffy@indeed.com" }
  :contributor true
@@ -169,6 +195,12 @@
  :emails #{ "craig@red-bean.com" }
  :contributor true
  }
+{:full-name "Clinton R. Nixon"
+ :aliases #{ }
+ :usernames #{ "crnixon" }
+ :emails #{ "crnixon@gmail.com" }
+ :contributor true
+ }
 {:full-name "David McNeil"
  :aliases #{ }
  :usernames #{ "david-mcneil" }
@@ -187,6 +219,12 @@
  :emails #{ "david@ruppworks.com" }
  :contributor true
  }
+{:full-name "Devender Gollapally"
+ :aliases #{ "devender" }
+ :usernames #{ "devender" }
+ :emails #{ "devender.gollapally@gmail.com" }
+ :contributor true
+ }
 {:full-name "Devin Walters"
  :aliases #{ }
  :usernames #{ "devn" }
@@ -200,10 +238,22 @@
  :contributor false
  :incomplete-entry true
  }
+{:full-name "Dimitry Gashinsky"
+ :aliases #{ "Dig Gashinsky"}
+ :usernames #{ "digash" }
+ :emails #{ "i+clojuredev@gashinsky.com" "dimi...@gashinsky.com" }
+ :contributor true
+ }
 {:full-name "David Powell"
  :aliases #{ }
  :usernames #{ "djpowell" }
  :emails #{ "djpowell@djpowell.net" }
+ :contributor true
+ }
+{:full-name "David Miller"
+ :aliases #{ }
+ :usernames #{ "dmiller" }
+ :emails #{ "dmiller2718@gmail.com" "dmiller@cdm.depaul.edu" }
  :contributor true
  }
 {:full-name "David Nolen"
@@ -212,10 +262,22 @@
  :emails #{ "dnolen.lists@gmail.com" }
  :contributor true
  }
+{:full-name "Drew Raines"
+ :aliases #{ }
+ :usernames #{ "drewr" }
+ :emails #{ "aaraines@gmail.com" }
+ :contributor true
+ }
 {:full-name "Daniel Solano Gómez"
  :aliases #{ "=?UTF-8?q?Daniel=20Solano=20G=C3=B3mez?=" }
  :usernames #{ "dsg" }
  :emails #{ "clojure@sattvik.com" }
+ :contributor true
+ }
+{:full-name "Tim Dysinger"
+ :aliases #{ }
+ :usernames #{ "dysinger" }
+ :emails #{ "tim@dysinger.net" }
  :contributor true
  }
 {:full-name "Edward Tsech"
@@ -252,6 +314,12 @@
  :aliases #{ "Fogus" "fogus" }
  :usernames #{ "fogus" }
  :emails #{ "michael.fogus@gmail.com" "mefogus@gmail.com" "fogusm@tsubasa.tena-sda.org" }
+ :contributor true
+ }
+{:full-name "Frantisek Sodomka"
+ :aliases #{ }
+ :usernames #{ "fsodomka" }
+ :emails #{ "fsodomka@gmail.com" }
  :contributor true
  }
 {:full-name "George Jahad"
@@ -386,6 +454,12 @@
  :emails #{ "jpalmucci@gmail.com" }
  :contributor true
  }
+{:full-name "James Reeves"
+ :aliases #{ "jreeves" }
+ :usernames #{ "jreeves" }
+ :emails #{ "jreeves@weavejester.com" }
+ :contributor true
+ }
 {:full-name "John Szakmeister"
  :aliases #{ }
  :usernames #{ "jszakmeister" }
@@ -396,6 +470,18 @@
  :aliases #{ "Juergen Hoetzel" }
  :usernames #{ "juergenhoetzel" }
  :emails #{ "juergen@archlinux.org" }
+ :contributor true
+ }
+{:full-name "Justin Balthrop"
+ :aliases #{ }
+ :usernames #{ "justin.balthrop" }
+ :emails #{ "clojure@justinbalthrop.com" "justin@geni.com" }
+ :contributor true
+ }
+{:full-name "Konrad Hinsen"
+ :aliases #{ }
+ :usernames #{ "khinsen" }
+ :emails #{ "konrad.hinsen@fastmail.net" }
  :contributor true
  }
 {:full-name "Shantanu Kumar"
@@ -411,9 +497,15 @@
  :contributor true
  }
 {:full-name "Laurent Petit"
- :aliases #{ "" }
+ :aliases #{ }
  :usernames #{ "laurentpetit" }
  :emails #{ "laurent.petit@gmail.com" }
+ :contributor true
+ }
+{:full-name "Lauri Pesonen"
+ :aliases #{ "unknown" }
+ :usernames #{ "liwp" }
+ :emails #{ "lauri.pesonen@iki.fi" "lpesonen@.emea.progress.com" }
  :contributor true
  }
 {:full-name "Marshall T. Vandegrift"
@@ -432,6 +524,18 @@
  :aliases #{ "\"Kevin J. Lynagh\"" }
  :usernames #{ "lynaghk" }
  :emails #{ "kevin@keminglabs.com" }
+ :contributor true
+ }
+{:full-name "Matt Revelle"
+ :aliases #{ }
+ :usernames #{ "mattrevelle" }
+ :emails #{ "matt@dynamictyping.org" }
+ :contributor true
+ }
+{:full-name "Mike Hinchey"
+ :aliases #{ }
+ :usernames #{ "mikehinchey" }
+ :emails #{ "hincheymg@gmail.com" }
  :contributor true
  }
 {:full-name "Hubert Iwaniuk"
@@ -482,6 +586,12 @@
  :emails #{ "el.wubo@gmail.com" }
  :contributor true
  }
+{:full-name "Jarkko Oranen"
+ :aliases #{ }
+ :usernames #{ "oranenj" }
+ :emails #{ "chousuke@gmail.com" }
+ :contributor true
+ }
 {:full-name "Pepijn de Vos"
  :aliases #{ }
  :usernames #{ "pepijndevos" }
@@ -512,6 +622,12 @@
  :emails #{ "philipgpotter@gmail.com" }
  :contributor true
  }
+{:full-name "Rasmus Svensson"
+ :aliases #{ }
+ :usernames #{ "raek" }
+ :emails #{ "raek@raek.se" "raek@lysator.liu.se" }
+ :contributor true
+ }
 {:full-name "Rahul Pilani"
  :aliases #{ }
  :usernames #{ "rahulpilani" }
@@ -524,10 +640,28 @@
  :emails #{ "chris@thinkrelevance.com" "redinger@gmail.com" }
  :contributor true
  }
+{:full-name "Aaron Cohen"
+ :aliases #{ }
+ :usernames #{ "remleduff" }
+ :emails #{ "aaron@assonance.org" }
+ :contributor true
+ }
 {:full-name "Rich Hickey"
  :aliases #{ }
  :usernames #{ "richhickey" }
  :emails #{ "richhickey@clojure.com" "richhickey@gmail.com" }
+ :contributor true
+ }
+{:full-name "Richard Newman"
+ :aliases #{ }
+ :usernames #{ "rnewman" }
+ :emails #{ "rnewman@clojure.org" "rnewman@twinql.com" }
+ :contributor true
+ }
+{:full-name "Robert Lachlan"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "robertlachlan@gmail.com" }
  :contributor true
  }
 {:full-name "Ryan Senior"
@@ -542,10 +676,22 @@
  :emails #{ "david.santiago@gmail.com" }
  :contributor true
  }
+{:full-name "Stephen C. Gilardi"
+ :aliases #{ "Steve Gilardi" }
+ :usernames #{ "scgilardi" }
+ :emails #{ "scgilardi@gmail.com" "squeegee@squeegee-mbp.scgilardi.selfip.net" }
+ :contributor true
+ }
 {:full-name "Scott Lowe"
  :aliases #{ }
  :usernames #{ "scottlowe" }
  :emails #{ "scottwithtwotees@gmail.com" }
+ :contributor true
+ }
+{:full-name "Sean Devlin"
+ :aliases #{ "Sean" }
+ :usernames #{ "seandevlin" }
+ :emails #{ "francoisdevlin@gmail.com" "devlinsf@devlinsolutions.com" }
  :contributor true
  }
 {:full-name "Stefan Kamphausen"
@@ -555,9 +701,9 @@
  :contributor true
  }
 {:full-name "Micah Martin"
- :aliases #{ }
+ :aliases #{ "Micah" }
  :usernames #{ "slagyr" }
- :emails #{ "micahmartin@gmail.com" }
+ :emails #{ "micahmartin@gmail.com" "micah@8thlight.com" }
  :contributor true
  }
 {:full-name "Stephen Miner"
@@ -644,6 +790,20 @@
  :emails #{ "cortex@brainonfire.net" }
  :contributor true
  }
+;; This commit:
+;; https://github.com/clojure/clojure/commit/f966d6efab1463be32213d87343aa17c9003234b
+;; was made with the same comment headline as this one:
+;; https://github.com/clojure/clojure/commit/b65501e1b0707f4738570374e7a31cc0a3db81f0
+;;
+;; The second one had Timothy's name and email address, but the first
+;; had a name of "unknown" and an email address of "Ninja@.(none)".
+;; It seems to be his as well, hence the unusual email address below.
+{:full-name "Timothy Pratley"
+ :aliases #{ "tpratley" "unknown" }
+ :usernames #{ "timothypratley" }
+ :emails #{ "timothypratley@gmail.com" "Ninja@.(none)" }
+ :contributor true
+ }
 {:full-name "Tom Faulhaber"
  :aliases #{ }
  :usernames #{ "tomfaulhaber" }
@@ -682,7 +842,7 @@
  }
 ]
 ;;{:full-name ""
-;; :aliases #{ "" }
+;; :aliases #{ }
 ;; :usernames #{ "" }
 ;; :emails #{ "" }
 ;; :contributor true false
