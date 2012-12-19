@@ -1,7 +1,13 @@
 [
+ {:full-name "Hudson"
+ :aliases #{ "Hudson @ build.clojure.org" }
+ :usernames #{ "hudson" }
+ :emails #{ "build@clojure.com" }
+ :contributor true
+ }
  {:full-name "Aaron Bedra"
  :usernames #{ "aaron" }
- :emails #{ "aaron@thinkrelevance.com" }
+ :emails #{ "aaron@thinkrelevance.com" "aaron@aaronbedra.com" }
  :contributor true
  }
 {:full-name "Alan Dipert"
@@ -46,7 +52,7 @@
 {:full-name "Alex Taggart"
  :aliases #{ "Alexander Taggart" }
  :usernames #{ "ataggart" }
- :emails #{ "mail@ataggart.ca" "alex.taggart@expojure.com" }
+ :emails #{ "mail@ataggart.ca" "alex.taggart@expojure.com" "ataggart@mercury.local" }
  :contributor true
  }
 {:full-name "Brandon Bloom"
@@ -124,7 +130,7 @@
 {:full-name "Chris Houser"
  :aliases #{ "Chouser" }
  :usernames #{ "chouser@n01se.net" }
- :emails #{ "chouser@n01se.net" }
+ :emails #{ "chouser@n01se.net" "chouser@lonocloud.com" }
  :contributor true
  }
 {:full-name "Chris Gray"
@@ -245,13 +251,13 @@
 {:full-name "Michael Fogus"
  :aliases #{ "Fogus" "fogus" }
  :usernames #{ "fogus" }
- :emails #{ "michael.fogus@gmail.com" "mefogus@gmail.com" }
+ :emails #{ "michael.fogus@gmail.com" "mefogus@gmail.com" "fogusm@tsubasa.tena-sda.org" }
  :contributor true
  }
 {:full-name "George Jahad"
  :aliases #{ }
  :usernames #{ "george" }
- :emails #{ "clojure@blackbirdsystems.net" }
+ :emails #{ "clojure@blackbirdsystems.net" "george@georgejahad.com" }
  :contributor true
  }
 {:full-name "Gary Fredericks"
@@ -291,7 +297,7 @@
  :contributor true
  }
 {:full-name "Kevin Downey"
- :aliases #{ }
+ :aliases #{ "Kevin Downey (hiredman)" }
  :usernames #{ "hiredman" }
  :emails #{ "redchin@gmail.com" }
  :contributor true
@@ -323,7 +329,7 @@
 {:full-name "John Andrew Fingerhut"
  :aliases #{ "Andy Fingerhut" }
  :usernames #{ "jafingerhut" }
- :emails #{ "andy_fingerhut@alum.wustl.edu" "andy.fingerhut@gmail.com" }
+ :emails #{ "andy_fingerhut@alum.wustl.edu" "andy.fingerhut@gmail.com" "jafinger@cisco.com" }
  :contributor true
  }
 {:full-name "Juha Arpiainen"
@@ -495,7 +501,7 @@
  :contributor true
  }
 {:full-name "Paul Michael Bauer"
- :aliases #{ "Paul Bauer" }
+ :aliases #{ "Paul Bauer" "Paul M Bauer" }
  :usernames #{ "pmbauer" }
  :emails #{ "paul.michael.bauer@gmail.com" }
  :contributor true
@@ -515,13 +521,13 @@
 {:full-name "Christopher Redinger"
  :aliases #{ }
  :usernames #{ "redinger" }
- :emails #{ "chris@thinkrelevance.com" }
+ :emails #{ "chris@thinkrelevance.com" "redinger@gmail.com" }
  :contributor true
  }
 {:full-name "Rich Hickey"
  :aliases #{ }
  :usernames #{ "richhickey" }
- :emails #{ "richhickey@clojure.com" }
+ :emails #{ "richhickey@clojure.com" "richhickey@gmail.com" }
  :contributor true
  }
 {:full-name "Ryan Senior"
@@ -569,7 +575,7 @@
 {:full-name "Stuart Halloway"
  :aliases #{ }
  :usernames #{ "stu" }
- :emails #{ "stu@thinkrelevance.com" }
+ :emails #{ "stu@thinkrelevance.com" "stu@Stuart-Halloways-MacBook-Air.local" "stu@Orolo.local" }
  :contributor true
  }
 {:full-name "Stuart Sierra"
@@ -579,6 +585,36 @@
  :contributor true
  }
 {:full-name "Stuart Sierra and Alex Redington"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair@thinkrelevance.com" }
+ :contributor true
+ }
+{:full-name "Aaron Bedra and Stuart Halloway"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair@thinkrelevance.com" }
+ :contributor true
+ }
+{:full-name "Aaron Bedra & Stuart Sierra"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair@thinkrelevance.com" }
+ :contributor true
+ }
+{:full-name "Alan Dipert and Stuart Halloway"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair@clojure.com" }
+ :contributor true
+ }
+{:full-name "David Liebke and Stuart Halloway"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair@clojure.com" }
+ :contributor true
+ }
+{:full-name "Michael Fogus and Alan Dipert"
  :aliases #{ }
  :usernames #{ }
  :emails #{ "pair@thinkrelevance.com" }
@@ -611,7 +647,7 @@
 {:full-name "Tom Faulhaber"
  :aliases #{ }
  :usernames #{ "tomfaulhaber" }
- :emails #{ "tomfaulhaber@gmail.com" "git_net@infolace.com" }
+ :emails #{ "tomfaulhaber@gmail.com" "git_net@infolace.com" "git_com@infolace.com" }
  :contributor true
  }
 {:full-name "Thomas Jack"
