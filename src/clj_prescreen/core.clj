@@ -80,12 +80,43 @@
   (apply spit f (with-out-str (p/pprint data)) options))
 
 
+(defn ticket-fields [ticket]
+  (let [fields [:key :title :type :attrs :status :resolution :reporter :labels
+                :created :updated :votes :watches :fixVersion]
+        t (into {} (map (fn [fld]
+                          [fld (dzx/xml1-> ticket fld dzx/text)])
+                        fields))]
+    (-> t
+        (assoc :ticket (t :key))
+        (dissoc :key))))
+
+
+(defn contents-of-tags [content tag]
+  (->> content
+       (filter #(= (:tag %) tag))
+       first
+       :content))
+
+
+(defn ticket-custom-fields [ticket]
+  (let [custs (map first (dzx/xml-> ticket :customfields :customfield))]
+    (into {} (map (fn [fld]
+                    (let [c (:content fld)]
+                      [(first (contents-of-tags c :customfieldname))
+                       (let [vals (contents-of-tags c :customfieldvalues)]
+                         (first (contents-of-tags vals :customfieldvalue)))]))
+                  custs))))
+
+
 (defn attachments-from-ticket [ticket]
-  (let [k (dzx/xml1-> ticket :key dzx/text)
-        title (dzx/xml1-> ticket :title dzx/text)]
-    (->> (dzx/xml-> ticket :attachments :attachment)
-         (map (fn [att] (:attrs (first att))))
-         (map #(merge % {:ticket k :title title})))))
+  (let [t (merge (ticket-fields ticket)
+                 (ticket-custom-fields ticket))
+        as (->> (dzx/xml-> ticket :attachments :attachment)
+                (map (fn [att] (:attrs (first att)))))
+        as (if (seq as) as [ {} ] )]
+;;    (when (= as [ {} ])
+;;      (println "Ticket has no attachments:" (:ticket t)))
+    (map #(merge % t) as)))
 
 
 (defn ticket-sort-key
@@ -147,7 +178,8 @@ TBENCH-11"
 
 
 (defn download-attachments! [atts attach-dir]
-  (let [ticket-names (set (map :ticket atts))]
+  (let [atts (filter :name atts)
+        ticket-names (set (map :ticket atts))]
     (iprintf "Creating %d directories to store attachments:\n"
              (count ticket-names))
     (doseq [ticket-name ticket-names]
@@ -161,18 +193,20 @@ TBENCH-11"
     (iprintf "Getting %d attachments:\n" num-atts)
     (doall
      (for [[idx att] (map-indexed list atts)]
-       (let [{ticket-name :ticket id :id att-name :name} att
-             local-filename (str (att-dir-name ticket-name attach-dir)
-                                 "/" att-name)
-             url (str "http://dev.clojure.org/jira/secure/attachment/"
-                      id "/" att-name)
-             _ (iprintf "    Attachment %d/%d %s ...\n"
-                        (inc idx) num-atts att-name)
-             att-contents (slurp url)
-             guessed-type (guess-attachment-type att-contents)]
-         (spit local-filename att-contents)
-         (merge att {:local-filename local-filename
-                     :guessed-type guessed-type}))))))
+       (if (nil? (:name att))
+         att
+         (let [{ticket-name :ticket id :id att-name :name} att
+               local-filename (str (att-dir-name ticket-name attach-dir)
+                                   "/" att-name)
+               url (str "http://dev.clojure.org/jira/secure/attachment/"
+                        id "/" att-name)
+               _ (iprintf "    Attachment %d/%d %s ...\n"
+                          (inc idx) num-atts att-name)
+               att-contents (slurp url)
+               guessed-type (guess-attachment-type att-contents)]
+           (spit local-filename att-contents)
+           (merge att {:local-filename local-filename
+                       :guessed-type guessed-type})))))))
 
 
 (defn git-dir? [dir]
@@ -221,7 +255,7 @@ the root directory of a Clojure git repository."
 
 (defn person-matches-name-and-email
   [person name email]
-  (let [name-match (or (= name (:full-name person))
+  (let [name-match (or (= name (:display-name person))
                        (get (:aliases person) name))
         email-match (get (:emails person) email)]
     (cond (and name-match email-match) :full-match
@@ -281,10 +315,11 @@ once, using a set."
   [people {:keys [name email] :as author}]
   (let [[match-kind x] (find-by-name-and-email people author)]
     (if (= match-kind :one-full-match)
-      (if (:contributor x)
-        :contributor
-        :not-contributor)
-      match-kind)))
+      {:contributor-status (if (:contributor x)
+                             :contributor
+                             :not-contributor)
+       :display-name (:display-name x)}
+      {:contributor-status match-kind})))
 
 
 (defn patch-authors-contributor-status
@@ -292,8 +327,7 @@ once, using a set."
   (->> patch-authors
        (map extract-name-and-email)
        (map (fn [p]
-              (merge p {:contributor-status
-                        (one-author-contributor-status people p)})))))
+              (merge p (one-author-contributor-status people p))))))
 
 
 (defn patch-type
@@ -470,80 +504,88 @@ Check it to see if it was created incorrectly."})
 
 (defn add-author-info
   [p attach-dir people-info]
-  (if (= :git-diff (patch-type p))
-    (let [patch-filename (patch-file-name p attach-dir)
-          patch-content (slurp patch-filename)
-          author-info (patch-authors-contributor-status
-                       (git-patch-authors patch-content) people-info)]
-      (merge p {:patch-author-info author-info
-                :patch-author-summary
-                (if (every? #(= :contributor (:contributor-status %))
-                            author-info)
-                  :CA-ok
-                  :not-CA-clean)}))
-    ;; else not a git patch
-    (merge p {:patch-author-info nil
-              :patch-author-summary :not-git-patch})))
+  (if (nil? (:name p))
+    p
+    (if (= :git-diff (patch-type p))
+      (let [patch-filename (patch-file-name p attach-dir)
+            patch-content (slurp patch-filename)
+            author-info (patch-authors-contributor-status
+                         (git-patch-authors patch-content) people-info)]
+        (merge p {:patch-author-info author-info
+                  :patch-author-summary
+                  (if (every? #(= :contributor (:contributor-status %))
+                              author-info)
+                    :CA-ok
+                    :not-CA-clean)}))
+      ;; else not a git patch
+      (merge p {:patch-author-info nil
+                :patch-author-summary :not-git-patch}))))
 
 
 (defn eval-patch! [p attach-dir idx num-patches
                    unmodified-clojure-dir temp-clojure-dir
                    try-to-build?]
-  (let [logfile-name (str (att-dir-name (:ticket p) attach-dir) "/"
-                          (:name p) "-log.txt")]
-    (with-open [logf (io/writer logfile-name)]
-      (binding [*cmd-log* logf]
-        (iprintf "eval-patch! %d/%d %s %s\n"
-                 (inc idx) num-patches (:ticket p) (:name p))
-        ;; (1) Copy unmodified Clojure tree to a temporary working copy.
-        (try-cmd :throw-on-error
-                 "cp" "-pr" unmodified-clojure-dir temp-clojure-dir)
-        ;; (2) Try to apply the patch
-        (try
-          (sh/with-sh-dir temp-clojure-dir
-            (let [patch-filename (patch-file-name p attach-dir)
-                  {:keys [patch-status patch-msg] :as p}
-                  (case (patch-type p)
-                    :git-diff
-                    (apply-git-patch p patch-filename idx num-patches)
-                    :non-git-diff
-                    (apply-non-git-patch p patch-filename idx num-patches)
-                    ;; default case:
-                    (merge p {:patch-status :not-patch
-                              :patch-msg "Attachment file not recognized as a patch."}))]
-              (when *cmd-log*
-                (iprintf *cmd-log* "Patch status: %s (%s)\n" patch-msg
-                         patch-status))
-              (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
-              (case patch-status
-                :ok
-                (if try-to-build?
-                  ;; (3) Try to build and test
-                  (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
-                    (when *cmd-log*
-                      (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
-                               ant-status))
-                    (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
+  (if (nil? (:name p))
+    ;; No patch to evaluate
+    (do
+      (iprintf "eval-patch! %d/%d %s no patch to evaluate for this ticket\n"
+               (inc idx) num-patches (:ticket p))
+      p)
+    (let [logfile-name (str (att-dir-name (:ticket p) attach-dir) "/"
+                            (:name p) "-log.txt")]
+      (with-open [logf (io/writer logfile-name)]
+        (binding [*cmd-log* logf]
+          (iprintf "eval-patch! %d/%d %s %s\n"
+                   (inc idx) num-patches (:ticket p) (:name p))
+          ;; (1) Copy unmodified Clojure tree to a temporary working copy.
+          (try-cmd :throw-on-error
+                   "cp" "-pr" unmodified-clojure-dir temp-clojure-dir)
+          ;; (2) Try to apply the patch
+          (try
+            (sh/with-sh-dir temp-clojure-dir
+              (let [patch-filename (patch-file-name p attach-dir)
+                    {:keys [patch-status patch-msg] :as p}
+                    (case (patch-type p)
+                      :git-diff
+                      (apply-git-patch p patch-filename idx num-patches)
+                      :non-git-diff
+                      (apply-non-git-patch p patch-filename idx num-patches)
+                      ;; default case:
+                      (merge p {:patch-status :not-patch
+                                :patch-msg "Attachment file not recognized as a patch."}))]
+                (when *cmd-log*
+                  (iprintf *cmd-log* "Patch status: %s (%s)\n" patch-msg
+                           patch-status))
+                (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
+                (case patch-status
+                  :ok
+                  (if try-to-build?
+                    ;; (3) Try to build and test
+                    (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
+                      (when *cmd-log*
+                        (iprintf *cmd-log* "Build status: %s (%s)\n" ant-msg
+                                 ant-status))
+                      (iprintf "    Build status: %s (%s)\n" ant-msg ant-status)
+                      p)
+                    ;; otherwise don't try to build and test
                     p)
-                  ;; otherwise don't try to build and test
-                  p)
-                
-                :fail ;; patch attempt failed.
-                ;; Don't try to build, but try other patches if there are
-                ;; more.
-                p
-                
-                :not-patch  ;; file didn't look like a patch
-                p
-                
-                :unrecoverable-fail
-                ;; Throw exception to stop any attempt to apply later
-                ;; patches, if there are more.
-                (throw (Exception. ^String (:patch-msg p))))))
-          (finally
-           ;; (4) Clean up: remove temp Clojure tree
-           (iprintf (str "rm -fr " temp-clojure-dir "\n"))
-           (try-cmd :throw-on-error "rm" "-fr" temp-clojure-dir)))))))
+                  
+                  :fail ;; patch attempt failed.
+                  ;; Don't try to build, but try other patches if there are
+                  ;; more.
+                  p
+                  
+                  :not-patch  ;; file didn't look like a patch
+                  p
+                  
+                  :unrecoverable-fail
+                  ;; Throw exception to stop any attempt to apply later
+                  ;; patches, if there are more.
+                  (throw (Exception. ^String (:patch-msg p))))))
+            (finally
+             ;; (4) Clean up: remove temp Clojure tree
+             (iprintf (str "rm -fr " temp-clojure-dir "\n"))
+             (try-cmd :throw-on-error "rm" "-fr" temp-clojure-dir))))))))
 
 
 (defn eval-patches! [patches attach-dir unmodified-clojure-dir
@@ -564,12 +606,31 @@ Check it to see if it was created incorrectly."})
     deflt))
 
 
+(defn trunc-str [s max-length]
+  (if (> (count s) max-length)
+    (subs s 0 max-length)
+    s))
+
+
 (defn one-patch-summary [p]
-  (iprintf "%-13s %-10s %-5s %s %s\n"
-           (name-or-default p :patch-author-summary "--")
-           (name-or-default p :patch-status "--")
-           (name-or-default p :ant-status "--")
-           (:ticket p) (:name p)))
+  (let [ai (:patch-author-info p)
+        auth-name (if-not (nil? ai)
+                    (or (:display-name (first ai))
+                        (:name (first ai))))]
+    ;; Properties of the ticket as a whole
+    (iprintf "%-8s %1s %2s %-8s %-11s"
+             (:ticket p)
+             (subs (:type p) 0 1)
+             (:votes p)
+             (trunc-str (or (get p "Approval") "--") 8)
+             (trunc-str (or (:fixVersion p) "--") 11))
+    ;; Properties specific to each patch
+    (iprintf " %-13s %-10s %-5s %-15s %s\n"
+             (name-or-default p :patch-author-summary "--")
+             (name-or-default p :patch-status "--")
+             (name-or-default p :ant-status "--")
+             (trunc-str (or auth-name "--") 15)
+             (:name p))))
 
 
 (defn eval-patches-summary [patches]
@@ -658,12 +719,26 @@ apply the patch, and try to build with 'ant' in that copy."
 ;; do this:
 (doseq [cur-patch-type patch-type-list]
   (let [base (str cur-eval-dir cur-patch-type)
-        fname1 (str base "-downloaded-only.txt")
+        fname1 (str base "-evaled-authors.txt")
         fname-sum (str base "-author-info.txt")
         as1 (read-safely fname1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as1))]
     (spit-pretty fname1 as1)
+    (spit fname-sum (with-out-str (eval-patches-summary as1)))))
+
+;; After doing the do-eval-check-ca! above, and hand-edited a file
+;; containing the "preferred patches" to show in the prescreened patch
+;; list, do the below to generate part of the prescreened patch
+;; report.
+
+(doseq [cur-patch-type patch-type-list]
+  (let [base (str cur-eval-dir cur-patch-type)
+        fname1 (str base "-evaled-authors.txt")
+        fname-sum (str base "-prescreened-report.txt")
+        as1 (read-safely fname1)
+        
+        ]
     (spit fname-sum (with-out-str (eval-patches-summary as1)))))
 
 
