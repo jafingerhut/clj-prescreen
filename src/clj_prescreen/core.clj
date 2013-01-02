@@ -4,6 +4,7 @@
             [clojure.data.zip.xml :as dzx]
             [clojure.zip :as zip]
             [clojure.java.io :as io]
+            [clojure.set :as set]
             [clojure.string :as str]
             [clojure.java.shell :as sh]
             [clojure.pprint :as p]
@@ -78,6 +79,21 @@
 
 (defn spit-pretty [f data & options]
   (apply spit f (with-out-str (p/pprint data)) options))
+
+
+(defn map-vals [f m]
+  (into (empty m)
+        (for [[k v] m] [k (f v)])))
+
+
+(defn filter-vals [f m]
+  (into (empty m)
+        (filter (fn [[_ v]] (f v)) m)))
+
+
+(defn extract-dec-num [s]
+  (if-let [num-str (re-find #"\d+" s)]
+    (Long/parseLong num-str)))
 
 
 (defn ticket-fields [ticket]
@@ -680,6 +696,275 @@ apply the patch, and try to build with 'ant' in that copy."
             (with-out-str (eval-patches-summary as4))))))
 
 
+;; Desired order in which to show the categories relative to each
+;; other.
+
+(def +patch-category-show-order+
+  [ "Doc string fixes only"
+    "Better error reporting"
+    "Debug/tooling enhancement"
+    "Clojure language/library bug fixes"
+    "Language enhancement, reducers"
+    "Allow more correct-looking Clojure code to work"
+    "Language/library enhancement"
+    "Disable failing tests"
+    "Performance enhancement"
+    "Code cleanup"
+    ])
+
+(def +map-patch-category-to-show-order+
+  (into {} (map-indexed (fn [idx cat] [cat idx])
+                        +patch-category-show-order+)))
+
+
+(defn prescreened? [att]
+  (and (:name att)
+       (= (:patch-author-summary att) :CA-ok)
+       (= (:patch-status att) :ok)
+       (= (:ant-status att) :ok)))
+
+(defn next-release? [att]
+  (= (:fixVersion att) "Release 1.5"))
+
+(defn approval-in? [att approval-set]
+  (approval-set (get att "Approval")))
+
+(defn prescreened-not-screened-not-next-release? [att]
+  (and (prescreened? att)
+       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "OK"}))
+       (not (next-release? att))))
+
+(defn prescreened-not-screened-next-release? [att]
+  (and (prescreened? att)
+       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "OK"}))
+       (next-release? att)))
+
+(defn prescreened-and-screened? [att]
+  (and (prescreened? att)
+       (approval-in? att #{"Screened" "OK"})))
+
+(defn prescreened-and-needs-work? [att]
+  (and (prescreened? att)
+       (approval-in? att #{"Incomplete" "Not Approved"})))
+
+(defn not-prescreened-and-needs-work? [att]
+  (and (not (prescreened? att))
+       (approval-in? att #{"Incomplete" "Not Approved" "Vetted"})))
+
+(defn patch-name-exists? [atts-for-ticket att-name]
+  (first (filter #(= att-name (:name %)) atts-for-ticket)))
+
+
+(defn warning-log-text [atts ppats att-fname ppat-fname]
+  (with-out-str
+    (let [atts-by-ticket (group-by :ticket atts)
+          ppats-by-ticket (group-by :ticket ppats)
+          
+          open-tickets (set (map :ticket atts))
+          prescreened-tickets (set (map :ticket (filter prescreened? atts)))
+          ppat-tickets (set (map :ticket ppats))
+          
+          ppat-but-not-open-tickets (set/difference ppat-tickets open-tickets)
+
+          prescreened-but-no-ppat-tickets (set/difference prescreened-tickets
+                                                          ppat-tickets)
+
+          dup-ppat-tickets (->> ppats-by-ticket
+                                (filter-vals #(> (count %) 1))
+                                keys
+                                set)
+        
+          bad-patch-names
+          (into {} (filter (fn [[ticket [ppat]]]
+                             (not (patch-name-exists? (get atts-by-ticket ticket)
+                                                      (:name ppat))))
+                           ppats-by-ticket))
+
+          ppat-is-not-prescreened
+          (into {} (filter (fn [[ticket [ppat]]]
+                             (let [as (get atts-by-ticket ticket)
+                                   a (patch-name-exists? as (:name ppat))]
+                               (not (prescreened? a))))
+                           ppats-by-ticket))
+          ]
+
+      (if (empty? ppat-but-not-open-tickets)
+        (printf "All tickets with preferred patches are for open JIRA tickets.")
+        (printf "List of tickets in the preferred patch file '%s'
+that are not in open JIRA tickets from file '%s'.
+Check whether the ticket was closed, and remove from preferred patch file if so:
+    %s"
+                ppat-fname att-fname
+                (str/join "\n    "
+                          (sort-by extract-dec-num
+                                   ppat-but-not-open-tickets))))
+
+      (print "\n\n")
+      (if (empty? prescreened-but-no-ppat-tickets)
+        (printf "All tickets with prescreened patches have a preferred patch.")
+        (printf "List of tickets with prescreened patches from file '%s'
+but have no record in the preferred patch file '%s'.
+Consider adding a record to the preferred patch file for them:
+    %s"
+                att-fname ppat-fname
+                (str/join "\n    "
+                          (sort-by extract-dec-num
+                                   prescreened-but-no-ppat-tickets))))
+
+      (print "\n\n")
+      (if (empty? dup-ppat-tickets)
+        (printf "Every ticket has at most one preferred patch.")
+        (printf "List of tickets with more than one record in preferred patch file '%s'.
+Consider removing all but one, perhaps merging the existing records somehow:
+    %s"
+                ppat-fname
+                (str/join "\n    "
+                          (sort-by extract-dec-num dup-ppat-tickets))))
+
+      (print "\n\n")
+      (if (empty? bad-patch-names)
+        (printf "Every preferred patch exists in JIRA.")
+        (printf "List of preferred patches from file '%s'
+that have patch names that are not attached to open JIRA tickets from '%s'.
+Update the patch name to a current prescreened patch:
+    %s"
+                ppat-fname att-fname
+                (with-out-str (p/pprint bad-patch-names))))
+
+      (print "\n\n")
+      (if (empty? ppat-but-not-open-tickets)
+        (printf "Every preferred patch is also prescreened.")
+        (printf "List of preferred patches from file '%s'
+that have patch names that are not prescreened in '%s'.
+Check whether preferred patch should be updated, but this could happen
+because there are no prescreened patches for the ticket at this time:
+    %s"
+                ppat-fname att-fname
+                (with-out-str (p/pprint ppat-but-not-open-tickets))))
+      )))
+
+
+(defn preferred-patch-report-text [atts ppats filter-pred]
+  (with-out-str
+    (let [pref-pats (map-vals first (group-by (juxt :ticket :name) ppats))
+          sel-atts (group-by :ticket (filter filter-pred atts))
+          some-pref-pats
+          (into {}
+                (for [[ticket atts-of-ticket] sel-atts]
+                  [ticket
+                   (first (keep #(if-let [y (get pref-pats [ticket (:name %)])]
+                                   (merge % y))
+                                atts-of-ticket))
+                   ]))
+          tickets-with-pref-pats (filter-vals identity some-pref-pats)
+          twpp-by-cat (group-by :patch-category (vals tickets-with-pref-pats))]
+      
+      (if (empty? twpp-by-cat)
+        (printf "\n<none>\n")
+        (doseq [cat (sort-by +map-patch-category-to-show-order+
+                             (keys twpp-by-cat))]
+          (printf "\n      %s:\n\n" cat)
+          (doseq [twpp (sort-by #(extract-dec-num (:ticket %))
+                                (twpp-by-cat cat))]
+            (printf "%1s  %-8s %s\n"
+                    (or (first (get twpp "Approval")) " ")
+                    (:ticket twpp)
+                    (:name twpp))
+            (when (:patch-extra-note twpp)
+              (printf "      %s\n" (:patch-extra-note twpp)))))))))
+
+
+(defn not-prescreened-patch-report-text [atts filter-pred]
+  (with-out-str
+    (let [sel-atts (group-by :ticket (filter filter-pred atts))
+          ;; Keep only those tickets that have no prescreened patches
+          sel-tickets
+          (filter-vals identity
+                       (map-vals #(if-not (first (filter prescreened? %)) (first %))
+                                 sel-atts))]
+
+      ;; TBD: Consider adding code where I can add categories and/or
+      ;; notes for tickets that have no prescreened patches, and those
+      ;; categories and/or notes will appear in the report.
+
+      ;; That would probably add more cases to my code for creating
+      ;; the warning logs.
+
+      (if (empty? sel-tickets)
+        (printf "\n<none>\n")
+        (doseq [ticket (sort-by (fn [att]
+                                  [(- (extract-dec-num (or (:votes att) 0)))
+                                   (extract-dec-num (:ticket att))])
+                                (vals sel-tickets))]
+          (printf "%1s  %2s %s\n"
+                  (or (first (get ticket "Approval")) " ")
+                  (or (:votes ticket) "0")
+                  (:title ticket)))))))
+
+
+(defn prescreened-report-text [atts ppats]
+  (with-out-str
+    (doseq [[filter-pred heading-str]
+            [ [ prescreened-not-screened-not-next-release?
+"----------------------------------------------------------------------
+Prescreened patches *not* marked with Fix Version/s = \"Release 1.5\"
+----------------------------------------------------------------------"
+               ]
+              [ prescreened-not-screened-next-release?
+"----------------------------------------------------------------------
+Prescreened patches that are marked with Fix Version/s = \"Release
+1.5\", but not screened
+----------------------------------------------------------------------"
+               ]
+              [ prescreened-and-screened?
+"----------------------------------------------------------------------
+Prescreened, and screened or accepted
+----------------------------------------------------------------------"
+               ]
+              ]]
+      (println)
+      (print heading-str)
+      (print (preferred-patch-report-text atts ppats filter-pred)))))
+
+
+(defn prescreened-need-work-report-text [atts ppats]
+  (with-out-str
+    (doseq [[filter-pred heading-str]
+            [ [ prescreened-and-needs-work?
+"----------------------------------------------------------------------
+Tickets with prescreened patches, but they may need work
+----------------------------------------------------------------------"
+               ]
+              ]]
+      (println)
+      (print heading-str)
+      (print (preferred-patch-report-text atts ppats filter-pred)))))
+
+
+(defn not-prescreened-need-work-report-text [atts]
+  (with-out-str
+    (doseq [[filter-pred heading-str]
+            [
+             [ next-release?
+"----------------------------------------------------------------------
+Tickets marked for Clojure release 1.5 that have no prescreened
+patches.
+----------------------------------------------------------------------"
+              ]
+
+             [ #(approval-in? % #{"Vetted" "Incomplete" "Not Approved"})
+"----------------------------------------------------------------------
+Tickets needing work that have no prescreened patches.  These are all
+Vetted (marked V), Incomplete (I), or Not Approved (N).
+----------------------------------------------------------------------"
+               ]
+              ]]
+      (println)
+      (print heading-str)
+      (println)
+      (print (not-prescreened-patch-report-text atts filter-pred)))))
+
+
 (comment
 
 ;; Go to the Clojure Jira page, then to the filters, and look at the
@@ -693,7 +978,7 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2012-12-28/"))
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-01/"))
 (def clojure-tree "./eval-results/2012-12-23-clojure-to-prescreen/clojure")
 ;;(def clojure-tree "./eval-results/2012-09-22-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
@@ -731,15 +1016,21 @@ apply the patch, and try to build with 'ant' in that copy."
 ;; containing the "preferred patches" to show in the prescreened patch
 ;; list, do the below to generate part of the prescreened patch
 ;; report.
-
 (doseq [cur-patch-type patch-type-list]
   (let [base (str cur-eval-dir cur-patch-type)
         fname1 (str base "-evaled-authors.txt")
-        fname-sum (str base "-prescreened-report.txt")
-        as1 (read-safely fname1)
-        
-        ]
-    (spit fname-sum (with-out-str (eval-patches-summary as1)))))
+        atts (read-safely fname1)
+        ppat-fname "./data/preferred-patches.clj"
+        ppats (read-safely ppat-fname)
+        fname-warnings (str base "-warnings.txt")
+        fname-prescreened (str base "-prescreened-report.txt")
+        fname-need-work (str base "-needs-work.txt")]
+    (spit fname-warnings (warning-log-text atts ppats fname1 ppat-fname))
+    (spit fname-prescreened (prescreened-report-text atts ppats))
+    (spit fname-need-work
+          (str (prescreened-need-work-report-text atts ppats)
+               (not-prescreened-need-work-report-text atts)))
+    ))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
