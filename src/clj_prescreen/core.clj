@@ -978,7 +978,7 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-01/"))
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-03/"))
 (def clojure-tree "./eval-results/2012-12-23-clojure-to-prescreen/clojure")
 ;;(def clojure-tree "./eval-results/2012-09-22-clojure-to-prescreen/clojure-plus-clj-967-patch")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
