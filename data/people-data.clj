@@ -562,6 +562,12 @@
  :emails #{ "mb@kotka.de" }
  :contributor true
  }
+{:display-name "Michael Drogalis"
+ :aliases #{ }
+ :usernames #{ "michael-drogalis" }
+ :emails #{ "madrush131@gmail.com" "mjd3089@rit.edu" }
+ :contributor true
+ }
 {:display-name "Michal Marczyk"
  :aliases #{ "Michał Marczyk" "=?UTF-8?q?Micha=C5=82=20Marczyk?=" }
  :usernames #{ "michalmarczyk" }
@@ -572,6 +578,12 @@
  :aliases #{ }
  :usernames #{ "mikera" }
  :emails #{ "mike_r_anderson@yahoo.co.uk" }
+ :contributor true
+ }
+{:display-name "Marek Srank"
+ :aliases #{ "mnicky" }
+ :usernames #{ "mnicky" }
+ :emails #{ "markus.master@gmail.com" "xmnicky@gmail.com" }
  :contributor true
  }
 {:display-name "Max Penet"
