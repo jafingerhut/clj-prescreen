@@ -390,7 +390,7 @@
  }
 {:display-name "Jason Wolfe"
  :aliases #{ }
- :usernames #{  }
+ :usernames #{ "jawolfe" }
  :emails #{ "jason@w01fe.com" }
  :contributor true
  }
