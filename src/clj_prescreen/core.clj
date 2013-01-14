@@ -1,5 +1,5 @@
 (ns clj-prescreen.core
-  (:import java.io.File)
+  (:import (java.io File ByteArrayInputStream))
   (:require [clojure.xml :as xml]
             [clojure.data.zip.xml :as dzx]
             [clojure.zip :as zip]
@@ -8,6 +8,7 @@
             [clojure.string :as str]
             [clojure.java.shell :as sh]
             [clojure.pprint :as p]
+            [clj-http.client :as http]
             [fs.core :as fs]))
 
 (set! *warn-on-reflection* true)
@@ -167,6 +168,32 @@ TBENCH-11"
          (sort-by first)
          ;; remove sort keys
          (map second))))
+
+
+(defn ticket-info-from-xml [^String xml-str]
+  ;; TBD: Should I provide an encoding to getBytes?  Which one?
+  (let [z (zip/xml-zip (xml/parse (ByteArrayInputStream. (.getBytes xml-str))))
+        tickets-zip (dzx/xml-> z :channel :item)
+        tickets-info (map #(merge (ticket-fields %) (ticket-custom-fields %))
+                          tickets-zip)]
+    (map-vals first (group-by :ticket tickets-info))))
+
+
+(defn tickets-from-xml [^String xml-str]
+  ;; TBD: Should I provide an encoding to getBytes?  Which one?
+  (let [z (zip/xml-zip (xml/parse (ByteArrayInputStream. (.getBytes xml-str))))
+        tickets-zip (dzx/xml-> z :channel :item)]
+    (map #(dzx/xml1-> % :key dzx/text) tickets-zip)))
+
+
+(defn url-all-open-tickets []
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
+
+
+(defn url-for-tickets-voted-by-user [username]
+  (let [url-part1 "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
+        url-part2 "%27&tempMax=1000&field=title"]
+    (str url-part1 username url-part2)))
 
 
 (defn att-dir-name [ticket-name attach-dir]
@@ -1031,6 +1058,81 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
           (str (prescreened-need-work-report-text atts ppats)
                (not-prescreened-need-work-report-text atts)))
     ))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; First manual steps to getting a list of who is voting on all open
+;; CLJ tickets.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; TBD: Don't check this into git
+(def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
+
+(let [open-tickets-resp (http/get (url-all-open-tickets) {:throw-exceptions false})
+      open-tickets-info (if (= 200 (:status open-tickets-resp))
+                          (ticket-info-from-xml (:body open-tickets-resp))
+                          (do
+                            (binding [*out* *err*]
+                              (println
+                               (format "Got response status %d when trying to get URL:\n%s\n"
+                                       (:status open-tickets-resp)
+                                       (url-all-open-tickets))))
+                            {}))
+      all-users (read-safely "data/all-clojure-jira-users.clj")
+      votes-by-user (let [_ (println "Getting votes for users:")]
+                      (into {}
+                            (for [user all-users]
+                              (let [uname (first (:usernames user))]
+                                [user
+                                 (let [_ (print (format "%s (%s) ...   "
+                                                        (:display-name user)
+                                                        uname))
+                                       _ (flush)
+                                       resp (http/get (url-for-tickets-voted-by-user uname)
+                                                      (merge auth-info
+                                                             {:throw-exceptions false}))
+                                       tickets (if (= 200 (:status resp))
+                                                 (tickets-from-xml (:body resp))
+                                                 [])
+                                       _ (println
+                                          (if (= 200 (:status resp))
+                                            (if (zero? (count tickets))
+                                              ""
+                                              (format "%d" (count tickets)))
+                                            (format "HTTP error status %d"
+                                                    (:status resp))))]
+                                   tickets)]))))
+
+      vote-count-by-user (map-vals count votes-by-user)
+      votes-by-ticket (reduce (fn [vs [ticket user]]
+                                (update-in vs [ticket] conj user))
+                              {}
+                              (mapcat
+                               (fn [[user ticks]]
+                                 (map (fn [t] [t user]) ticks))
+                               votes-by-user))
+      vote-count-by-ticket (map-vals count votes-by-ticket)
+      vote-weights-by-ticket (map-vals (fn [users]
+                                         (map #(/ 1 (vote-count-by-user %)) users))
+                                       votes-by-ticket)
+      vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket)
+      ]
+  )
+
+(pprint (sort-by (fn [[k v]] [(- v) (- (extract-dec-num k))]) vote-count-by-ticket))
+(doseq [[user votes] (sort-by (fn [[k v]] [(- v) (:display-name k)])
+                              (filter-vals #(not (zero? %)) vote-count-by-user))]
+  (printf "%3d %s (%s)\n" votes (:display-name user)
+          (str/join " " (sort (map extract-dec-num (votes-by-user user))))))
+(doseq [[ticket vote-weight] (sort-by (fn [[ticket weight]]
+                                        [(- weight)
+                                         (- (vote-count-by-ticket ticket))
+                                         (extract-dec-num ticket)])
+                                      vote-weight-by-ticket)]
+  (printf "%7.2f %3d %s\n"
+          (double vote-weight)
+          (vote-count-by-ticket ticket)
+          (:title (open-tickets-info ticket))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
