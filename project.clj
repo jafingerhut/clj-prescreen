@@ -4,4 +4,5 @@
                  [org.clojure/clojure "1.5.0-RC1"]
                  [org.clojure/data.zip "0.1.0"]
                  [fs "1.1.2"]
+                 [clj-http "0.6.3"]
                  ])
