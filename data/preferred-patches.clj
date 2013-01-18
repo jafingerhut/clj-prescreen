@@ -23,7 +23,7 @@ CLJ-124.",
 "A thorough job of documenting this would require understanding how
 Clojure functions are made to implement the Comparable interface in
 AFunction.java of the Clojure source code, and the restrictions in
-Java of what makes a "good" implementation of the Comparator
+Java of what makes a 'good' implementation of the Comparator
 interface.  Doing that clearly is probably best done in a form longer
 than is acceptable in a doc string for sorted-set-by or sorted-map-by,
 but perhaps such documentation could be put at a link that could be
@@ -306,6 +306,10 @@ characters from all Clojure source files.",
   :name "ns-patch.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1030",
+  :name "improved-int-char-casting-error-messages.diff",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1036",
   :name "clj-1036-hasheq-for-biginteger-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
@@ -342,6 +346,10 @@ CLJ-1046.",
   :name "001-clj-1059-make-persistentqueue-implement-list.diff",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note "or 002-clj-1059-asequential-rebased-to-cached-hasheq.diff",
+  }
+ {:ticket "CLJ-1060",
+  :name "list-star-fix.diff",
+  :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1063",
   :name "clj-1063-add-dissoc-in-patch-v2.txt",
@@ -509,5 +517,13 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1140",
   :name "empty-list-destructuring-CLJ-1140-12.30.12.diff",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1143",
+  :name "clj-1143-ns-doc-string-correction-v1.txt",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1148",
+  :name "0001-new-defonce-hotness.patch",
+  :patch-category "Allow more correct-looking Clojure code to work",
   }
  )
