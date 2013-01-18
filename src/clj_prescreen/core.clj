@@ -196,6 +196,22 @@ TBENCH-11"
     (str url-part1 username url-part2)))
 
 
+(defn dl-open-tickets!
+  "Download XML data about all open CLJ tickets and save it to a local
+file."
+  [base-file-name]
+  (let [xml-fname (str base-file-name ".xml")
+        resp (http/get (url-all-open-tickets) {:throw-exceptions false})]
+    (if (= 200 (:status resp))
+      (spit xml-fname (:body resp))
+      (do
+        (binding [*out* *err*]
+          (println
+           (format "Got response status %d when trying to get URL:\n%s\n"
+                   (:status resp)
+                   (url-all-open-tickets))))))))
+
+
 (defn att-dir-name [ticket-name attach-dir]
   (str attach-dir "/" ticket-name "-attachments"))
 
@@ -686,7 +702,7 @@ Check it to see if it was created incorrectly."})
 (defn dl-patches-check-ca!
   "Download all attachments for selected tickets.  Do this once on one
 machine, not once for each OS/JDK combo I want to test."
-  [cur-eval-dir ticket-dir patch-type-list clojure-tree]
+  [cur-eval-dir patch-type-list ticket-dir clojure-tree]
   (doseq [cur-patch-type patch-type-list]
     (let [base (str cur-eval-dir cur-patch-type)
           as1 (xml->attach-info (str base ".xml"))
@@ -994,6 +1010,10 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 
 (comment
 
+;; =================================================================
+;; Older manual way to get XML info about open CLJ tickets (newer way
+;; is shortly after the def's below)
+;; =================================================================
 ;; Go to the Clojure Jira page, then to the filters, and look at the
 ;; tickets that match a particular filter.  There is a popup menu that
 ;; says "Views" in the upper right of the page.
@@ -1002,25 +1022,37 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 ;; will be shown.  Save the page as a file.  That is how I created the
 ;; file notclosed.xml, which I saved in the directory named by the
 ;; string cur-eval-dir below.
+;; =================================================================
+
+;; You also need to pull a clone of the Clojure repo if you haven't
+;; done so already.
+;;
+;; % git clone git://github.com/clojure/clojure.git
+;;
+;; Put it in some directory and then change the symbol clojure-tree
+;; below to name it.  The code for evaluating whether patches that
+;; apply cleanly also build and test cleanly only runs "ant", not
+;; "./antsetup.sh", to save time, so you must run "./antsetup.sh" in
+;; that directory after creating it, or else all of the "ant" runs
+;; will fail their tests.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-03/"))
-(def clojure-tree "./eval-results/2012-12-23-clojure-to-prescreen/clojure")
-;;(def clojure-tree "./eval-results/2012-09-22-clojure-to-prescreen/clojure-plus-clj-967-patch")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-18/"))
+(def clojure-tree "./eval-results/2013-01-13-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
+(def patch-type-list [ "open" ])
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
-(def patch-type-list [ "notclosed" ])
+;;(def patch-type-list [ "notclosed" ])
 
-;; Also need to pull a clone of the Clojure repo if you haven't done
-;; so already.  Put it in the directory called clojure-tree above.
-;; git clone git://github.com/clojure/clojure.git
+;; Download info about all open tickets
+(dl-open-tickets! (str cur-eval-dir "open"))
 
 ;; Download all attachments for selected tickets.  Do this once on one
 ;; machine, not once for each OS/JDK combo I want to test.  Also, for
 ;; all git format patches, check people data to see if they have
 ;; signed a Clojure CA.
-(dl-patches-check-ca! cur-eval-dir ticket-dir patch-type-list clojure-tree)
+(dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir clojure-tree)
 
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
