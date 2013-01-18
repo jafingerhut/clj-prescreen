@@ -1088,8 +1088,8 @@ from most to fewest votes.
 ;; match the Votes field downloaded with the ticket.  If they don't,
 ;; either there was a vote cast during the downloading process, or
 ;; more likely the list of users is incomplete and needs to be
-;; updated.  Add instructions here on updating the
-;; data/all-clojure-jira-users.clj file.
+;; updated.  See Note 2 below for instructions on how to download an
+;; updated list of JIRA users.
 
 ;; TBD: Consider adding code to dl-patches-check-ca! that reads the
 ;; votes file, and combines the list of users who have voted for each
@@ -1139,6 +1139,44 @@ from most to fewest votes.
           (str (prescreened-need-work-report-text atts ppats)
                (not-prescreened-need-work-report-text atts)))
     ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Note 2:
+;;
+;; Instructions to update the list of all Clojure JIRA users:
+;;
+;; Note: You must have admin access on the Clojure JIRA web site to
+;; get a list of all users like this.
+;;
+;; Go to this link: http://dev.clojure.org/jira/browse/CLJ
+;;
+;; Click "Administration" link next to your name near the upper right
+;; corner of the page.
+;;
+;; In the "Users" section, click the "Users" link.  Re-enter your
+;; password if it prompts you for it.
+;;
+;; In the "Filter Users" section, change "Users Per Page" to "All",
+;; then click "Filter" button beneath that to update the page.
+;;
+;; Wait a while for the complete list of all users to be generated and
+;; included on the page.
+;;
+;; Tested only with Firefox 18 on Mac OS X so far: File -> Save Page
+;; As...  Choose format "Web Page, complete".  Save it as file
+;; data/all-clojure-jira-users.html
+;;
+;; Run this hacked-up Perl program to extract the user data and create
+;; all-clojure-jira-users.clj:
+;;
+;; ./extract-user-info.pl all-users.html >| all-clojure-jira-users.clj 
+;;
+;; It is hacked up because it does line-by-line regex parsing of the
+;; HTML file, which is fragile in the sense that it is based upon how
+;; the HTML is broken up into lines.  I don't know off hand of a good
+;; way to do something more robust than that.  It seems to work for
+;; now.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
