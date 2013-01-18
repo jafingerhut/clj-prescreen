@@ -199,17 +199,45 @@ TBENCH-11"
 (defn dl-open-tickets!
   "Download XML data about all open CLJ tickets and save it to a local
 file."
-  [base-file-name]
-  (let [xml-fname (str base-file-name ".xml")
-        resp (http/get (url-all-open-tickets) {:throw-exceptions false})]
+  [file-name]
+  (let [resp (http/get (url-all-open-tickets) {:throw-exceptions false})]
     (if (= 200 (:status resp))
-      (spit xml-fname (:body resp))
+      (spit file-name (:body resp))
       (do
         (binding [*out* *err*]
           (println
            (format "Got response status %d when trying to get URL:\n%s\n"
                    (:status resp)
                    (url-all-open-tickets))))))))
+
+
+(defn dl-open-ticket-votes!
+  "Download XML data about votes cast on all open CLJ tickets and
+return it as a map from users to a list of tickets they voted on."
+  [all-jira-users http-auth-info verbose]
+  (when verbose
+    (println "Getting votes for users:"))
+  (into {}
+        (for [user all-jira-users]
+          (let [uname (first (:usernames user))
+                _ (when verbose
+                    (print (format "%s (%s) ...   " (:display-name user)
+                                   uname))
+                    (flush))
+                resp (http/get (url-for-tickets-voted-by-user uname)
+                               (merge http-auth-info
+                                      {:throw-exceptions false}))
+                tickets (if (= 200 (:status resp))
+                          (tickets-from-xml (:body resp))
+                          [])]
+            (when verbose
+              (println (if (= 200 (:status resp))
+                         (if (zero? (count tickets))
+                           ""
+                           (format "%d" (count tickets)))
+                         (format "HTTP error status %d"
+                                 (:status resp)))))
+            [user tickets]))))
 
 
 (defn att-dir-name [ticket-name attach-dir]
@@ -703,9 +731,8 @@ Check it to see if it was created incorrectly."})
   "Download all attachments for selected tickets.  Do this once on one
 machine, not once for each OS/JDK combo I want to test."
   [cur-eval-dir patch-type-list ticket-dir clojure-tree]
-  (doseq [cur-patch-type patch-type-list]
-    (let [base (str cur-eval-dir cur-patch-type)
-          as1 (xml->attach-info (str base ".xml"))
+  (doseq [patch-type patch-type-list]
+    (let [as1 (xml->attach-info (str cur-eval-dir patch-type ".xml"))
           as2 (download-attachments! as1 ticket-dir)
           as3 (if clojure-tree
                 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure"
@@ -713,8 +740,8 @@ machine, not once for each OS/JDK combo I want to test."
                 as2)
           as4 (let [people-info (read-safely "data/people-data.clj")]
                 (map #(add-author-info % ticket-dir people-info) as3))]
-      (spit-pretty (str base "-downloaded-only.txt") as4)
-      (spit (str base "-author-info.txt")
+      (spit-pretty (str cur-eval-dir patch-type "-downloaded-only.txt") as4)
+      (spit (str cur-eval-dir patch-type "-author-info.txt")
             (with-out-str (eval-patches-summary as4))))))
 
 
@@ -727,15 +754,14 @@ version of the Clojure repo in the local directory whose path name is
 given by clojure-tree, for each patch to evaluate copy it, try to
 apply the patch, and try to build with 'ant' in that copy."
   [cur-eval-dir ticket-dir clojure-tree patch-type-list]
-  (doseq [cur-patch-type patch-type-list]
-    (let [base (str cur-eval-dir cur-patch-type)
-          fname2 (str base "-downloaded-only.txt")
+  (doseq [patch-type patch-type-list]
+    (let [fname2 (str cur-eval-dir patch-type "-downloaded-only.txt")
           as2 (read-safely fname2)
           as3 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure" true)
           as4 (let [people-info (read-safely "data/people-data.clj")]
                 (map #(add-author-info % ticket-dir people-info) as3))]
-      (spit-pretty (str base "-evaled-authors.txt") as4)
-      (spit (str base "-patch-summary.txt")
+      (spit-pretty (str cur-eval-dir patch-type "-evaled-authors.txt") as4)
+      (spit (str cur-eval-dir patch-type "-patch-summary.txt")
             (with-out-str (eval-patches-summary as4))))))
 
 
@@ -975,7 +1001,8 @@ Prescreened, and screened or accepted
     (doseq [[filter-pred heading-str]
             [ [ prescreened-and-needs-work?
 "----------------------------------------------------------------------
-Tickets with prescreened patches, but they may need work
+Tickets with prescreened patches, but they may need work, since the
+ticket is marked Incomplete (I) or Not Approved (N).
 ----------------------------------------------------------------------"
                ]
               ]]
@@ -991,14 +1018,16 @@ Tickets with prescreened patches, but they may need work
              [ next-release?
 "----------------------------------------------------------------------
 Tickets marked for Clojure release 1.5 that have no prescreened
-patches.
+patches (see also Note 3 at the bottom):
 ----------------------------------------------------------------------"
               ]
 
              [ #(approval-in? % #{"Vetted" "Incomplete" "Not Approved"})
 "----------------------------------------------------------------------
 Tickets needing work that have no prescreened patches.  These are all
-Vetted (marked V), Incomplete (I), or Not Approved (N).
+Vetted (marked V), Incomplete (I), or Not Approved (N).  The number
+after the letter is the number of votes, and tickets have been sorted
+from most to fewest votes.
 ----------------------------------------------------------------------"
                ]
               ]]
@@ -1042,11 +1071,33 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 (def clojure-tree "./eval-results/2013-01-13-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
+;; TBD: Don't check any password into git
+(def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
 ;;(def patch-type-list [ "notclosed" ])
 
-;; Download info about all open tickets
-(dl-open-tickets! (str cur-eval-dir "open"))
+;; Download info about all open tickets, including votes cast by each
+;; CLJ JIRA user.
+(dl-open-tickets! (str cur-eval-dir "open.xml"))
+(let [fname (str cur-eval-dir "votes-on-tickets.clj")
+      all-users (read-safely "data/all-clojure-jira-users.clj")
+      votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
+  (spit-pretty fname votes-by-user))
+
+;; TBD: Double-check that the downloaded vote counts for each ticket
+;; match the Votes field downloaded with the ticket.  If they don't,
+;; either there was a vote cast during the downloading process, or
+;; more likely the list of users is incomplete and needs to be
+;; updated.  Add instructions here on updating the
+;; data/all-clojure-jira-users.clj file.
+
+;; TBD: Consider adding code to dl-patches-check-ca! that reads the
+;; votes file, and combines the list of users who have voted for each
+;; ticket, with each of their vote weights, and a single field giving
+;; the total weighted vote for the ticket.
+
+;; TBD: Include the weighted vote count and the normal vote count in
+;; the prescreened and needs work reports.
 
 ;; Download all attachments for selected tickets.  Do this once on one
 ;; machine, not once for each OS/JDK combo I want to test.  Also, for
@@ -1061,10 +1112,9 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 ;; After doing the dl-patches-check-ca! above, if you edit
 ;; data/people-data.clj and want to redo the author evaluations only,
 ;; do this:
-(doseq [cur-patch-type patch-type-list]
-  (let [base (str cur-eval-dir cur-patch-type)
-        fname1 (str base "-evaled-authors.txt")
-        fname-sum (str base "-author-info.txt")
+(doseq [patch-type patch-type-list]
+  (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
+        fname-sum (str cur-eval-dir patch-type "-author-info.txt")
         as1 (read-safely fname1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as1))]
@@ -1075,15 +1125,14 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 ;; containing the "preferred patches" to show in the prescreened patch
 ;; list, do the below to generate part of the prescreened patch
 ;; report.
-(doseq [cur-patch-type patch-type-list]
-  (let [base (str cur-eval-dir cur-patch-type)
-        fname1 (str base "-evaled-authors.txt")
+(doseq [patch-type patch-type-list]
+  (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         atts (read-safely fname1)
         ppat-fname "./data/preferred-patches.clj"
         ppats (read-safely ppat-fname)
-        fname-warnings (str base "-warnings.txt")
-        fname-prescreened (str base "-prescreened-report.txt")
-        fname-need-work (str base "-needs-work.txt")]
+        fname-warnings (str cur-eval-dir patch-type "-warnings.txt")
+        fname-prescreened (str cur-eval-dir patch-type "-prescreened-report.txt")
+        fname-need-work (str cur-eval-dir patch-type "-needs-work.txt")]
     (spit fname-warnings (warning-log-text atts ppats fname1 ppat-fname))
     (spit fname-prescreened (prescreened-report-text atts ppats))
     (spit fname-need-work
@@ -1097,65 +1146,36 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 ;; CLJ tickets.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TBD: Don't check this into git
-(def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
 
-(let [open-tickets-resp (http/get (url-all-open-tickets) {:throw-exceptions false})
-      open-tickets-info (if (= 200 (:status open-tickets-resp))
-                          (ticket-info-from-xml (:body open-tickets-resp))
-                          (do
-                            (binding [*out* *err*]
-                              (println
-                               (format "Got response status %d when trying to get URL:\n%s\n"
-                                       (:status open-tickets-resp)
-                                       (url-all-open-tickets))))
-                            {}))
-      all-users (read-safely "data/all-clojure-jira-users.clj")
-      votes-by-user (let [_ (println "Getting votes for users:")]
-                      (into {}
-                            (for [user all-users]
-                              (let [uname (first (:usernames user))]
-                                [user
-                                 (let [_ (print (format "%s (%s) ...   "
-                                                        (:display-name user)
-                                                        uname))
-                                       _ (flush)
-                                       resp (http/get (url-for-tickets-voted-by-user uname)
-                                                      (merge auth-info
-                                                             {:throw-exceptions false}))
-                                       tickets (if (= 200 (:status resp))
-                                                 (tickets-from-xml (:body resp))
-                                                 [])
-                                       _ (println
-                                          (if (= 200 (:status resp))
-                                            (if (zero? (count tickets))
-                                              ""
-                                              (format "%d" (count tickets)))
-                                            (format "HTTP error status %d"
-                                                    (:status resp))))]
-                                   tickets)]))))
+(def open-tickets-info (ticket-info-from-xml (slurp (str cur-eval-dir "open.xml"))))
+(def votes-by-user (read-safely (str cur-eval-dir "votes-on-tickets.clj")))
+(def vote-count-by-user (map-vals count votes-by-user))
+(def votes-by-ticket (reduce (fn [vs [ticket user]]
+                               (update-in vs [ticket] conj user))
+                             {}
+                             (mapcat
+                              (fn [[user ticks]]
+                                (map (fn [t] [t user]) ticks))
+                              votes-by-user)))
+(def vote-count-by-ticket (map-vals count votes-by-ticket))
+(def vote-weights-by-ticket (map-vals (fn [users]
+                                        (map #(/ 1 (vote-count-by-user %)) users))
+                                      votes-by-ticket))
+(def vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket))
 
-      vote-count-by-user (map-vals count votes-by-user)
-      votes-by-ticket (reduce (fn [vs [ticket user]]
-                                (update-in vs [ticket] conj user))
-                              {}
-                              (mapcat
-                               (fn [[user ticks]]
-                                 (map (fn [t] [t user]) ticks))
-                               votes-by-user))
-      vote-count-by-ticket (map-vals count votes-by-ticket)
-      vote-weights-by-ticket (map-vals (fn [users]
-                                         (map #(/ 1 (vote-count-by-user %)) users))
-                                       votes-by-ticket)
-      vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket)
-      ]
-  )
-
+;; Print sequence of tickets in descending order of votes
 (pprint (sort-by (fn [[k v]] [(- v) (- (extract-dec-num k))]) vote-count-by-ticket))
+;; Print users in descending order of number of votes cast on open
+;; tickets, with a list of CLJ-<n> ticket numbers they have voted on.
+(require '[clojure.string :as str])
 (doseq [[user votes] (sort-by (fn [[k v]] [(- v) (:display-name k)])
                               (filter-vals #(not (zero? %)) vote-count-by-user))]
   (printf "%3d %s (%s)\n" votes (:display-name user)
           (str/join " " (sort (map extract-dec-num (votes-by-user user))))))
+;; Print list of tickets that have at least one vote, sorted by
+;; descending order of weighted vote, using descending order of whole
+;; number of votes to break any ties there, and finally by ascending
+;; order of ticket number.
 (doseq [[ticket vote-weight] (sort-by (fn [[ticket weight]]
                                         [(- weight)
                                          (- (vote-count-by-ticket ticket))
@@ -1171,32 +1191,32 @@ Vetted (marked V), Incomplete (I), or Not Approved (N).
 ;; Beginning of older copy-and-paste one-step-at-a-time method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;(def cur-patch-type "screened")
-;;(def cur-patch-type "incomplete")
-;;(def cur-patch-type "rfs")
-;;(def cur-patch-type "np")
+;;(def patch-type "screened")
+;;(def patch-type "incomplete")
+;;(def patch-type "rfs")
+;;(def patch-type "np")
 
-(def as1 (xml->attach-info (str cur-eval-dir cur-patch-type ".xml")))
+(def as1 (xml->attach-info (str cur-eval-dir patch-type ".xml")))
 (pprint (take 10 as1))
 (def as2 (download-attachments! as1 ticket-dir))
-(spit-pretty (str cur-eval-dir cur-patch-type "-info.txt") as2)
+(spit-pretty (str cur-eval-dir patch-type "-info.txt") as2)
 
 ;; See Note 1 below about editing.
 
-(def as2 (read-safely (str cur-eval-dir cur-patch-type "-info.txt")))
+(def as2 (read-safely (str cur-eval-dir patch-type "-info.txt")))
 ;; Evaluate all patches:
 (def as3 (eval-patches! as2 ticket-dir "./clojure" true))
 ;; Evaluate one patch:
 ;; TBD
 
-(spit-pretty (str cur-eval-dir cur-patch-type "-evaled.txt") as3)
+(spit-pretty (str cur-eval-dir patch-type "-evaled.txt") as3)
 
-(def as3 (read-safely (str cur-eval-dir cur-patch-type "-evaled.txt")))
+(def as3 (read-safely (str cur-eval-dir patch-type "-evaled.txt")))
 ;; Update author info, perhaps after editing "data/people-data.clj"
 (def as4 (let [people-info (read-safely "data/people-data.clj")]
            (map #(add-author-info % ticket-dir people-info) as3)))
 
-(spit-pretty (str cur-eval-dir cur-patch-type "-evaled-authors.txt") as4)
+(spit-pretty (str cur-eval-dir patch-type "-evaled-authors.txt") as4)
 (eval-patches-summary as4)
 
 
