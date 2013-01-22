@@ -171,8 +171,9 @@ TBENCH-11"
 
 
 (defn ticket-info-from-xml [^String xml-str]
-  ;; TBD: Should I provide an encoding to getBytes?  Which one?
-  (let [z (zip/xml-zip (xml/parse (ByteArrayInputStream. (.getBytes xml-str))))
+  (let [z (-> (ByteArrayInputStream. (.getBytes xml-str "UTF-8"))
+              xml/parse
+              zip/xml-zip)
         tickets-zip (dzx/xml-> z :channel :item)
         tickets-info (map #(merge (ticket-fields %) (ticket-custom-fields %))
                           tickets-zip)]
@@ -180,8 +181,9 @@ TBENCH-11"
 
 
 (defn tickets-from-xml [^String xml-str]
-  ;; TBD: Should I provide an encoding to getBytes?  Which one?
-  (let [z (zip/xml-zip (xml/parse (ByteArrayInputStream. (.getBytes xml-str))))
+  (let [z (-> (ByteArrayInputStream. (.getBytes xml-str "UTF-8"))
+              xml/parse
+              zip/xml-zip)
         tickets-zip (dzx/xml-> z :channel :item)]
     (map #(dzx/xml1-> % :key dzx/text) tickets-zip)))
 
@@ -1113,7 +1115,7 @@ from most to fewest votes.
 ;; data/people-data.clj and want to redo the author evaluations only,
 ;; do this:
 (doseq [patch-type patch-type-list]
-  (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
+  (let [fname1 (str cur-eval-dir patch-type "-downloaded-only.txt")
         fname-sum (str cur-eval-dir patch-type "-author-info.txt")
         as1 (read-safely fname1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
