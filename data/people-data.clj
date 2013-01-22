@@ -575,9 +575,9 @@
  :contributor true
  }
 {:display-name "Mike Anderson"
- :aliases #{ }
+ :aliases #{ "mikera" }
  :usernames #{ "mikera" }
- :emails #{ "mike_r_anderson@yahoo.co.uk" }
+ :emails #{ "mike_r_anderson@yahoo.co.uk" "mike.r.anderson.13@gmail.com" }
  :contributor true
  }
 {:display-name "Marek Srank"
@@ -709,7 +709,7 @@
 {:display-name "Stefan Kamphausen"
  :aliases #{ }
  :usernames #{ "ska2342" }
- :emails #{ "ska2342@googlemail.com" }
+ :emails #{ "ska2342@googlemail.com" "ska2342@gmail.com" }
  :contributor true
  }
 {:display-name "Micah Martin"
