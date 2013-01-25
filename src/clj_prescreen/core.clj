@@ -82,6 +82,10 @@
   (apply spit f (with-out-str (p/pprint data)) options))
 
 
+(defn map-keys [f m]
+  (into (empty m)
+        (for [[k v] m] [(f k) v])))
+
 (defn map-vals [f m]
   (into (empty m)
         (for [[k v] m] [k (f v)])))
@@ -1189,19 +1193,27 @@ from most to fewest votes.
 
 (def open-tickets-info (ticket-info-from-xml (slurp (str cur-eval-dir "open.xml"))))
 (def votes-by-user (read-safely (str cur-eval-dir "votes-on-tickets.clj")))
-(def vote-count-by-user (map-vals count votes-by-user))
+;;(def vote-count-by-user (map-vals count votes-by-user))
 (def votes-by-ticket (reduce (fn [vs [ticket user]]
                                (update-in vs [ticket] conj user))
                              {}
                              (mapcat
                               (fn [[user ticks]]
-                                (map (fn [t] [t user]) ticks))
+                                (let [u (assoc user :user-num-votes (count ticks))]
+                                  (map (fn [t] [t u]) ticks)))
                               votes-by-user)))
-(def vote-count-by-ticket (map-vals count votes-by-ticket))
-(def vote-weights-by-ticket (map-vals (fn [users]
-                                        (map #(/ 1 (vote-count-by-user %)) users))
-                                      votes-by-ticket))
-(def vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket))
+;;(def vote-count-by-ticket (map-vals count votes-by-ticket))
+(def vote-info-by-ticket (map-vals (fn [users]
+                                     {:ticket-num-votes (count users)
+                                      :ticket-weighted-vote (apply + (map #(/ 1 (:user-num-votes %)) users))
+                                      :ticket-vote-list (sort-by (fn [u] [(:user-num-votes u) (:display-name u) u]) users)})
+                                   votes-by-ticket))
+
+
+;;(def vote-weights-by-ticket (map-vals (fn [users]
+;;                                        (map #(/ 1 (vote-count-by-user %)) users))
+;;                                      votes-by-ticket))
+;;(def vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket))
 
 ;; Print sequence of tickets in descending order of votes
 (pprint (sort-by (fn [[k v]] [(- v) (- (extract-dec-num k))]) vote-count-by-ticket))
@@ -1216,15 +1228,23 @@ from most to fewest votes.
 ;; descending order of weighted vote, using descending order of whole
 ;; number of votes to break any ties there, and finally by ascending
 ;; order of ticket number.
-(doseq [[ticket vote-weight] (sort-by (fn [[ticket weight]]
-                                        [(- weight)
-                                         (- (vote-count-by-ticket ticket))
+(doseq [[ticket vote-info] (sort-by (fn [[ticket vote-info]]
+                                        [(- (:ticket-weighted-vote vote-info))
+                                         (- (:ticket-num-votes vote-info))
                                          (extract-dec-num ticket)])
-                                      vote-weight-by-ticket)]
-  (printf "%7.2f %3d %s\n"
-          (double vote-weight)
-          (vote-count-by-ticket ticket)
-          (:title (open-tickets-info ticket))))
+                                      vote-info-by-ticket)]
+  (printf "%-8s %3d %7.2f\n             %s\n"
+          ticket
+          (:ticket-num-votes vote-info)
+          (double (:ticket-weighted-vote vote-info))
+          (str/join "\n             "
+                    (map #(format "%s (%s)"
+                                  (:display-name %)
+                                  (let [nv (:user-num-votes %)]
+                                    (if (and (number? nv) (> nv 1))
+                                      (str "1/" nv)
+                                      nv)))
+                         (:ticket-vote-list vote-info)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
