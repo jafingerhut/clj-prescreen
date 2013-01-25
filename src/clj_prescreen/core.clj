@@ -1193,7 +1193,6 @@ from most to fewest votes.
 
 (def open-tickets-info (ticket-info-from-xml (slurp (str cur-eval-dir "open.xml"))))
 (def votes-by-user (read-safely (str cur-eval-dir "votes-on-tickets.clj")))
-;;(def vote-count-by-user (map-vals count votes-by-user))
 (def votes-by-ticket (reduce (fn [vs [ticket user]]
                                (update-in vs [ticket] conj user))
                              {}
@@ -1202,49 +1201,97 @@ from most to fewest votes.
                                 (let [u (assoc user :user-num-votes (count ticks))]
                                   (map (fn [t] [t u]) ticks)))
                               votes-by-user)))
-;;(def vote-count-by-ticket (map-vals count votes-by-ticket))
 (def vote-info-by-ticket (map-vals (fn [users]
-                                     {:ticket-num-votes (count users)
-                                      :ticket-weighted-vote (apply + (map #(/ 1 (:user-num-votes %)) users))
-                                      :ticket-vote-list (sort-by (fn [u] [(:user-num-votes u) (:display-name u) u]) users)})
+                                     {:num-votes (count users)
+                                      :weighted-vote (apply + (map #(/ 1 (:user-num-votes %)) users))
+                                      :vote-list (sort-by (fn [u] [(:user-num-votes u) (:display-name u) u]) users)})
                                    votes-by-ticket))
+;; Add calculated vote info to open-tickets-info
+(def open-tickets-info (reduce (fn [oti [ticket vote-info]]
+                                 (update-in oti [ticket]
+                                            merge vote-info))
+                               open-tickets-info
+                               vote-info-by-ticket))
+
+;; Double-check calculated vote info with vote count on ticket.  If
+;; they mismatch, then either votes have been cast while I downloaded
+;; the info, or I am missing a user that cast a vote, and should get
+;; an updated list of users.
+(def num-votes-from-tickets (filter-vals
+                             #(and % (> % 0))
+                             (into {}
+                                   (map (fn [[ticket info]]
+                                          [ticket
+                                           (if (:votes info)
+                                             (Long/parseLong (:votes info)))])
+                                        open-tickets-info))))
+(def num-votes-from-vote-info (map-vals :num-votes vote-info-by-ticket))
+(require '[clojure.data :as data])
+(def vote-differences (take 2 (data/diff num-votes-from-tickets num-votes-from-vote-info)))
+;; If vote-differences is anything other than '(nil nil), there is a
+;; mismatch.
 
 
-;;(def vote-weights-by-ticket (map-vals (fn [users]
-;;                                        (map #(/ 1 (vote-count-by-user %)) users))
-;;                                      votes-by-ticket))
-;;(def vote-weight-by-ticket (map-vals #(apply + %) vote-weights-by-ticket))
-
-;; Print sequence of tickets in descending order of votes
-(pprint (sort-by (fn [[k v]] [(- v) (- (extract-dec-num k))]) vote-count-by-ticket))
 ;; Print users in descending order of number of votes cast on open
 ;; tickets, with a list of CLJ-<n> ticket numbers they have voted on.
 (require '[clojure.string :as str])
+(def vote-count-by-user (map-vals count votes-by-user))
 (doseq [[user votes] (sort-by (fn [[k v]] [(- v) (:display-name k)])
                               (filter-vals #(not (zero? %)) vote-count-by-user))]
   (printf "%3d %s (%s)\n" votes (:display-name user)
           (str/join " " (sort (map extract-dec-num (votes-by-user user))))))
+
+(defn sort-key-weighted-vote-then-num-votes [[ticket vote-info]]
+  [(- (or (:weighted-vote vote-info) 0))
+   (- (or (:num-votes vote-info) 0))
+   (extract-dec-num ticket)])
+
+(defn sort-key-num-votes-then-weighted-vote [[ticket vote-info]]
+  [(- (or (:num-votes vote-info) 0))
+   (- (or (:weighted-vote vote-info) 0))
+   (extract-dec-num ticket)])
+
+(defn print-tickets [sorted-ticket-info col-order]
+  (doseq [[ticket info] sorted-ticket-info]
+    ;(pprint info)
+    (doseq [col col-order]
+      (case col
+        :num-votes (printf " %3d" (:num-votes info))
+        :weighted-vote (printf " %7.2f" (double (:weighted-vote info)))
+        :ticket (printf " %-8s" ticket)
+        :title (printf " %s" (:title info))
+        :type (printf " %s" (subs (:type info) 0 1))
+        :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
+        :voter-details
+        (printf "\n             %s"
+                (str/join "\n             "
+                          (map #(format "%s (%s)"
+                                        (:display-name %)
+                                        (let [nv (:user-num-votes %)]
+                                          (if (and (number? nv) (> nv 1))
+                                            (str "1/" nv)
+                                            nv)))
+                               (:vote-list info))))))
+    (printf "\n")))
+
+(def open-tickets-1-vote-or-more (filter-vals
+                                  #(> (or (:weighted-vote %) 0) 0)
+                                  open-tickets-info))
+  
 ;; Print list of tickets that have at least one vote, sorted by
 ;; descending order of weighted vote, using descending order of whole
 ;; number of votes to break any ties there, and finally by ascending
 ;; order of ticket number.
-(doseq [[ticket vote-info] (sort-by (fn [[ticket vote-info]]
-                                        [(- (:ticket-weighted-vote vote-info))
-                                         (- (:ticket-num-votes vote-info))
-                                         (extract-dec-num ticket)])
-                                      vote-info-by-ticket)]
-  (printf "%-8s %3d %7.2f\n             %s\n"
-          ticket
-          (:ticket-num-votes vote-info)
-          (double (:ticket-weighted-vote vote-info))
-          (str/join "\n             "
-                    (map #(format "%s (%s)"
-                                  (:display-name %)
-                                  (let [nv (:user-num-votes %)]
-                                    (if (and (number? nv) (> nv 1))
-                                      (str "1/" nv)
-                                      nv)))
-                         (:ticket-vote-list vote-info)))))
+(print-tickets (sort-by sort-key-weighted-vote-then-num-votes
+                        open-tickets-1-vote-or-more)
+               [:weighted-vote :num-votes :type :approval :title :voter-details])
+
+;; Print sequence of tickets in descending order of number of votes,
+;; then by descending order of weighted vote, then by ticket number as
+;; a tie-breaker.
+(print-tickets (sort-by sort-key-num-votes-then-weighted-vote
+                        open-tickets-1-vote-or-more)
+               [:num-votes :weighted-vote :type :approval :title :voter-details])
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
