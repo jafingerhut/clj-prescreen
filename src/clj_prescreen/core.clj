@@ -1073,8 +1073,8 @@ from most to fewest votes.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-18/"))
-(def clojure-tree "./eval-results/2013-01-13-clojure-to-prescreen/clojure")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-25/"))
+(def clojure-tree "./eval-results/2013-01-25-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
 ;; TBD: Don't check any password into git
@@ -1130,7 +1130,7 @@ from most to fewest votes.
 ;; After doing the do-eval-check-ca! above, and hand-edited a file
 ;; containing the "preferred patches" to show in the prescreened patch
 ;; list, do the below to generate part of the prescreened patch
-;; report.
+;; and tickets needing work reports.
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         atts (read-safely fname1)
@@ -1285,6 +1285,12 @@ from most to fewest votes.
 (print-tickets (sort-by sort-key-weighted-vote-then-num-votes
                         open-tickets-1-vote-or-more)
                [:weighted-vote :num-votes :type :approval :title :voter-details])
+
+(spit (str cur-eval-dir "tickets-by-highest-weighted-vote.txt")
+      (with-out-str
+        (print-tickets (sort-by sort-key-weighted-vote-then-num-votes
+                                open-tickets-1-vote-or-more)
+                       [:weighted-vote :num-votes :type :approval :title :voter-details])))
 
 ;; Print sequence of tickets in descending order of number of votes,
 ;; then by descending order of weighted vote, then by ticket number as
