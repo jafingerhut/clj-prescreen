@@ -323,7 +323,7 @@ reason it was marked Not Approved has been addressed.",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1045",
-  :name "fold-by-halves.patch",
+  :name "clj-1045-fold-by-halves-patch-v2.txt",
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1046",
@@ -392,6 +392,10 @@ patch apply to latest master, per comments from Rich.",
   :name "clj-1080-eliminate-many-reflection-warnings-patch-v2.txt",
   :patch-category "Performance enhancement",
   }
+ {:ticket "CLJ-1082",
+  :name "clj-1082.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1083",
   :name "better-throw-arity-messages.diff",
   :patch-category "Better error reporting",
@@ -423,10 +427,6 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1097",
   :name "node-seq.diff",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1098",
-  :name "0001-CLJ-1098-Implement-IKVReduce-and-CollFold-for-nil.patch",
-  :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1099",
   :name "better-error-message-for-seq.patch",
@@ -525,5 +525,13 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1148",
   :name "0001-new-defonce-hotness.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
+  }
+ {:ticket "CLJ-1150",
+  :name "0001-Make-some-PersistentVector-s-and-APersistentVector.S.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1151",
+  :name "tiny-reducers-cleanup.diff",
+  :patch-category "Code cleanup",
   }
  )
