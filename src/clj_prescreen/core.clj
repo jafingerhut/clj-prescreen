@@ -1286,7 +1286,7 @@ from most to fewest votes.
                         open-tickets-1-vote-or-more)
                [:weighted-vote :num-votes :type :approval :title :voter-details])
 
-(spit (str cur-eval-dir "tickets-by-highest-weighted-vote.txt")
+(spit (str cur-eval-dir "top-tickets-by-weighted-vote.txt")
       (with-out-str
         (print-tickets (sort-by sort-key-weighted-vote-then-num-votes
                                 open-tickets-1-vote-or-more)
