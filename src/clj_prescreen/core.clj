@@ -1073,8 +1073,8 @@ from most to fewest votes.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-25/"))
-(def clojure-tree "./eval-results/2013-01-25-clojure-to-prescreen/clojure")
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-01-31/"))
+(def clojure-tree "./eval-results/2013-01-28-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
 ;; TBD: Don't check any password into git
