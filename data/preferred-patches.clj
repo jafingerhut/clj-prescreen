@@ -534,4 +534,8 @@ patch apply to latest master, per comments from Rich.",
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
   }
+ {:ticket "CLJ-1153",
+  :name "read-eval-default-false-patch-v1.txt",
+  :patch-category "Language/library enhancement",
+  }
  )
