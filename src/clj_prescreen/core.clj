@@ -75,8 +75,7 @@
 
 (defn read-safely [x & opts]
   (with-open [r (java.io.PushbackReader. (apply io/reader x opts))]
-    (binding [*read-eval* false]
-      (read r))))
+    (read-edn r)))
 
 
 (defn spit-pretty [f data & options]
