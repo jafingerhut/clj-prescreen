@@ -389,7 +389,7 @@ patch apply to latest master, per comments from Rich.",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1080",
-  :name "clj-1080-eliminate-many-reflection-warnings-patch-v2.txt",
+  :name "clj-1080-eliminate-many-reflection-warnings-patch-v3.txt",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
@@ -454,7 +454,7 @@ patch apply to latest master, per comments from Rich.",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1106",
-  :name "setequals.diff",
+  :name "0001-Fixing-set-equality.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1107",
@@ -501,10 +501,6 @@ patch apply to latest master, per comments from Rich.",
   :name "clj-1134-star-directive-in-cl-format.txt",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1135",
-  :name "add-changelog-items.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-1137",
   :name "CLJ-1137-eval-metadata-once.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -514,10 +510,6 @@ patch apply to latest master, per comments from Rich.",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note "and possibly also clj-1138-data-reader-return-nil-for-no-op.patch",
   }
- {:ticket "CLJ-1140",
-  :name "empty-list-destructuring-CLJ-1140-12.30.12.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1143",
   :name "clj-1143-ns-doc-string-correction-v1.txt",
   :patch-category "Doc string fixes only",
@@ -526,10 +518,6 @@ patch apply to latest master, per comments from Rich.",
   :name "0001-new-defonce-hotness.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
- {:ticket "CLJ-1150",
-  :name "0001-Make-some-PersistentVector-s-and-APersistentVector.S.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1151",
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
@@ -537,5 +525,9 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1153",
   :name "read-eval-default-false-patch-v1.txt",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1157",
+  :name "20130204_fix_classloader.diff",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
