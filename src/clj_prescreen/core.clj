@@ -431,7 +431,8 @@ type."
 
 
 (defn apply-git-patch [p patch-filename idx num-patches]
-  (let [{:keys [exit out err]} (try-cmd "git" "am" "--keep-cr" "-s"
+  (let [{:keys [exit out err]} (try-cmd "git" "am" "--keep-cr"
+                                        "--ignore-whitespace" "-s"
                                         patch-filename)]
     (if (zero? exit)
       (merge p {:patch-status :ok :patch-msg "Success."})
@@ -1432,7 +1433,7 @@ from most to fewest votes.
 
 ;; Optionally add a key :actual-type with one of the following values:
 
-;; + :git-diff      (i.e. use 'git am --keep-cr -s < attach-file' to apply)
+;; + :git-diff      (i.e. use 'git am --keep-cr --ignore-whitespace -s < attach-file' to apply)
 ;; + :non-git-diff  (i.e. use 'patch -p1 < attach-file' to apply)
 ;;   If -p1 is wrong, add another key like so:   :patch-opts [ "-p0" ]
 
