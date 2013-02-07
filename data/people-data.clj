@@ -840,6 +840,12 @@
  :emails #{ "tassilo@member.fsf.org" "tsdh@gnu.org" }
  :contributor true
  }
+{:display-name "Tsutomu Yano"
+ :aliases #{ "Tsutomu YANO" }
+ :usernames #{ "tyano" }
+ :emails #{ "t_yano@me.com" }
+ :contributor true
+ }
 {:display-name "Vyacheslav Dimitrov"
  :aliases #{ }
  :usernames #{ "vdim" }
