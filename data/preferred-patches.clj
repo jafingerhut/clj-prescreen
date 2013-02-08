@@ -159,7 +159,7 @@ Release 1.5 is made?",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-863",
-  :name "0001-make-interleave-handle-odd-arugments-in-the-same-man.patch",
+  :name "clj-863-make-interleave-handle-odd-args-like-concat-patch-v1.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-865",
