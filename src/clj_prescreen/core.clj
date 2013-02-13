@@ -3,6 +3,8 @@
   (:require [clojure.xml :as xml]
             [clojure.data :as data]
             [clojure.data.zip.xml :as dzx]
+            [clojure.edn :as edn]
+            ;;[clojure.tools.reader.edn :as edn]
             [clojure.zip :as zip]
             [clojure.java.io :as io]
             [clojure.set :as set]
@@ -75,7 +77,7 @@
 
 (defn read-safely [x & opts]
   (with-open [r (java.io.PushbackReader. (apply io/reader x opts))]
-    (read-edn r)))
+    (edn/read r)))
 
 
 (defn spit-pretty [f data & options]
@@ -1210,7 +1212,7 @@ from most to fewest votes.
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
 (def cur-eval-dir (str @fs/cwd "/eval-results/2013-02-07/"))
-(def clojure-tree "./eval-results/2013-02-05-clojure-to-prescreen/clojure")
+(def clojure-tree "./eval-results/2013-02-10-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
 ;; Note: Don't check any password into git
