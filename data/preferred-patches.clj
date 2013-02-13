@@ -97,7 +97,7 @@ could use that one.",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
 "This patch is only to eliminate some use of deprecated symbols.
-706-deprecated-var-warning.diff is the patch that implements the
+706-deprecated-var-warning-patch-v2.txt is the patch that implements the
 warnings when using deprecated symbols, but fails tests when applied
 by itself.  It needs test fixes in other 706-* patches and then they
 pass.",
@@ -107,10 +107,10 @@ pass.",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-771",
-  :name "clj-771-move-unchecked-casts-patch-v4.txt",
+  :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"TBD: The patch clj-771-move-unchecked-casts-patch-v4.txt applies
+"TBD: The patch clj-771-move-unchecked-casts-patch-v5.txt applies
 cleanly to latest master and passes all tests. Rich marked this ticket
 as Incomplete on Dec 9 2011 with the comment \"still considering when
 to incorporate this\" above. Is it reasonable to change it back to
@@ -361,7 +361,7 @@ CLJ-1046.",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1073",
-  :name "clj-1073-add-print-interruptibly-patch-v1.txt",
+  :name "clj-1073-add-print-interruptibly-patch-v2.txt",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1074",
@@ -528,6 +528,10 @@ patch apply to latest master, per comments from Rich.",
   }
  {:ticket "CLJ-1157",
   :name "20130204_fix_classloader.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1160",
+  :name "lazy-rmapcat.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  )
