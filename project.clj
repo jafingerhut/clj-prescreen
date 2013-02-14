@@ -1,7 +1,7 @@
 (defproject clj-prescreen "1.0.0-SNAPSHOT"
   :description "FIXME: write description"
   :dependencies [
-                 [org.clojure/clojure "1.5.0-RC15"]
+                 [org.clojure/clojure "1.5.0-RC16"]
                  ;; tools.reader 0.6.5 has a bug that prevents it from
                  ;; reading from a java.io.PushbackReader.  Wait for
                  ;; next release, which should fix that.
