@@ -453,10 +453,6 @@ patch apply to latest master, per comments from Rich.",
   :name "clj-1104-doc-unsafety-of-concurrent-with-redefs-v1.txt",
   :patch-category "Doc string fixes only",
   }
- {:ticket "CLJ-1106",
-  :name "0001-Fixing-set-equality.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1107",
   :name "0001-CLJ-1107-Throw-exception-for-get-called-on-unsupport.patch",
   :patch-category "Better error reporting",
@@ -521,10 +517,6 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1151",
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
-  }
- {:ticket "CLJ-1153",
-  :name "read-eval-default-false-patch-v1.txt",
-  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1157",
   :name "20130204_fix_classloader.diff",
