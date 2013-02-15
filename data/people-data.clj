@@ -99,6 +99,12 @@
  :emails #{ "bhurt42@gmail.com" }
  :contributor true
  }
+{:display-name "Bo Jeanes"
+ :aliases #{ }
+ :usernames #{ "bjeanes" }
+ :emails #{ "me@bjeanes.com" }
+ :contributor true
+ }
 {:display-name "Nicola Mometto"
  :aliases #{ "Bronsa" }
  :usernames #{ "bronsa" }
