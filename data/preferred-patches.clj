@@ -439,11 +439,6 @@ patch apply to latest master, per comments from Rich.",
   :name "better-error-message-for-seq.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1100",
-  :name "clj-1100-reader-literal-periods.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note "or CLJ-1100-periods-in-data-reader-tags.patch",
-  }
  {:ticket "CLJ-1101",
   :name "CLJ-1101-make-default-data-reader-fn-set-able-in-REPL.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -508,11 +503,6 @@ patch apply to latest master, per comments from Rich.",
   :name "CLJ-1137-eval-metadata-once.diff",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1138",
-  :name "clj-1138-allow-data-reader-to-return-nil-instead-of-throwing.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note "and possibly also clj-1138-data-reader-return-nil-for-no-op.patch",
-  }
  {:ticket "CLJ-1143",
   :name "clj-1143-ns-doc-string-correction-v1.txt",
   :patch-category "Doc string fixes only",
@@ -532,5 +522,13 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1160",
   :name "lazy-rmapcat.diff",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1164",
+  :name "CLJ-1164-typos-instant.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1165",
+  :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
+  :patch-category "Debug/tooling enhancement",
   }
  )
