@@ -420,6 +420,13 @@ patch apply to latest master, per comments from Rich.",
   :name "0001-Add-zero-arity-variants-for-every-pred-and-some-fn.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1095",
+  :name "0001-map-indexed-accepts-multiple-collections.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note "patch
+  0002-Add-test-for-multi-collection-map-indexed-fn.patch includes new
+  tests",
+  }
  {:ticket "CLJ-1096",
   :name "desctructure-keyword-lookup.diff",
   :patch-category "Performance enhancement",
