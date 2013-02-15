@@ -11,23 +11,23 @@
   :name nil,
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"There are lots of different ideas discussed in the comments for
-CLJ-124, and not clear to me if there is an agreed-upon set of changes
-for the issue.  CLJ-959 could potentially be closed as a duplicate of
-CLJ-124.",
+     "There are lots of different ideas discussed in the comments for
+      CLJ-124, and not clear to me if there is an agreed-upon set of
+      changes for the issue.  CLJ-959 could potentially be closed as a
+      duplicate of CLJ-124.",
   }
  {:ticket "CLJ-129",
   :name nil,
   :patch-category "Doc string fixes only",
   :patch-extra-note
-"A thorough job of documenting this would require understanding how
-Clojure functions are made to implement the Comparable interface in
-AFunction.java of the Clojure source code, and the restrictions in
-Java of what makes a 'good' implementation of the Comparator
-interface.  Doing that clearly is probably best done in a form longer
-than is acceptable in a doc string for sorted-set-by or sorted-map-by,
-but perhaps such documentation could be put at a link that could be
-added to the doc string."
+     "A thorough job of documenting this would require understanding
+      how Clojure functions are made to implement the Comparable
+      interface in AFunction.java of the Clojure source code, and the
+      restrictions in Java of what makes a 'good' implementation of
+      the Comparator interface.  Doing that clearly is probably best
+      done in a form longer than is acceptable in a doc string for
+      sorted-set-by or sorted-map-by, but perhaps such documentation
+      could be put at a link that could be added to the doc string."
   }
  {:ticket "CLJ-196",
   :name "0002-Don-t-promise-the-value-of-file-in-the-REPL.patch",
@@ -49,8 +49,9 @@ added to the doc string."
   :name "compile-interop-1.patch",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"Patch compile-interop-1.patch applies and builds cleanly.  Comment
-discussion on various approaches to this ticket are extensive.",
+     "Patch compile-interop-1.patch applies and builds cleanly.
+      Comment discussion on various approaches to this ticket are
+      extensive.",
   }
  {:ticket "CLJ-373",
   :name "0001-Support-empty-path-in-update-in.-CLJ-373.patch",
@@ -64,12 +65,12 @@ discussion on various approaches to this ticket are extensive.",
   :name "clj-415-assert-prints-locals-v1.txt",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
-"The patch applies cleanly and passes tests, but gives a warning
-because macro local-bindings is same name (and perhaps the same
-author, since the body is almost the same) as a function
-local-bindings in clojure.test.generative.  If the one in
-clojure.test.generative were moved to clojure.core, test.generative
-could use that one.",
+     "The patch applies cleanly and passes tests, but gives a warning
+      because macro local-bindings is same name (and perhaps the same
+      author, since the body is almost the same) as a function
+      local-bindings in clojure.test.generative.  If the one in
+      clojure.test.generative were moved to clojure.core,
+      test.generative could use that one.",
   }
  {:ticket "CLJ-457",
   :name "CLJ-457-2.diff",
@@ -86,7 +87,8 @@ could use that one.",
  {:ticket "CLJ-700",
   :name "clj-700-patch6.txt",
   :patch-category "Allow more correct-looking Clojure code to work",
-  :patch-extra-note "Was Screened, then Incomplete in Aug 2012, now Approval is empty.",
+  :patch-extra-note
+     "Was Screened, then Incomplete in Aug 2012, now Approval is empty.",
   }
  {:ticket "CLJ-703",
   :name "improve-writeclassfile-perf.patch",
@@ -96,11 +98,11 @@ could use that one.",
   :name "706-fix-deprecation-warnings-on-replicate.diff",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
-"This patch is only to eliminate some use of deprecated symbols.
-706-deprecated-var-warning-patch-v2.txt is the patch that implements the
-warnings when using deprecated symbols, but fails tests when applied
-by itself.  It needs test fixes in other 706-* patches and then they
-pass.",
+     "This patch is only to eliminate some use of deprecated symbols.
+      706-deprecated-var-warning-patch-v2.txt is the patch that
+      implements the warnings when using deprecated symbols, but fails
+      tests when applied by itself.  It needs test fixes in other
+      706-* patches and then they pass.",
   }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
@@ -110,12 +112,12 @@ pass.",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"TBD: The patch clj-771-move-unchecked-casts-patch-v5.txt applies
-cleanly to latest master and passes all tests. Rich marked this ticket
-as Incomplete on Dec 9 2011 with the comment \"still considering when
-to incorporate this\" above. Is it reasonable to change it back to
-Vetted or Screened so it can be considered again, perhaps after
-Release 1.5 is made?",
+     "TBD: The patch clj-771-move-unchecked-casts-patch-v5.txt applies
+      cleanly to latest master and passes all tests. Rich marked this
+      ticket as Incomplete on Dec 9 2011 with the comment \"still
+      considering when to incorporate this\" above. Is it reasonable
+      to change it back to Vetted or Screened so it can be considered
+      again, perhaps after Release 1.5 is made?",
   }
  {:ticket "CLJ-783",
   :name "clj-783-patch.txt",
@@ -202,18 +204,18 @@ Release 1.5 is made?",
   :name "0001-Fix-for-CLJ-944.patch",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
-"See comments for another patch 0002-Fix-for-CLJ-944.patch and why it
-fails some tests, which are fixable.",
+     "See comments for another patch 0002-Fix-for-CLJ-944.patch and
+      why it fails some tests, which are fixable.",
   }
  {:ticket "CLJ-945",
   :name "capitalize-for-supplementary-chars-patch.txt",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
-"TBD: Stuart H marked the one patch Screened, then Rich changed it to
-Not Approved with a comment.  Andy F answered his comment, but the
-patch did not require any change in order to answer that comment.
-Should it be marked as Screened again since the patch hasn't
-changed?",
+     "TBD: Stuart H marked the one patch Screened, then Rich changed
+      it to Not Approved with a comment.  Andy F answered his comment,
+      but the patch did not require any change in order to answer that
+      comment.  Should it be marked as Screened again since the patch
+      hasn't changed?",
   }
  {:ticket "CLJ-949",
   :name "0001-let-undeclared-exceptions-continue-unchecked.patch",
@@ -223,26 +225,26 @@ changed?",
   :name "clj-957-allow-typehinting-of-method-signatures-in-deftype-patch2.txt",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"TBD: Why marked Not Approved by Rich?  Should this be closed, or does
-he want something about the existing patches modified before
-considering it?",
+     "TBD: Why marked Not Approved by Rich?  Should this be closed, or
+      does he want something about the existing patches modified
+      before considering it?",
   }
  {:ticket "CLJ-958",
   :name "0001-Make-APersistentVector.iterator-slightly-more-effici.patch",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-"TBD: Why marked Not Approved by Rich?  Should this be closed, or does
-he want something about the existing patches modified before
-considering it?",
+     "TBD: Why marked Not Approved by Rich?  Should this be closed, or
+      does he want something about the existing patches modified
+      before considering it?",
   }
  {:ticket "CLJ-967",
   :name "clj-967-disable-failing-io-copy-tests-on-ibm-jdk-16-patch1.txt",
   :patch-category "Disable failing tests",
   :patch-extra-note
-"TBD: Stuart H marked the one patch Screened, then Rich changed it to
-Not Approved without any comment as to why.  There is no guidance on
-what Rich is looking for in order for this ticket to change state in
-the future.",
+     "TBD: Stuart H marked the one patch Screened, then Rich changed
+      it to Not Approved without any comment as to why.  There is no
+      guidance on what Rich is looking for in order for this ticket to
+      change state in the future.",
   }
  {:ticket "CLJ-970",
   :name "clj-970-extend-implement-parameterized-types-patch2.txt",
@@ -298,9 +300,10 @@ the future.",
   :name "0001-Introduce-end-of-line-normalization.patch",
   :patch-category "Code cleanup",
   :patch-extra-note
-"Although this patch does not apply cleanly, it is quite mechanical to
-make it apply cleanly again, since the only changes are removing CR
-characters from all Clojure source files.",
+     "Although this patch does not apply cleanly, it is quite
+      mechanical to make it apply cleanly again, since the only
+      changes are removing CR characters from all Clojure source
+      files.",
   }
  {:ticket "CLJ-1029",
   :name "ns-patch.diff",
@@ -314,9 +317,10 @@ characters from all Clojure source files.",
   :name "clj-1036-hasheq-for-biginteger-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
-"TBD: Andy F should change from Vetted back to Not Approved if Not
-Approved shouldn't be changed by anyone besides screeners, even if the
-reason it was marked Not Approved has been addressed.",
+     "TBD: Andy F should change from Vetted back to Not Approved if
+      Not Approved shouldn't be changed by anyone besides screeners,
+      even if the reason it was marked Not Approved has been
+      addressed.",
   }
  {:ticket "CLJ-1044",
   :name "001-enable-factory-ctor-inside-deftype.diff",
@@ -330,9 +334,9 @@ reason it was marked Not Approved has been addressed.",
   :name "drop-while-reducer.patch",
   :patch-category "Language enhancement, reducers",
   :patch-extra-note
-"As of Oct 28 2012, some patches for CLJ-992 and CLJ-993 apply, build,
-and test cleanly if applied after the patches for CLJ-1045 and
-CLJ-1046.",
+     "As of Oct 28 2012, some patches for CLJ-992 and CLJ-993 apply, build,
+      and test cleanly if applied after the patches for CLJ-1045 and
+      CLJ-1046.",
   }
  {:ticket "CLJ-1047",
   :name "001-simplify-fj-importing.patch",
@@ -381,8 +385,8 @@ CLJ-1046.",
   :patch-category "Language/library enhancement",
   :stale-patch-last-time-applied-cleanly "Dec 2012",
   :patch-extra-note
-"There are more substantive changes to make than simply making the
-patch apply to latest master, per comments from Rich.",
+     "There are more substantive changes to make than simply making
+      the patch apply to latest master, per comments from Rich.",
   }
  {:ticket "CLJ-1079",
   :name "CLJ-1079.diff",
@@ -423,9 +427,9 @@ patch apply to latest master, per comments from Rich.",
  {:ticket "CLJ-1095",
   :name "0001-map-indexed-accepts-multiple-collections.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note "patch
-  0002-Add-test-for-multi-collection-map-indexed-fn.patch includes new
-  tests",
+  :patch-extra-note
+     "0002-Add-test-for-multi-collection-map-indexed-fn.patch includes
+      new tests",
   }
  {:ticket "CLJ-1096",
   :name "desctructure-keyword-lookup.diff",
