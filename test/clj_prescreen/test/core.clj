@@ -349,11 +349,12 @@ index bfc8274..dea9310 100644
   (let [people (read (java.io.PushbackReader. (io/reader "data/people-data.clj")))
         authors1 (git-patch-authors test-patch-content-1)
         names-and-emails1 (set (map extract-name-and-email authors1))
-        andy {:full-name "John Andrew Fingerhut",
-              :aliases #{"Andy Fingerhut"},
+        andy {:display-name "Andy Fingerhut",
+              :aliases #{"John Andrew Fingerhut"},
               :usernames #{"jafingerhut"},
               :emails
-              #{"andy.fingerhut@gmail.com" "andy_fingerhut@alum.wustl.edu"},
+              #{"andy.fingerhut@gmail.com" "andy_fingerhut@alum.wustl.edu"
+                "jafinger@cisco.com"},
               :contributor true}]
     (is (= authors1 #{"Andy Fingerhut <andy_fingerhut@alum.wustl.edu>"
                       "Juha Arpiainen <jarpiain@iki.fi>"}))
@@ -383,14 +384,17 @@ index bfc8274..dea9310 100644
     (is (= (set (patch-authors-contributor-status authors1 people))
            #{{:contributor-status :contributor,
               :name "Andy Fingerhut",
+              :display-name "Andy Fingerhut",
               :email "andy_fingerhut@alum.wustl.edu"}
              {:contributor-status :contributor,
               :name "Juha Arpiainen",
+              :display-name "Juha Arpiainen",
               :email "jarpiain@iki.fi"}}))
     (is (= (set (patch-authors-contributor-status
                  ["Rahul Pilani <rahul.pilani@gmail.com>"] people))
            #{{:contributor-status :not-contributor,
               :name "Rahul Pilani",
+              :display-name "Rahul Pilani",
               :email "rahul.pilani@gmail.com"}}))
     (is (= (set (patch-authors-contributor-status
                  [ "Andy Fingerhut <jafingerhut@me.com>" ] people))
