@@ -1211,7 +1211,7 @@ from most to fewest votes.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str @fs/cwd "/eval-results/2013-02-14/"))
+(def cur-eval-dir (str @fs/cwd "/eval-results/2013-02-21/"))
 (def clojure-tree "./eval-results/2013-02-13-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
