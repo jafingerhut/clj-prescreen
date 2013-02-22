@@ -180,10 +180,6 @@
   :name "clj-896-browse-url-uses-xdg-open-patch2.txt",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-904",
-  :name "0002-CLJ-904-Note-about-read-eval-on-docstrings-for-reade.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-908",
   :name "clj-908-Print-metadata-and-anonymous-classes-better-patch2.txt",
   :patch-category "Debug/tooling enhancement",
@@ -527,12 +523,20 @@
   :name "lazy-rmapcat.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1161",
+  :name "0001-CLJ-1161-Remove-version.properties-from-sources-JAR.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
  {:ticket "CLJ-1164",
   :name "CLJ-1164-typos-instant.patch",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1165",
   :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1168",
+  :name "clj-1168-patch-v1.txt",
   :patch-category "Debug/tooling enhancement",
   }
  )
