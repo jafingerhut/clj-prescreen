@@ -535,8 +535,15 @@
   :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1168",
-  :name "clj-1168-patch-v1.txt",
+ {:ticket "CLJ-1169",
+  :name "0001-CLJ-1169-proposed-patch.patch",
   :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1171",
+  :name "0002-CLJ-1171-Obey-lexical-scope-for-class-argument-in-in.patch",
+  :patch-category "Clojure language/library bug fixes",
+  :patch-extra-note
+     "0001-* patch adds new tests, 0002-* fixes a bug, 0003-* relies
+      on 0002-* being applied before it.",
   }
  )
