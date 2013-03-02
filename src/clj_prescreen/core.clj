@@ -1180,7 +1180,10 @@ from most to fewest votes.
   ;; Headings
   (printf "    <tr>\n")
   (doseq [col col-order]
-    (printf "        <td style=\"vertical-align: bottom;\">%s\n"
+    (printf "        <td style=\"vertical-align: bottom;%s\">%s\n"
+            (case col
+              :voter-details " width: 200px;"
+              "")
             (case col
               :weighted-vote "Weighted vote"
               :num-votes "# of Votes"
