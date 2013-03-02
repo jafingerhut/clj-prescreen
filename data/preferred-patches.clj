@@ -203,16 +203,6 @@
      "See comments for another patch 0002-Fix-for-CLJ-944.patch and
       why it fails some tests, which are fixable.",
   }
- {:ticket "CLJ-945",
-  :name "capitalize-for-supplementary-chars-patch.txt",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "TBD: Stuart H marked the one patch Screened, then Rich changed
-      it to Not Approved with a comment.  Andy F answered his comment,
-      but the patch did not require any change in order to answer that
-      comment.  Should it be marked as Screened again since the patch
-      hasn't changed?",
-  }
  {:ticket "CLJ-949",
   :name "0001-let-undeclared-exceptions-continue-unchecked.patch",
   :patch-category "Language/library enhancement",
@@ -232,15 +222,6 @@
      "TBD: Why marked Not Approved by Rich?  Should this be closed, or
       does he want something about the existing patches modified
       before considering it?",
-  }
- {:ticket "CLJ-967",
-  :name "clj-967-disable-failing-io-copy-tests-on-ibm-jdk-16-patch1.txt",
-  :patch-category "Disable failing tests",
-  :patch-extra-note
-     "TBD: Stuart H marked the one patch Screened, then Rich changed
-      it to Not Approved without any comment as to why.  There is no
-      guidance on what Rich is looking for in order for this ticket to
-      change state in the future.",
   }
  {:ticket "CLJ-970",
   :name "clj-970-extend-implement-parameterized-types-patch2.txt",
