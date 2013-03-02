@@ -802,7 +802,7 @@ apply the patch, and try to build with 'ant' in that copy."
        (= (:ant-status att) :ok)))
 
 (defn next-release? [att]
-  (= (:fixVersion att) "Release 1.5"))
+  (= (:fixVersion att) "Release 1.6"))
 
 (defn approval-in? [att approval-set]
   (approval-set (get att "Approval")))
@@ -985,13 +985,13 @@ because there are no prescreened patches for the ticket at this time:
     (doseq [[filter-pred heading-str]
             [ [ prescreened-not-screened-not-next-release?
 "----------------------------------------------------------------------
-Prescreened patches *not* marked with Fix Version/s = \"Release 1.5\"
+Prescreened patches *not* marked with Fix Version/s = \"Release 1.6\"
 ----------------------------------------------------------------------"
                ]
               [ prescreened-not-screened-next-release?
 "----------------------------------------------------------------------
 Prescreened patches that are marked with Fix Version/s = \"Release
-1.5\", but not screened
+1.6\", but not screened
 ----------------------------------------------------------------------"
                ]
               [ prescreened-and-screened?
@@ -1026,7 +1026,7 @@ ticket is marked Incomplete (I) or Not Approved (N).
             [
              [ next-release?
 "----------------------------------------------------------------------
-Tickets marked for Clojure release 1.5 that have no prescreened
+Tickets marked for Clojure release 1.6 that have no prescreened
 patches (see also Note 3 at the bottom):
 ----------------------------------------------------------------------"
               ]
