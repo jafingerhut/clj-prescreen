@@ -1011,7 +1011,7 @@ Prescreened, and screened or accepted
             [ [ prescreened-and-needs-work?
 "----------------------------------------------------------------------
 Tickets with prescreened patches, but they may need work, since the
-ticket is marked Incomplete (I) or Not Approved (N).
+ticket is marked Incomplete (I).
 ----------------------------------------------------------------------"
                ]
               ]]
@@ -1034,9 +1034,9 @@ patches (see also Note 3 at the bottom):
              [ #(approval-in? % #{"Triaged" "Vetted" "Incomplete"})
 "----------------------------------------------------------------------
 Tickets needing work that have no prescreened patches.  These are all
-Triaged (marked T), Vetted (V), Incomplete (I), or Not Approved (N).
-The number after the letter is the number of votes, and tickets have
-been sorted from most to fewest votes.
+Triaged (marked T), Vetted (V), Incomplete (I), or their approval is
+the initial blank state.  The number after the letter is the number of
+votes, and tickets have been sorted from most to fewest votes.
 ----------------------------------------------------------------------"
                ]
               ]]
