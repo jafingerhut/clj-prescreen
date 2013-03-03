@@ -823,11 +823,11 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (defn prescreened-and-needs-work? [att]
   (and (prescreened? att)
-       (approval-in? att #{"Incomplete" "Not Approved"})))
+       (approval-in? att #{"Incomplete"})))
 
 (defn not-prescreened-and-needs-work? [att]
   (and (not (prescreened? att))
-       (approval-in? att #{"Incomplete" "Not Approved" "Vetted"})))
+       (approval-in? att #{"Incomplete" "Triaged" "Vetted"})))
 
 (defn patch-name-exists? [atts-for-ticket att-name]
   (first (filter #(= att-name (:name %)) atts-for-ticket)))
@@ -1031,12 +1031,12 @@ patches (see also Note 3 at the bottom):
 ----------------------------------------------------------------------"
               ]
 
-             [ #(approval-in? % #{"Vetted" "Incomplete" "Not Approved"})
+             [ #(approval-in? % #{"Triaged" "Vetted" "Incomplete"})
 "----------------------------------------------------------------------
 Tickets needing work that have no prescreened patches.  These are all
-Vetted (marked V), Incomplete (I), or Not Approved (N).  The number
-after the letter is the number of votes, and tickets have been sorted
-from most to fewest votes.
+Triaged (marked T), Vetted (V), Incomplete (I), or Not Approved (N).
+The number after the letter is the number of votes, and tickets have
+been sorted from most to fewest votes.
 ----------------------------------------------------------------------"
                ]
               ]]
