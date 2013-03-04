@@ -834,6 +834,12 @@
  :emails #{ "tom@tomoj.la" }
  :contributor true
  }
+{:display-name "Karsten Schmidt"
+ :aliases #{ }
+ :usernames #{ "toxi" }
+ :emails #{ "k@postspectacular.com" }
+ :contributor true
+ }
 {:display-name "Colin Jones"
  :aliases #{ }
  :usernames #{ "trptcolin" }
