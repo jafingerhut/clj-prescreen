@@ -1168,6 +1168,10 @@ votes, and tickets have been sorted from most to fewest votes.
     (printf "\n")))
 
 
+(defn html-escape-text [s]
+  (str/escape s {\& "&amp;" \< "&lt;" \> "&gt;"}))
+
+
 (defn url-for-clj-ticket [ticket-abbrev]
   (str "http://dev.clojure.org/jira/browse/" ticket-abbrev))
 
@@ -1211,15 +1215,16 @@ votes, and tickets have been sorted from most to fewest votes.
           :ticket-with-link (printf "<a href=\"%s\">%s</a>"
                                     (url-for-clj-ticket ticket-abbrev)
                                     ticket-abbrev)
-          :title (printf "%s" summary)
+          :title (printf "%s" (html-escape-text summary))
           :voter-details
           (printf "%s" (str/join "<br>\n"
-                                 (map #(format "%s (%s)"
-                                               (:display-name %)
-                                               (let [nv (:user-num-votes %)]
-                                                 (if (and (number? nv) (> nv 1))
-                                                   (str "1/" nv)
-                                                   nv)))
+                                 (map #(html-escape-text
+                                        (format "%s (%s)"
+                                                (:display-name %)
+                                                (let [nv (:user-num-votes %)]
+                                                  (if (and (number? nv) (> nv 1))
+                                                    (str "1/" nv)
+                                                    nv))))
                                       (:vote-list info)))))
         (printf "\n        </td>\n"))
       (printf "    </tr>\n")))
@@ -1228,7 +1233,7 @@ votes, and tickets have been sorted from most to fewest votes.
   (printf "</table>\n"))
 
 
-(defn print-top-tickets-by-vote-weight! [out-fname ticket-info]
+(defn print-top-tickets-by-vote-weight! [out-fname ticket-info format]
   (let [tickets-with-votes (->> ticket-info
                                 (filter-vals #(and (:weighted-vote %)
                                                    (> (:weighted-vote %) 0)))
@@ -1237,7 +1242,32 @@ votes, and tickets have been sorted from most to fewest votes.
                                   tickets-with-votes)]
     (spit out-fname
           (with-out-str
-            (printf "%s" "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
+            (case format
+              :text
+              (printf "%s" "Top CLJ tickets by weighted vote
+
+Date: March 1, 2013
+ 
+Open CLJ tickets with 1 or more votes, sorted in descending order of
+their \"weighted vote\".
+
+Suppose someone has currently voted on N open tickets.  Then their
+vote counts as 1/N for each of those tickets.  Thus voting on all
+tickets has the same relative effect on their ranking as voting on no
+tickets.  You must be selective to change the rankings.
+
+Each ticket is listed with:
+
+<weighted vote>  <vote count>  <Approval>   [CLJ-<n>] <summary line>
+             voter #1 (weight that voter #1 contributes)
+             voter #2 (weight that voter #2 contributes)
+             ...
+
+where Approval is one of \"--\" (blank), Vetted, Screened, Incomplete,
+Not Approved, etc.
+")
+              :html
+              (printf "%s" "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
 <html>
 <head>
 <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\">
@@ -1258,13 +1288,23 @@ as <span style=\"font-style: italic;\">1/N</span> for each of those
 tickets.&nbsp; Thus voting on all tickets has the same relative effect
 on their ranking as voting on no tickets.&nbsp; You must be selective
 to change the rankings.
-")
+"))
             (doseq [ticket-type (sort (keys tickets-by-type))]
-              (printf "<h2>%s</h2>\n\n" ticket-type)
-              (print-tickets-html-table (get tickets-by-type ticket-type)
-                                        [:weighted-vote :num-votes :approval
-                                         :ticket-with-link :title
-                                         :voter-details]))))))
+              (case format
+                :text
+                (do
+                  (printf "\n========================================\n%s\n\n"
+                          ticket-type)
+                  (print-tickets (get tickets-by-type ticket-type)
+                                 [:weighted-vote :num-votes :approval
+                                  :title :voter-details]))
+                :html
+                (do
+                  (printf "<h2>%s</h2>\n\n" ticket-type)
+                  (print-tickets-html-table (get tickets-by-type ticket-type)
+                                            [:weighted-vote :num-votes :approval
+                                             :ticket-with-link :title
+                                             :voter-details]))))))))
 
 
 
@@ -1333,7 +1373,9 @@ to change the rankings.
 ;; Print a report of top tickets sorted from highest weighted vote to
 ;; lowest.
 (print-top-tickets-by-vote-weight!
- (str cur-eval-dir "top-tickets-by-weighted-vote.html") open-tickets-info)
+ (str cur-eval-dir "top-tickets-by-weighted-vote.txt") open-tickets-info :text)
+(print-top-tickets-by-vote-weight!
+ (str cur-eval-dir "top-tickets-by-weighted-vote.html") open-tickets-info :html)
 
 ;; TBD: Consider adding code to dl-patches-check-ca! that reads the
 ;; votes file, and combines the list of users who have voted for each
