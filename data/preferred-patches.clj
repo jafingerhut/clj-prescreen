@@ -108,6 +108,10 @@
   :name "protocolerr.diff",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-766",
+  :name "byte-short-array-ctors.diff",
+  :patch-category "Allow more correct-looking Clojure code to work",
+  }
  {:ticket "CLJ-771",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
@@ -350,7 +354,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1076",
-  :name "clj-1076-fix-tests-on-windows-patch-v1.txt",
+  :name "clj-1076-fix-tests-on-windows-patch-v2.txt",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1077",
@@ -526,5 +530,13 @@
   :patch-extra-note
      "0001-* patch adds new tests, 0002-* fixes a bug, 0003-* relies
       on 0002-* being applied before it.",
+  }
+ {:ticket "CLJ-1175",
+  :name "delayed-exceptions.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1176",
+  :name "0001-CLJ-1176-Bind-read-eval-true-in-clojure.repl-source-.patch",
+  :patch-category "Debug/tooling enhancement",
   }
  )
