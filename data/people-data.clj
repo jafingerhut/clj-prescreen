@@ -604,6 +604,12 @@
  :emails #{ "el.wubo@gmail.com" }
  :contributor true
  }
+{:display-name "Omer Iqbal"
+ :aliases #{ "olenhad" }
+ :usernames #{ "olenhad" }
+ :emails #{ "momeriqbal2@gmail.com" }
+ :contributor true
+ }
 {:display-name "Jarkko Oranen"
  :aliases #{ }
  :usernames #{ "oranenj" }
