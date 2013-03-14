@@ -104,6 +104,10 @@
       tests when applied by itself.  It needs test fixes in other
       706-* patches and then they pass.",
   }
+ {:ticket "CLJ-713",
+  :name "asm-split.txt",
+  :patch-category "Debug/tooling enhancement",
+  }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
   :patch-category "Better error reporting",
@@ -401,6 +405,10 @@
   :name "var-clear-locals.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1093",
+  :name "clj-1093-fix-empty-record-literal-patch-v2.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1094",
   :name "0001-Add-zero-arity-variants-for-every-pred-and-some-fn.patch",
   :patch-category "Language/library enhancement",
@@ -538,5 +546,21 @@
  {:ticket "CLJ-1176",
   :name "0001-CLJ-1176-Bind-read-eval-true-in-clojure.repl-source-.patch",
   :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1177",
+  :name "clj-1177-patch-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1179",
+  :name "clj-1179-distinct-zero-arguments.txt",
+  :patch-category "Allow more correct-looking Clojure code to work",
+  }
+ {:ticket "CLJ-1180",
+  :name "001-CLJ-1180.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1182",
+  :name "fix-CLJ-1182.diff",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
