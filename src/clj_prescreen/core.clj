@@ -801,6 +801,12 @@ apply the patch, and try to build with 'ant' in that copy."
        (= (:patch-status att) :ok)
        (= (:ant-status att) :ok)))
 
+(defn all-but-prescreened? [att]
+  (and (:name att)
+       (= (:patch-author-summary att) :CA-ok)
+       (= (:patch-status att) :ok)
+       (not= (:ant-status att) :ok)))
+
 (defn next-release? [att]
   (= (:fixVersion att) "Release 1.6"))
 
@@ -1005,7 +1011,7 @@ Prescreened, and screened or accepted
       (print (preferred-patch-report-text atts ppats filter-pred)))))
 
 
-(defn prescreened-need-work-report-text [atts ppats]
+(defn prescreened-needs-work-report-text [atts ppats]
   (with-out-str
     (doseq [[filter-pred heading-str]
             [ [ prescreened-and-needs-work?
@@ -1020,7 +1026,7 @@ ticket is marked Incomplete (I).
       (print (preferred-patch-report-text atts ppats filter-pred)))))
 
 
-(defn not-prescreened-need-work-report-text [atts]
+(defn not-prescreened-needs-work-report-text [atts ppats]
   (with-out-str
     (doseq [[filter-pred heading-str]
             [
@@ -1034,16 +1040,34 @@ patches (see also Note 3 at the bottom):
              [ #(approval-in? % #{"Triaged" "Vetted" "Incomplete"})
 "----------------------------------------------------------------------
 Tickets needing work that have no prescreened patches.  These are all
-Triaged (marked T), Vetted (V), Incomplete (I), or their approval is
-the initial blank state.  The number after the letter is the number of
-votes, and tickets have been sorted from most to fewest votes.
+Triaged (T), Vetted (V), or Incomplete (I).  The number after the
+letter is the number of votes, and tickets have been sorted from most
+to fewest votes.
 ----------------------------------------------------------------------"
                ]
               ]]
       (println)
       (print heading-str)
       (println)
-      (print (not-prescreened-patch-report-text atts filter-pred)))))
+      (print (not-prescreened-patch-report-text atts filter-pred)))
+
+    (doseq [[filter-pred heading-str]
+            [
+             [ #(and (all-but-prescreened? %)
+                     (not (next-release? %))
+                     (not (approval-in? % #{"Triaged" "Vetted" "Incomplete"})))
+"----------------------------------------------------------------------
+Tickets not fitting in previous categories, but they have a git format
+patch that applies cleanly to latest Clojure master, written by a
+contributor, and it does not build and pass tests.
+----------------------------------------------------------------------"
+               ]
+              ]]
+      (println)
+      (print heading-str)
+      (println)
+      (print (preferred-patch-report-text atts ppats filter-pred)))
+    ))
 
 
 (defn ticket-plus-vote-info [ticket-xml-fname votes-fname]
@@ -1418,12 +1442,12 @@ to change the rankings.
         ppats (read-safely ppat-fname)
         fname-warnings (str cur-eval-dir patch-type "-warnings.txt")
         fname-prescreened (str cur-eval-dir patch-type "-prescreened-report.txt")
-        fname-need-work (str cur-eval-dir patch-type "-needs-work.txt")]
+        fname-needs-work (str cur-eval-dir patch-type "-needs-work.txt")]
     (spit fname-warnings (warning-log-text atts ppats fname1 ppat-fname))
     (spit fname-prescreened (prescreened-report-text atts ppats))
-    (spit fname-need-work
-          (str (prescreened-need-work-report-text atts ppats)
-               (not-prescreened-need-work-report-text atts)))
+    (spit fname-needs-work
+          (str (prescreened-needs-work-report-text atts ppats)
+               (not-prescreened-needs-work-report-text atts ppats)))
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
