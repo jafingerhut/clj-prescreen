@@ -107,6 +107,11 @@
  {:ticket "CLJ-713",
   :name "asm-split.txt",
   :patch-category "Debug/tooling enhancement",
+  :patch-extra-note
+     "This patch applies cleanly, but fails to compile with
+      './antsetup.sh ; ant' due to some extra package dependencies
+      added by the patch.  It did compile and test successfully as of
+      Mar 14, 2013 using the command 'mvn package'.",
   }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
