@@ -93,6 +93,10 @@
         (for [[k v] m] [k (f v)])))
 
 
+(defn filter-keys [f m]
+  (into (empty m)
+        (filter (fn [[k _]] (f k)) m)))
+
 (defn filter-vals [f m]
   (into (empty m)
         (filter (fn [[_ v]] (f v)) m)))
@@ -194,12 +198,16 @@ TBENCH-11"
     (map #(dzx/xml1-> % :key dzx/text) tickets-zip)))
 
 
-(defn url-all-open-tickets []
+(defn url-all-open-CLJ-tickets []
   "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
 
 
+(defn url-all-open-non-CLJ-tickets []
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
+
+
 (defn url-for-tickets-voted-by-user [username]
-  (let [url-part1 "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
+  (let [url-part1 "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
         url-part2 "%27&tempMax=1000&field=title"]
     (str url-part1 username url-part2)))
 
@@ -207,16 +215,18 @@ TBENCH-11"
 (defn dl-open-tickets!
   "Download XML data about all open CLJ tickets and save it to a local
 file."
-  [file-name]
-  (let [resp (http/get (url-all-open-tickets) {:throw-exceptions false})]
+  [file-name project]
+  (let [url (if (= project :CLJ)
+              (url-all-open-CLJ-tickets)
+              (url-all-open-non-CLJ-tickets))
+        resp (http/get url {:throw-exceptions false})]
     (if (= 200 (:status resp))
       (spit file-name (:body resp))
       (do
         (binding [*out* *err*]
           (println
            (format "Got response status %d when trying to get URL:\n%s\n"
-                   (:status resp)
-                   (url-all-open-tickets))))))))
+                   (:status resp) url)))))))
 
 
 (defn dl-open-ticket-votes!
@@ -1070,7 +1080,17 @@ contributor, and it does not build and pass tests.
     ))
 
 
-(defn ticket-plus-vote-info [ticket-xml-fname votes-fname]
+(defn vote-project [ticket-str]
+  (second (re-find #"^(.*)-\d+$" ticket-str)))
+
+
+(defn all-vote-projects [votes-fname]
+  (let [votes-by-user (read-safely votes-fname)
+        vote-tickets (apply concat (vals votes-by-user))]
+    (set (map vote-project vote-tickets))))
+
+
+(defn ticket-plus-vote-info [ticket-xml-fname votes-fname project]
   (let [;; votes-by-user is expected to be a map where:
         ;;
         ;; + The keys are themselves maps describing JIRA users.
@@ -1082,6 +1102,10 @@ contributor, and it does not build and pass tests.
         ;;  :usernames #{"bsiebert"},
         ;;  :emails #{"bsiebert@fgm.com"}}
         votes-by-user (read-safely votes-fname)
+        votes-by-user (map-vals (fn [ticket-strs]
+                                  (filter #(= (vote-project %) project)
+                                          ticket-strs))
+                                votes-by-user)
 
         ;; From votes-by-user, calculate votes-by-ticket, which is a
         ;; map where:
@@ -1126,7 +1150,11 @@ contributor, and it does not build and pass tests.
                                          users)})
                   votes-by-ticket)
 
-        tickets-info (ticket-info-from-xml (slurp ticket-xml-fname))]
+;;        tickets-info (ticket-info-from-xml (slurp ticket-xml-fname))
+;;        tickets-info (filter-keys #(= (vote-project %) project) tickets-info)
+        tickets-info (->> (slurp ticket-xml-fname)
+                          (ticket-info-from-xml)
+                          (filter-keys #(= (vote-project %) project)))]
 
     ;; Merge vote info for tickets with everything else we know about
     ;; them from JIRA.
@@ -1362,7 +1390,7 @@ to change the rankings.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-03-14/"))
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-03-28/"))
 (def clojure-tree "./eval-results/2013-03-10-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
@@ -1374,7 +1402,8 @@ to change the rankings.
 ;; Download info about all open tickets and save in file open.xml.
 ;; Download votes cast by each CLJ JIRA user and save in file
 ;; votes-on-tickets.clj.
-(dl-open-tickets! (str cur-eval-dir "open.xml"))
+(dl-open-tickets! (str cur-eval-dir "open.xml") :CLJ)
+(dl-open-tickets! (str cur-eval-dir "non-CLJ-open.xml") :non-CLJ)
 (let [fname (str cur-eval-dir "votes-on-tickets.clj")
       all-users (read-safely "data/all-clojure-jira-users.clj")
       votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
@@ -1386,7 +1415,8 @@ to change the rankings.
 ;; open-tickets-info.
 (def open-tickets-info (ticket-plus-vote-info
                         (str cur-eval-dir "open.xml")
-                        (str cur-eval-dir "votes-on-tickets.clj")))
+                        (str cur-eval-dir "votes-on-tickets.clj")
+                        "CLJ"))
 
 (vote-diffs open-tickets-info)
 ;; If vote-differences is anything other than '(nil nil), there is a
@@ -1400,6 +1430,26 @@ to change the rankings.
  (str cur-eval-dir "top-tickets-by-weighted-vote.txt") open-tickets-info :text)
 (print-top-tickets-by-vote-weight!
  (str cur-eval-dir "top-tickets-by-weighted-vote.html") open-tickets-info :html)
+
+;; Now do the same for the CLJS project, which is likely to be the
+;; second most busy in terms of tickets and votes.  Then combine all
+;; other projects into one report, since they tend to have less
+;; activity.
+(doseq [project (disj (all-vote-projects
+                       (str cur-eval-dir "votes-on-tickets.clj"))
+                      "CLJ")]
+  (let [open-tickets-info (ticket-plus-vote-info
+                           (str cur-eval-dir "non-CLJ-open.xml")
+                           (str cur-eval-dir "votes-on-tickets.clj")
+                           project)]
+    (printf "Project %s vote-diffs:\n" project)
+    (println (vote-diffs open-tickets-info))
+    (print-top-tickets-by-vote-weight!
+     (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
+     open-tickets-info :text)
+    (print-top-tickets-by-vote-weight!
+     (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
+     open-tickets-info :html)))
 
 ;; TBD: Consider adding code to dl-patches-check-ca! that reads the
 ;; votes file, and combines the list of users who have voted for each
