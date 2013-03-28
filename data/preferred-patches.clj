@@ -568,4 +568,12 @@
   :name "fix-CLJ-1182.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1185",
+  :name "CLJ-1181-v001.patch",
+  :patch-category "Language enhancement, reducers",
+  }
+ {:ticket "CLJ-1187",
+  :name "001-CLJ-1187.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  )
