@@ -1,5 +1,6 @@
 (ns clj-prescreen.core
   (:import (java.io File ByteArrayInputStream))
+  (:import (org.joda.time LocalDate))
   (:require [clojure.xml :as xml]
             [clojure.data :as data]
             [clojure.data.zip.xml :as dzx]
@@ -1285,22 +1286,19 @@ contributor, and it does not build and pass tests.
   (printf "</table>\n"))
 
 
-(defn print-top-tickets-by-vote-weight! [out-fname ticket-info format]
-  (let [tickets-with-votes (->> ticket-info
-                                (filter-vals #(and (:weighted-vote %)
-                                                   (> (:weighted-vote %) 0)))
-                                (sort-by sort-key-weighted-vote-then-num-votes))
-        tickets-by-type (group-by (fn [[ticket info]] (:type info))
-                                  tickets-with-votes)]
-    (spit out-fname
-          (with-out-str
-            (case format
-              :text
-              (printf "%s" "Top CLJ tickets by weighted vote
+(defn local-date-str []
+  (.toString (LocalDate/now) "MMMM d, yyyy"))
 
-Date: March 1, 2013
+
+(defn print-top-ticket-header!
+  [format project date-str]
+  (case format
+    :text
+    (printf "Top %s tickets by weighted vote
+
+Date: %s
  
-Open CLJ tickets with 1 or more votes, sorted in descending order of
+Open %s tickets with at least one vote, sorted in descending order of
 their \"weighted vote\".
 
 Suppose someone has currently voted on N open tickets.  Then their
@@ -1308,55 +1306,102 @@ vote counts as 1/N for each of those tickets.  Thus voting on all
 tickets has the same relative effect on their ranking as voting on no
 tickets.  You must be selective to change the rankings.
 
+Each person gets 1 weighted vote to divide up as they wish for each
+project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+
 Each ticket is listed with:
 
-<weighted vote>  <vote count>  <Approval>   [CLJ-<n>] <summary line>
+<weighted vote>  <vote count>  <Approval>   [<project>-<n>] <summary line>
              voter #1 (weight that voter #1 contributes)
              voter #2 (weight that voter #2 contributes)
              ...
 
 where Approval is one of \"--\" (blank), Vetted, Screened, Incomplete,
 Not Approved, etc.
-")
-              :html
-              (printf "%s" "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
+"
+            project date-str project)
+    :html
+    (printf "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
 <html>
 <head>
 <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\">
-<title>Top CLJ tickets by weighted vote</title>
+<title>Top %s tickets by weighted vote</title>
 </head>
 <body>
 
-<h1>Top CLJ tickets by weighted vote</h1>
+<h1>Top %s tickets by weighted vote</h1>
 
-Date: March 1, 2013<br>
+Date: %s<br>
 <br>
 
-Open CLJ tickets with 1 or more votes, sorted in descending order of
+Open %s tickets with at least one vote, sorted in descending order of
 their <span style=\"font-style: italic;\">weighted vote</span>.&nbsp;
 Suppose someone has currently voted on <span style=\"font-style:
-italic;\">N</span> open tickets.&nbsp; Then their vote counts
-as <span style=\"font-style: italic;\">1/N</span> for each of those
+italic;\">N</span> open tickets.&nbsp; Then their vote counts as <span
+style=\"font-style: italic;\">1/N</span> for each of those
 tickets.&nbsp; Thus voting on all tickets has the same relative effect
 on their ranking as voting on no tickets.&nbsp; You must be selective
 to change the rankings.
-"))
-            (doseq [ticket-type (sort (keys tickets-by-type))]
-              (case format
-                :text
-                (do
-                  (printf "\n========================================\n%s\n\n"
-                          ticket-type)
-                  (print-tickets (get tickets-by-type ticket-type)
-                                 [:weighted-vote :num-votes :approval
-                                  :title :voter-details]))
-                :html
-                (do
-                  (printf "<h2>%s</h2>\n\n" ticket-type)
-                  (print-tickets-html-table (get tickets-by-type ticket-type)
-                                            [:weighted-vote :num-votes :approval
-                                             :ticket-with-link :title
-                                             :voter-details]))))))))
+
+<p>
+Each person gets 1 weighted vote to divide up as they wish for each
+project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+"
+            project project date-str project)))
+
+
+(defn print-top-ticket-short-project-header!
+  [format project]
+  (case format
+    :text
+    (printf "
+
+Project %s tickets"
+            project)
+    :html
+    (printf "
+<h2>
+Project %s tickets
+</h2>
+"
+            project)
+    ))
+
+
+(defn print-top-ticket-body!
+  [ticket-info format]
+  (let [tickets-with-votes (->> ticket-info
+                                (filter-vals #(and (:weighted-vote %)
+                                                   (> (:weighted-vote %) 0)))
+                                (sort-by sort-key-weighted-vote-then-num-votes))
+        tickets-by-type (group-by (fn [[ticket info]] (:type info))
+                                  tickets-with-votes)]
+    (doseq [ticket-type (sort (keys tickets-by-type))]
+      (case format
+        :text
+        (do
+          (printf "\n========================================\n%s\n\n"
+                  ticket-type)
+          (print-tickets (get tickets-by-type ticket-type)
+                         [:weighted-vote :num-votes :approval
+                          :title :voter-details]))
+        :html
+        (do
+          (printf "<h2>%s</h2>\n\n" ticket-type)
+          (print-tickets-html-table (get tickets-by-type ticket-type)
+                                    [:weighted-vote :num-votes :approval
+                                     :ticket-with-link :title
+                                     :voter-details]))))))
+
+
+(defn print-top-tickets-by-vote-weight!
+  [out-fname ticket-info format project]
+  ;; TBD: Might be better to extract the date from the input somehow.
+  (let [date-str (local-date-str)]
+    (spit out-fname
+          (with-out-str
+            (print-top-ticket-header! format project date-str)
+            (print-top-ticket-body! ticket-info format)))))
 
 
 
@@ -1410,15 +1455,10 @@ to change the rankings.
   (spit-pretty fname votes-by-user))
 
 
-;; Read JIRA ticket info from open.xml and vote info from
-;; votes-on-tickets.clj, and combine them into one data structure
-;; open-tickets-info.
-(def open-tickets-info (ticket-plus-vote-info
-                        (str cur-eval-dir "open.xml")
-                        (str cur-eval-dir "votes-on-tickets.clj")
-                        "CLJ"))
+;; Read JIRA ticket info from open.xml or non-CLJ-open.xml, and vote
+;; info from votes-on-tickets.clj, and combine them into one data
+;; structure open-tickets-info.
 
-(vote-diffs open-tickets-info)
 ;; If vote-differences is anything other than '(nil nil), there is a
 ;; mismatch.  Either votes have been cast while I downloaded the info,
 ;; or I am missing a user, and should get an updated user list.  See
@@ -1426,30 +1466,51 @@ to change the rankings.
 
 ;; Print a report of top tickets sorted from highest weighted vote to
 ;; lowest.
-(print-top-tickets-by-vote-weight!
- (str cur-eval-dir "top-tickets-by-weighted-vote.txt") open-tickets-info :text)
-(print-top-tickets-by-vote-weight!
- (str cur-eval-dir "top-tickets-by-weighted-vote.html") open-tickets-info :html)
-
-;; Now do the same for the CLJS project, which is likely to be the
-;; second most busy in terms of tickets and votes.  Then combine all
-;; other projects into one report, since they tend to have less
-;; activity.
-(doseq [project (disj (all-vote-projects
-                       (str cur-eval-dir "votes-on-tickets.clj"))
-                      "CLJ")]
+(doseq [project ["CLJ" "CLJS"]]
   (let [open-tickets-info (ticket-plus-vote-info
-                           (str cur-eval-dir "non-CLJ-open.xml")
+                           (str cur-eval-dir
+                                (if (= project "CLJ")
+                                  "open.xml"
+                                  "non-CLJ-open.xml"))
                            (str cur-eval-dir "votes-on-tickets.clj")
                            project)]
     (printf "Project %s vote-diffs:\n" project)
     (println (vote-diffs open-tickets-info))
+
     (print-top-tickets-by-vote-weight!
      (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
-     open-tickets-info :text)
+     open-tickets-info :text project)
     (print-top-tickets-by-vote-weight!
      (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
-     open-tickets-info :html)))
+     open-tickets-info :html project)))
+
+;; Now do the same for all other Clojure projects with votes on open
+;; tickets, except put them all in one file together, since they tend
+;; to have far fewer tickets and votes than the CLJ or CLJS projects
+;; above.
+(doseq [format [:text :html]]
+  (let [out-fname (str cur-eval-dir
+                       "OTHERS-top-tickets-by-weighted-vote."
+                       (case format
+                         :text "txt"
+                         :html "html"))
+        date-str (local-date-str)]
+    (spit out-fname
+          (with-out-str
+            (print-top-ticket-header! format "OTHERS" date-str)
+            (doseq [project (sort (disj (all-vote-projects
+                                         (str cur-eval-dir "votes-on-tickets.clj"))
+                                        "CLJ" "CLJS"))]
+              (let [open-tickets-info (ticket-plus-vote-info
+                                       (str cur-eval-dir "non-CLJ-open.xml")
+                                       (str cur-eval-dir "votes-on-tickets.clj")
+                                       project)]
+                (when (= format :text)
+                  (binding [*out* *err*]
+                    (printf "Project %s vote-diffs:\n" project)
+                    (println (vote-diffs open-tickets-info))))
+                (print-top-ticket-short-project-header! format project)
+                (print-top-ticket-body! open-tickets-info format)))))))
 
 ;; TBD: Consider adding code to dl-patches-check-ca! that reads the
 ;; votes file, and combines the list of users who have voted for each
