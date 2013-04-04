@@ -576,4 +576,8 @@
   :name "001-CLJ-1187.patch",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1188",
+  :name "CLJ-1188-wrapper-free.patch",
+  :patch-category "Language/library enhancement",
+  }
  )
