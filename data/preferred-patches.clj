@@ -202,7 +202,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-937",
-  :name "cl-format-efg-coerce-ratios-to-doubes-patch1.txt",
+  :name "clj-937-cl-format-coerces-ratios-patch2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-939",
@@ -579,5 +579,13 @@
  {:ticket "CLJ-1188",
   :name "CLJ-1188-wrapper-free.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1191",
+  :name "clj-1191-patch-v1.txt",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1193",
+  :name "clj-1197-make-bigint-work-on-all-doubles-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
