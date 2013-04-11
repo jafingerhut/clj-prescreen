@@ -1435,7 +1435,7 @@ Project %s tickets
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-04/"))
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-11/"))
 (def clojure-tree "./eval-results/2013-03-10-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
