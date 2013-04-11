@@ -616,6 +616,12 @@
  :emails #{ "chousuke@gmail.com" }
  :contributor true
  }
+{:display-name "Paul Butcher"
+ :aliases #{ }
+ :usernames #{ "paulbutcher" }
+ :emails #{ "paul@paulbutcher.com" }
+ :contributor true
+ }
 {:display-name "Pepijn de Vos"
  :aliases #{ }
  :usernames #{ "pepijndevos" }
