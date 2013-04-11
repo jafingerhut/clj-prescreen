@@ -588,4 +588,8 @@
   :name "clj-1197-make-bigint-work-on-all-doubles-v1.txt",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1197",
+  :name "foldable-seq.diff",
+  :patch-category "Language enhancement, reducers",
+  }
  )
