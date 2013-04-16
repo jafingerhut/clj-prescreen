@@ -473,6 +473,10 @@
   :name "multi-arity-into.diff",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1118",
+  :name "clj-1118-make-double-equals-true-for-more-bigdecimals-patch-v3.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1120",
   :name "0001-CLJ-1120-ex-message-ex-cause.patch",
   :patch-category "Language/library enhancement",
@@ -556,10 +560,6 @@
   :name "clj-1177-patch-v1.txt",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1179",
-  :name "clj-1179-distinct-zero-arguments.txt",
-  :patch-category "Allow more correct-looking Clojure code to work",
-  }
  {:ticket "CLJ-1180",
   :name "001-CLJ-1180.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -576,10 +576,6 @@
   :name "001-CLJ-1187.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1188",
-  :name "CLJ-1188-wrapper-free.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
   :patch-category "Debug/tooling enhancement",
@@ -591,5 +587,9 @@
  {:ticket "CLJ-1197",
   :name "foldable-seq.diff",
   :patch-category "Language enhancement, reducers",
+  }
+ {:ticket "CLJ-1200",
+  :name "no-getComponentType--v001.patch",
+  :patch-category "Performance enhancement",
   }
  )
