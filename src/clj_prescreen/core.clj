@@ -826,17 +826,17 @@ apply the patch, and try to build with 'ant' in that copy."
 
 (defn prescreened-not-screened-not-next-release? [att]
   (and (prescreened? att)
-       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "OK"}))
+       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "Ok"}))
        (not (next-release? att))))
 
 (defn prescreened-not-screened-next-release? [att]
   (and (prescreened? att)
-       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "OK"}))
+       (not (approval-in? att #{"Incomplete" "Not Approved" "Screened" "Ok"}))
        (next-release? att)))
 
 (defn prescreened-and-screened? [att]
   (and (prescreened? att)
-       (approval-in? att #{"Screened" "OK"})))
+       (approval-in? att #{"Screened" "Ok"})))
 
 (defn prescreened-and-needs-work? [att]
   (and (prescreened? att)
@@ -1048,7 +1048,8 @@ patches (see also Note 3 at the bottom):
 ----------------------------------------------------------------------"
               ]
 
-             [ #(approval-in? % #{"Triaged" "Vetted" "Incomplete"})
+             [ #(and (not (next-release? %))
+                     (approval-in? % #{"Triaged" "Vetted" "Incomplete"}))
 "----------------------------------------------------------------------
 Tickets needing work that have no prescreened patches.  These are all
 Triaged (T), Vetted (V), or Incomplete (I).  The number after the
@@ -1208,6 +1209,7 @@ contributor, and it does not build and pass tests.
         :title (printf " %s" (:title info))
         :type (printf " %s" (subs (:type info) 0 1))
         :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
+        :fixVersion (printf " %-11s" (trunc-str (or (:fixVersion info) "--") 11))
         :voter-details
         (printf "\n             %s"
                 (str/join "\n             "
@@ -1246,6 +1248,7 @@ contributor, and it does not build and pass tests.
               :num-votes "# of Votes"
               :type "Type"
               :approval "Approval"
+              :fixVersion "Fix Version"
               :ticket-with-link "Ticket"
               :title "Summary"
               :voter-details "Voters"))
@@ -1265,6 +1268,7 @@ contributor, and it does not build and pass tests.
           :num-votes (printf "%d" (:num-votes info))
           :type (printf "%s" (subs (:type info) 0 1))
           :approval (printf "%s" (or (get info "Approval") "--"))
+          :fixVersion (printf "%s" (or (:fixVersion info) "--"))
           :ticket-with-link (printf "<a href=\"%s\">%s</a>"
                                     (url-for-clj-ticket ticket-abbrev)
                                     ticket-abbrev)
@@ -1311,7 +1315,7 @@ project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
 
 Each ticket is listed with:
 
-<weighted vote>  <vote count>  <Approval>   [<project>-<n>] <summary line>
+<weighted vote>  <vote count>  <Approval> <Fix Version>   [<project>-<n>] <summary line>
              voter #1 (weight that voter #1 contributes)
              voter #2 (weight that voter #2 contributes)
              ...
@@ -1384,13 +1388,13 @@ Project %s tickets
                   ticket-type)
           (print-tickets (get tickets-by-type ticket-type)
                          [:weighted-vote :num-votes :approval
-                          :title :voter-details]))
+                          :fixVersion :title :voter-details]))
         :html
         (do
           (printf "<h2>%s</h2>\n\n" ticket-type)
           (print-tickets-html-table (get tickets-by-type ticket-type)
                                     [:weighted-vote :num-votes :approval
-                                     :ticket-with-link :title
+                                     :fixVersion :ticket-with-link :title
                                      :voter-details]))))))
 
 
@@ -1436,7 +1440,7 @@ Project %s tickets
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-11/"))
-(def clojure-tree "./eval-results/2013-03-10-clojure-to-prescreen/clojure")
+(def clojure-tree "./eval-results/2013-04-13-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
 ;; Note: Don't check any password into git
