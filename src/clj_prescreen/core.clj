@@ -105,7 +105,7 @@
 
 (defn extract-dec-num [s]
   (if-let [num-str (re-find #"\d+" s)]
-    (Long/parseLong num-str)))
+    (bigint num-str)))
 
 
 (defn ticket-fields [ticket]
@@ -161,7 +161,7 @@ TBENCH-1
 TBENCH-11"
   [ticket-name]
   (if-let [[_ project tick-num-str] (re-find #"(.*)-(\d+)" ticket-name)]
-    [project (Long/parseLong tick-num-str)]
+    [project (bigint tick-num-str)]
     ;; If doesn't match pattern, just use the whole string, then 0
     [ticket-name 0]))
 
@@ -1178,7 +1178,7 @@ contributor, and it does not build and pass tests.
                                       (map (fn [[ticket info]]
                                              [ticket
                                               (if (:votes info)
-                                                (Long/parseLong (:votes info)))])
+                                                (bigint (:votes info)))])
                                            ticket-info)))
         num-votes-from-vote-info (filter-vals identity
                                               (map-vals :num-votes ticket-info))
