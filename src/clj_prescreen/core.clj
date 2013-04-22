@@ -1411,19 +1411,74 @@ Project %s tickets
 
 (comment
 
-;; =================================================================
-;; Older manual way to get XML info about open CLJ tickets (newer way
-;; is shortly after the def's below)
-;; =================================================================
-;; Go to the Clojure Jira page, then to the filters, and look at the
-;; tickets that match a particular filter.  There is a popup menu that
-;; says "Views" in the upper right of the page.
+;; Step 1: Evaluate these expressions in a REPL
 
-;; Pick the XML view from that menu.  An XML form of the ticket list
-;; will be shown.  Save the page as a file.  That is how I created the
-;; file notclosed.xml, which I saved in the directory named by the
-;; string cur-eval-dir below.
-;; =================================================================
+(use 'clj-prescreen.core 'clojure.pprint)
+(require '[clojure.java.io :as io] '[fs.core :as fs])
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-18/"))
+(def clojure-tree "./eval-results/2013-04-13-clojure-to-prescreen/clojure")
+(def ticket-dir (str cur-eval-dir "ticket-info"))
+(def patch-type-list [ "open" ])
+;; Note: Don't check any password into git
+(def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
+;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
+;;(def patch-type-list [ "notclosed" ])
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; http://dev.clojure.org -----> Download via manual steps (Note 2)
+;;         |           |           |
+;;         |           |           v
+;; dl-open-tickets!    |         data/all-clojure-jira-users.clj
+;; Code at Note 4      +-----------+  |
+;;    |         |                  v  v
+;;    |         |                Code at Note 5
+;;    v         v                  |
+;; open.xml  non-CLJ-open.xml      v
+;;    |  |                 |     <cur-eval-dir>/votes-on-tickets.clj
+;;    |  |                 +---------+ |
+;;    |  +-------------------------+ | |
+;;    |                            v v v
+;;    |                          Code at Note 6
+;;    |                            |  
+;;    |                            v  
+;;    |                          Top tickets by weighted vote reports
+;;    |                          for CLJ, CLJS, and all others, each
+;;    | http://dev.clojure.org   in html and plain text formats.
+;;    |  |
+;;    |  |  +-----------------Clojure source code tree
+;;    |  |  |  +---------------|-data/people-data.clj
+;;    v  v  v  v               |  |
+;; dl-patches-check-ca!        |  |
+;; Code at Note 7              |  |
+;;    |        |               |  |
+;;    |        +---------------|--|------+
+;;    v                        |  |      v
+;; <cur-eval-dir>/             |  |  <cur-eval-dir>/open-author-info.txt
+;;   ticket-info/ ...          |  |
+;;   open-downloaded-only.txt  |  |
+;;    |     +------------------+  |
+;;    |     |  +------------------+
+;;    v     v  v
+;; dl-eval-check-ca! (Code at Note 8)
+;;    |        |
+;;    |        +-------------------------+
+;;    v                                  v
+;; <cur-eval-dir>/                   <cur-eval-dir>/open-patch-summary.txt
+;;   open-evaled-authors.txt
+;;    |
+;;    |  data/preferred-patches.clj
+;;    |   |
+;;    v   v
+;; Code at Note 9
+;;    |
+;;    v
+;; <cur-eval-dir>/
+;;     open-warnings.txt
+;;     open-prescreened-report.txt
+;;     open-needs-work.txt
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; You also need to pull a clone of the Clojure repo if you haven't
 ;; done so already.
@@ -1437,31 +1492,27 @@ Project %s tickets
 ;; that directory after creating it, or else all of the "ant" runs
 ;; will fail their tests.
 
-(use 'clj-prescreen.core 'clojure.pprint)
-(require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-18/"))
-(def clojure-tree "./eval-results/2013-04-13-clojure-to-prescreen/clojure")
-(def ticket-dir (str cur-eval-dir "ticket-info"))
-(def patch-type-list [ "open" ])
-;; Note: Don't check any password into git
-(def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
-;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
-;;(def patch-type-list [ "notclosed" ])
-
+;;;; Note 4 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Download info about all open tickets and save in file open.xml.
 ;; Download votes cast by each CLJ JIRA user and save in file
 ;; votes-on-tickets.clj.
 (dl-open-tickets! (str cur-eval-dir "open.xml") :CLJ)
 (dl-open-tickets! (str cur-eval-dir "non-CLJ-open.xml") :non-CLJ)
+;;;; Note 5 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Download all votes on open tickets.
 (let [fname (str cur-eval-dir "votes-on-tickets.clj")
       all-users (read-safely "data/all-clojure-jira-users.clj")
       votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
   (spit-pretty fname votes-by-user))
 
 
-;; Read JIRA ticket info from open.xml or non-CLJ-open.xml, and vote
-;; info from votes-on-tickets.clj, and combine them into one data
-;; structure open-tickets-info.
+;;;; Note 6 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Read JIRA ticket info from open.xml and non-CLJ-open.xml, and vote
+;; info from votes-on-tickets.clj.  Produce reports of top tickets by
+;; weighted vote, with a separate report for CLJ and CLJS tickets, but
+;; one combined report for all other Clojure projects (since they
+;; currently have so few tickets by comparison to CLJ and CLJS
+;; projects).
 
 ;; If vote-differences is anything other than '(nil nil), there is a
 ;; mismatch.  Either votes have been cast while I downloaded the info,
@@ -1515,21 +1566,34 @@ Project %s tickets
                     (println (vote-diffs open-tickets-info))))
                 (print-top-ticket-short-project-header! format project)
                 (print-top-ticket-body! open-tickets-info format)))))))
+;;;; End of Note 6 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TBD: Consider adding code to dl-patches-check-ca! that reads the
-;; votes file, and combines the list of users who have voted for each
-;; ticket, with each of their vote weights, and a single field giving
-;; the total weighted vote for the ticket.
 
-;; TBD: Include the weighted vote count and the normal vote count in
-;; the prescreened and needs work reports.
+;; TBD: Consider including the weighted vote count and the normal vote
+;; count in the prescreened and needs work reports.
 
+;;;; Note 7 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Download all attachments for selected tickets.  Do this once on one
 ;; machine, not once for each OS/JDK combo I want to test.  Also, for
 ;; all git format patches, check people data to see if they have
 ;; signed a Clojure CA.
-(dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir clojure-tree)
 
+;; Writes these files:
+;; In <cur-eval-dir>/ticket-info/
+;;     One new dir per ticket containing attachments on that ticket
+;;     from dev.clojure.org
+;; <cur-eval-dir>/open-downloaded-only.txt
+;;     Clojure list of maps with lots of details about each
+;;     attachment, including whether it applies cleanly or not to the
+;;     Clojure source tree specified by clojure-tree.
+;; <cur-eval-dir>/open-author-info.txt
+;;     A text file with only a fraction of the data in
+;;     open-downloaded-only.txt.  Useful for looking at, and for
+;;     diff'ing against a previous set of downloaded attachments.
+(dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir clojure-tree)
+;;;; End of Note 7 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; Note 8 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
 (do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list)
@@ -1546,10 +1610,11 @@ Project %s tickets
     (spit-pretty fname1 as1)
     (spit fname-sum (with-out-str (eval-patches-summary as1)))))
 
+;;;; Note 9 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After doing the do-eval-check-ca! above, and hand-edited a file
-;; containing the "preferred patches" to show in the prescreened patch
-;; list, do the below to generate part of the prescreened patch
-;; and tickets needing work reports.
+;; data/preferred-patches.clj containing the "preferred patches" to
+;; show in the prescreened patch list, do the below to generate part
+;; of the prescreened patch and tickets needing work reports.
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         atts (read-safely fname1)
@@ -1564,10 +1629,9 @@ Project %s tickets
           (str (prescreened-needs-work-report-text atts ppats)
                (not-prescreened-needs-work-report-text atts ppats)))
     ))
+;;;; End of Note 9 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Note 2:
-;;
+;;;; Note 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Instructions to update the list of all Clojure JIRA users:
 ;;
 ;; Note: You must have admin access on the Clojure JIRA web site to
@@ -1601,7 +1665,7 @@ Project %s tickets
 ;; the HTML is broken up into lines.  I don't know off hand of a good
 ;; way to do something more robust than that.  It seems to work for
 ;; now.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; End of Note 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; Older steps for creating some other reports about votes on tickets
@@ -1749,3 +1813,18 @@ Project %s tickets
 ;; TBD: Make it quick and easy to use this code to evaluate just one
 ;; patch, perhaps specified merely by the ticket name and the
 ;; attachment file name.
+
+
+;; =================================================================
+;; Note 3: Older manual way to get XML info about open CLJ tickets
+;; (newer way is at Note 4)
+;; =================================================================
+;; Go to the Clojure Jira page, then to the filters, and look at the
+;; tickets that match a particular filter.  There is a popup menu that
+;; says "Views" in the upper right of the page.
+
+;; Pick the XML view from that menu.  An XML form of the ticket list
+;; will be shown.  Save the page as a file.  That is how I created the
+;; file notclosed.xml, which I saved in the directory named by the
+;; string cur-eval-dir.
+;; =================================================================
