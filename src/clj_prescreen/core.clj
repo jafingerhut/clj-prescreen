@@ -1411,11 +1411,25 @@ Project %s tickets
 
 (comment
 
-;; Step 1: Evaluate these expressions in a REPL
+;; Step 1: Create a directory to put patch evaluation results into.  I
+;; put these into directories with names that are the date that I
+;; downloaded the attachments, e.g. eval-results/2013-04-25 for Apr 25
+;; 2013.  Update the value of cur-eval-dir below to this directory.
+
+;; Step 2: Download the Clojure source from Github, and change
+;; clojure-tree below to the root directory of this tree.
+
+;; Step 3: If you want to get info about votes on tickets, change the
+;; user name and password in auth-info below to your Clojure JIRA user
+;; name and password.  It might require admin privileges to be able to
+;; download this vote info -- I haven't tried it using an account
+;; without admin privileges.
+
+;; Step 4: Evaluate these expressions in a REPL.
 
 (use 'clj-prescreen.core 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-18/"))
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-04-25/"))
 (def clojure-tree "./eval-results/2013-04-13-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
@@ -1631,6 +1645,7 @@ Project %s tickets
     ))
 ;;;; End of Note 9 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 ;;;; Note 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Instructions to update the list of all Clojure JIRA users:
 ;;
@@ -1691,48 +1706,6 @@ Project %s tickets
                               (filter-vals #(not (zero? %)) vote-count-by-user))]
   (printf "%3d %s (%s)\n" votes (:display-name user)
           (str/join " " (sort (map extract-dec-num (votes-by-user user))))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Beginning of older copy-and-paste one-step-at-a-time method
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;(def patch-type "screened")
-;;(def patch-type "incomplete")
-;;(def patch-type "rfs")
-;;(def patch-type "np")
-
-(def as1 (xml->attach-info (str cur-eval-dir patch-type ".xml")))
-(pprint (take 10 as1))
-(def as2 (download-attachments! as1 ticket-dir))
-(spit-pretty (str cur-eval-dir patch-type "-info.txt") as2)
-
-;; See Note 1 below about editing.
-
-(def as2 (read-safely (str cur-eval-dir patch-type "-info.txt")))
-;; Evaluate all patches:
-(def as3 (eval-patches! as2 ticket-dir "./clojure" true))
-;; Evaluate one patch:
-;; TBD
-
-(spit-pretty (str cur-eval-dir patch-type "-evaled.txt") as3)
-
-(def as3 (read-safely (str cur-eval-dir patch-type "-evaled.txt")))
-;; Update author info, perhaps after editing "data/people-data.clj"
-(def as4 (let [people-info (read-safely "data/people-data.clj")]
-           (map #(add-author-info % ticket-dir people-info) as3)))
-
-(spit-pretty (str cur-eval-dir patch-type "-evaled-authors.txt") as4)
-(eval-patches-summary as4)
-
-
-;; Testing with 1 patch at a time.
-(use 'clj-prescreen.core 'clojure.pprint)
-(require '[clojure.java.io :as io])
-(def as2 (read-safely "att-1-non-git-wrong-opts.txt"))
-(def as3 (eval-patches! as2 ticket-dir "../clojure"))
-
-(def as2 (read-safely "att-2-non-git-hand-corrected-opts.txt"))
 
 
 ;; Older expressions I used for learning how clojure.data.zip.xml
