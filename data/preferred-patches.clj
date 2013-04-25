@@ -592,4 +592,20 @@
   :name "no-getComponentType--v001.patch",
   :patch-category "Performance enhancement",
   }
+ {:ticket "CLJ-1202",
+  :name "CLJ-1202.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1203",
+  :name "0001-Add-hasheq-based-fallback-to-Util.compare.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1204",
+  :name "clj-1204-make-hash-consistent-with-equal-for-bigintegers-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1205",
+  :name "0001-nexus-2.4-releases.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
  )
