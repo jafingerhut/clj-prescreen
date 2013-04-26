@@ -856,7 +856,8 @@ apply the patch, and try to build with 'ant' in that copy."
           ppats-by-ticket (group-by :ticket ppats)
           
           open-tickets (set (map :ticket atts))
-          prescreened-tickets (set (map :ticket (filter prescreened? atts)))
+          prescreened-atts (filter prescreened? atts)
+          prescreened-tickets (set (map :ticket prescreened-atts))
           ppat-tickets (set (map :ticket ppats))
           
           ppat-but-not-open-tickets (set/difference ppat-tickets open-tickets)
@@ -881,6 +882,12 @@ apply the patch, and try to build with 'ant' in that copy."
                                    a (patch-name-exists? as (:name ppat))]
                                (not (prescreened? a))))
                            ppats-by-ticket))
+
+          prescreened-but-not-marked-with-patch
+          (->> prescreened-atts
+               (filter #(not (#{"Code" "Code and Test"} (get % "Patch"))))
+               (map :ticket)
+               set)
           ]
 
       (if (empty? ppat-but-not-open-tickets)
@@ -936,6 +943,15 @@ because there are no prescreened patches for the ticket at this time:
     %s"
                 ppat-fname att-fname
                 (with-out-str (p/pprint ppat-but-not-open-tickets))))
+
+      (print "\n\n")
+      (if (empty? prescreened-but-not-marked-with-patch)
+        (printf "Every prescreened patch's ticket has 'Patch' attribute of 'Code' or 'Code and Test'.")
+        (printf "List of prescreened patches from file '%s'
+whose tickets have 'Patch' attribute that is neither 'Code' nor 'Code and Test':
+    %s"
+                att-fname
+                (with-out-str (p/pprint prescreened-but-not-marked-with-patch))))
       )))
 
 
