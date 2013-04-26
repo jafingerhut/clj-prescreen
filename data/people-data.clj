@@ -746,7 +746,7 @@
  :aliases #{ :name "Alf Kristian Stoyle" }
  :usernames #{ "stoyle" }
  :emails #{ "alf.kristian@gmail.com" }
- :contributor false
+ :contributor true
  }
 {:display-name "Stuart Halloway"
  :aliases #{ }
