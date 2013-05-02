@@ -72,6 +72,10 @@
       clojure.test.generative were moved to clojure.core,
       test.generative could use that one.",
   }
+ {:ticket "CLJ-428",
+  :name "clj-428-change-Sorted-seqFrom-to-take-inclusive-patch-v3.txt",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-457",
   :name "CLJ-457-2.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -595,10 +599,6 @@
  {:ticket "CLJ-1202",
   :name "CLJ-1202.patch",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1203",
-  :name "0001-Add-hasheq-based-fallback-to-Util.compare.patch",
-  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1204",
   :name "clj-1204-make-hash-consistent-with-equal-for-bigintegers-v1.txt",
