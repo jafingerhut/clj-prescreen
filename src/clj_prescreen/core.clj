@@ -4,7 +4,6 @@
   (:require [clojure.xml :as xml]
             [clojure.data :as data]
             [clojure.data.zip.xml :as dzx]
-            ;;[clojure.edn :as edn]
             [clojure.tools.reader.edn :as edn]
             [clojure.zip :as zip]
             [clojure.java.io :as io]
@@ -1226,6 +1225,7 @@ contributor, and it does not build and pass tests.
         :type (printf " %s" (subs (:type info) 0 1))
         :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
         :fixVersion (printf " %-11s" (trunc-str (or (:fixVersion info) "--") 11))
+        "Patch" (printf " %-11s" (trunc-str (or (get info "Patch") "--") 11))
         :voter-details
         (printf "\n             %s"
                 (str/join "\n             "
@@ -1265,6 +1265,7 @@ contributor, and it does not build and pass tests.
               :type "Type"
               :approval "Approval"
               :fixVersion "Fix Version"
+              "Patch" "Patch"
               :ticket-with-link "Ticket"
               :title "Summary"
               :voter-details "Voters"))
@@ -1285,6 +1286,7 @@ contributor, and it does not build and pass tests.
           :type (printf "%s" (subs (:type info) 0 1))
           :approval (printf "%s" (or (get info "Approval") "--"))
           :fixVersion (printf "%s" (or (:fixVersion info) "--"))
+          "Patch" (printf "%s" (or (get info "Patch") "--"))
           :ticket-with-link (printf "<a href=\"%s\">%s</a>"
                                     (url-for-clj-ticket ticket-abbrev)
                                     ticket-abbrev)
@@ -1404,14 +1406,18 @@ Project %s tickets
                   ticket-type)
           (print-tickets (get tickets-by-type ticket-type)
                          [:weighted-vote :num-votes :approval
-                          :fixVersion :title :voter-details]))
+                          :fixVersion
+                          ;; "Patch"
+                          :title :voter-details]))
         :html
         (do
           (printf "<h2>%s</h2>\n\n" ticket-type)
           (print-tickets-html-table (get tickets-by-type ticket-type)
                                     [:weighted-vote :num-votes :approval
-                                     :fixVersion :ticket-with-link :title
-                                     :voter-details]))))))
+                                     :fixVersion
+                                     ;; "Patch"
+                                     :ticket-with-link
+                                     :title :voter-details]))))))
 
 
 (defn print-top-tickets-by-vote-weight!
