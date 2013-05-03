@@ -110,8 +110,18 @@
 (defn ticket-fields [ticket]
   (let [fields [:key :title :type :attrs :status :resolution :reporter :labels
                 :created :updated :votes :watches :fixVersion]
+        tick-name (dzx/xml1-> ticket :key dzx/text)
         t (into {} (map (fn [fld]
-                          [fld (dzx/xml1-> ticket fld dzx/text)])
+                          [ fld
+                            (let [vals (seq (dzx/xml-> ticket fld dzx/text))]
+                              (cond
+                               (= fld :fixVersion) vals
+                               (<= (count vals) 1) (first vals)
+                               :else (do
+                                       (iprintf *err* "Warning: ticket-fields found multiple values for field %s of ticket '%s':\n%s\n"
+                                                fld tick-name vals)
+                                       vals)))
+                           ])
                         fields))]
     (-> t
         (assoc :ticket (t :key))
@@ -718,6 +728,12 @@ Check it to see if it was created incorrectly."})
     s))
 
 
+(defn fixVersion-to-string [fv]
+  (if fv
+    (str/join ", " fv)
+    "--"))
+
+
 (defn one-patch-summary [p]
   (let [ai (:patch-author-info p)
         auth-name (if-not (nil? ai)
@@ -729,7 +745,7 @@ Check it to see if it was created incorrectly."})
              (subs (:type p) 0 1)
              (:votes p)
              (trunc-str (or (get p "Approval") "--") 8)
-             (trunc-str (or (:fixVersion p) "--") 11))
+             (trunc-str (fixVersion-to-string (:fixVersion p)) 11))
     ;; Properties specific to each patch
     (iprintf " %-13s %-10s %-5s %-15s %s\n"
              (name-or-default p :patch-author-summary "--")
@@ -818,7 +834,7 @@ apply the patch, and try to build with 'ant' in that copy."
        (not= (:ant-status att) :ok)))
 
 (defn next-release? [att]
-  (= (:fixVersion att) "Release 1.6"))
+  (some #(= % "Release 1.6") (:fixVersion att)))
 
 (defn approval-in? [att approval-set]
   (approval-set (get att "Approval")))
@@ -1224,7 +1240,7 @@ contributor, and it does not build and pass tests.
         :title (printf " %s" (:title info))
         :type (printf " %s" (subs (:type info) 0 1))
         :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
-        :fixVersion (printf " %-11s" (trunc-str (or (:fixVersion info) "--") 11))
+        :fixVersion (printf " %-11s" (trunc-str (fixVersion-to-string (:fixVersion info)) 11))
         "Patch" (printf " %-11s" (trunc-str (or (get info "Patch") "--") 11))
         :voter-details
         (printf "\n             %s"
@@ -1264,7 +1280,7 @@ contributor, and it does not build and pass tests.
               :num-votes "# of Votes"
               :type "Type"
               :approval "Approval"
-              :fixVersion "Fix Version"
+              :fixVersion "Fix Version(s)"
               "Patch" "Patch"
               :ticket-with-link "Ticket"
               :title "Summary"
@@ -1285,7 +1301,7 @@ contributor, and it does not build and pass tests.
           :num-votes (printf "%d" (:num-votes info))
           :type (printf "%s" (subs (:type info) 0 1))
           :approval (printf "%s" (or (get info "Approval") "--"))
-          :fixVersion (printf "%s" (or (:fixVersion info) "--"))
+          :fixVersion (printf "%s" (fixVersion-to-string (:fixVersion info)))
           "Patch" (printf "%s" (or (get info "Patch") "--"))
           :ticket-with-link (printf "<a href=\"%s\">%s</a>"
                                     (url-for-clj-ticket ticket-abbrev)
