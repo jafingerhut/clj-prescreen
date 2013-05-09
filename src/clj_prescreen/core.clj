@@ -706,14 +706,16 @@ Check it to see if it was created incorrectly."})
 
 (defn eval-patches! [patches attach-dir unmodified-clojure-dir
                      temp-clojure-dir try-to-build?]
-  (if-not (clojure-git-dir? unmodified-clojure-dir)
-    (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" unmodified-clojure-dir)
-    (let [n (count patches)]
-      (doall
-       (map-indexed (fn [idx p] (eval-patch! p attach-dir idx n
-                                             unmodified-clojure-dir
-                                             temp-clojure-dir try-to-build?))
-                    patches)))))
+  (if-not (.exists ^File (io/file unmodified-clojure-dir))
+    (iprintf *err* "eval-patches!: No directory '%s' exists\n" unmodified-clojure-dir)
+    (if-not (clojure-git-dir? unmodified-clojure-dir)
+      (iprintf *err* "eval-patches!: '%s' is not a Clojure git repo root directory.\n" unmodified-clojure-dir)
+      (let [n (count patches)]
+        (doall
+         (map-indexed (fn [idx p] (eval-patch! p attach-dir idx n
+                                               unmodified-clojure-dir
+                                               temp-clojure-dir try-to-build?))
+                      patches))))))
 
 
 (defn name-or-default [p k deflt]
