@@ -608,4 +608,8 @@
   :name "0001-nexus-2.4-releases.patch",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1209",
+  :name "clj-test-print-ex-data.diff",
+  :patch-category "Debug/tooling enhancement",
+  }
  )
