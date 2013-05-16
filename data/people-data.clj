@@ -808,6 +808,12 @@
  :emails #{ "technomancy@gmail.com" }
  :contributor true
  }
+{:display-name "Thomas Heller"
+ :aliases #{ }
+ :usernames #{ "thheller" }
+ :emails #{ "info@zilence.net" }
+ :contributor true
+ }
 {:display-name "Matthew Lee Hinman"
  :aliases #{ "Matthew Hinman" }
  :usernames #{ "thnetos" }
