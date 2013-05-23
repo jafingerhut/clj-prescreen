@@ -477,6 +477,10 @@
   :name "multi-arity-into.diff",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1117",
+  :name "clj-1117.patch",
+  :patch-category "Doc string fixes only",
+  }
  {:ticket "CLJ-1118",
   :name "clj-1118-make-double-equals-true-for-more-bigdecimals-patch-v3.txt",
   :patch-category "Clojure language/library bug fixes",
