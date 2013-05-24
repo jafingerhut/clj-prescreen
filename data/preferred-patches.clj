@@ -85,7 +85,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-669",
-  :name "0001-use-java.nio-in-do-copy-method-for-Files.patch",
+  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v2.txt",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-700",
@@ -145,9 +145,8 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-827",
-  :name "0001-add-unsigned-bit-shift-right.patch",
+  :name "clj-827-unsigned-bit-shift-right-with-tests.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note "or 0001-CLJ-827-Add-bit-shift-right-logical.patch",
   }
  {:ticket "CLJ-835",
   :name "0001-CLJ-835-Refine-doc-string-for-defmulti-hierarchy-opt.patch",
@@ -363,7 +362,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1074",
-  :name "0001-Read-Infinity-and-NaN.patch",
+  :name "clj-1074-read-infinity-and-nan-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1076",
@@ -458,7 +457,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1107",
-  :name "0001-CLJ-1107-Throw-exception-for-get-called-on-unsupport.patch",
+  :name "clj-1107-throw-on-get-for-unsupported-types-patch-v2.txt",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1108",
