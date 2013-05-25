@@ -136,10 +136,6 @@
       to change it back to Vetted or Screened so it can be considered
       again, perhaps after Release 1.5 is made?",
   }
- {:ticket "CLJ-783",
-  :name "clj-783-patch.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-803",
   :name "0001-atom-interface.patch",
   :patch-category "Language/library enhancement",
@@ -176,10 +172,6 @@
   :name "pmap-chunking-862.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-863",
-  :name "clj-863-make-interleave-handle-odd-args-like-concat-patch-v1.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-865",
   :name "updated.patch",
   :patch-category "Language/library enhancement",
@@ -187,18 +179,6 @@
  {:ticket "CLJ-866",
   :name "clj-866-test-vars.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-873",
-  :name "clj-873-namespace-divides-patch.txt",
-  :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-896",
-  :name "clj-896-browse-url-uses-xdg-open-patch2.txt",
-  :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-908",
-  :name "clj-908-Print-metadata-and-anonymous-classes-better-patch2.txt",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-935",
   :name "fix-trim-fns-different-whitespace-patch.txt",
@@ -277,10 +257,6 @@
   :name "0001-CLJ-1010-Add-a-left-to-right-version-of-comp-comp.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1018",
-  :name "inconsistent_range_fix.diff",
-  :patch-category "Allow more correct-looking Clojure code to work",
-  }
  {:ticket "CLJ-1020",
   :name "clj-1020-inspect-table-skip-nil-rows-patch1.txt",
   :patch-category "Allow more correct-looking Clojure code to work",
@@ -352,10 +328,6 @@
   :name "clj-1063-add-dissoc-in-patch-v2.txt",
   :patch-category "Language/library enhancement",
   :patch-extra-note "TBD: Open ticket for clojure.incubator for this.",
-  }
- {:ticket "CLJ-1072",
-  :name "0001-CLJ-1072-Replace-old-metadata-reader-macro-syntax.patch",
-  :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1073",
   :name "clj-1073-add-print-interruptibly-patch-v2.txt",
@@ -436,14 +408,6 @@
   :name "node-seq.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1099",
-  :name "better-error-message-for-seq.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1101",
-  :name "CLJ-1101-make-default-data-reader-fn-set-able-in-REPL.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1102",
   :name "clj-1102-improve-empty-stack-trace-handling-v1.txt",
   :patch-category "Clojure language/library bug fixes",
@@ -512,10 +476,6 @@
   :name "CLJ-1137-eval-metadata-once.diff",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1143",
-  :name "clj-1143-ns-doc-string-correction-v1.txt",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-1148",
   :name "0001-new-defonce-hotness.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
@@ -535,10 +495,6 @@
  {:ticket "CLJ-1161",
   :name "0001-CLJ-1161-Remove-version.properties-from-sources-JAR.patch",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1164",
-  :name "CLJ-1164-typos-instant.patch",
-  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1165",
   :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
