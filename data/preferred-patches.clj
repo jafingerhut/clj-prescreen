@@ -136,6 +136,10 @@
       to change it back to Vetted or Screened so it can be considered
       again, perhaps after Release 1.5 is made?",
   }
+ {:ticket "CLJ-787",
+  :name "CLJ-787-p1.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-803",
   :name "0001-atom-interface.patch",
   :patch-category "Language/library enhancement",
@@ -179,6 +183,10 @@
  {:ticket "CLJ-866",
   :name "clj-866-test-vars.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-873",
+  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-935",
   :name "fix-trim-fns-different-whitespace-patch.txt",
@@ -334,7 +342,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1074",
-  :name "clj-1074-read-infinity-and-nan-patch-v2.txt",
+  :name "clj-1074-read-infinity-and-nan-patch-v2-plus-edn-reader.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1076",
@@ -496,6 +504,10 @@
   :name "0001-CLJ-1161-Remove-version.properties-from-sources-JAR.patch",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1162",
+  :name "CLJ-1162-p1.patch",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1165",
   :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
   :patch-category "Debug/tooling enhancement",
@@ -531,6 +543,10 @@
   :name "fix-CLJ-1182.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1184",
+  :name "CLJ-1184-p1.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1185",
   :name "CLJ-1181-v001.patch",
   :patch-category "Language enhancement, reducers",
@@ -538,6 +554,10 @@
  {:ticket "CLJ-1187",
   :name "001-CLJ-1187.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1189",
+  :name "CLJ-1189-p1.patch",
+  :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
