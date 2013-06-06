@@ -298,6 +298,12 @@
  :emails #{ "ed.bowler@gmail.com" }
  :contributor true
  }
+{:display-name "John Jacobsen"
+ :aliases #{ }
+ :usernames #{ "eigenhombre" }
+ :emails #{ "john@mail.npxdesigns.com" }
+ :contributor true
+ }
 {:display-name "Eugene Koontz"
  :aliases #{ }
  :usernames #{ "ekoontz" }
