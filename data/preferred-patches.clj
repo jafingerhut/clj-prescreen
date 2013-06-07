@@ -357,12 +357,8 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1078",
-  :name "queue.patch",
+  :name "clj-1048-queue-takes-collections.diff",
   :patch-category "Language/library enhancement",
-  :stale-patch-last-time-applied-cleanly "Dec 2012",
-  :patch-extra-note
-     "There are more substantive changes to make than simply making
-      the patch apply to latest master, per comments from Rich.",
   }
  {:ticket "CLJ-1079",
   :name "CLJ-1079.diff",
