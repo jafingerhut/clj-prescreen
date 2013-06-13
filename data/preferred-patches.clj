@@ -590,4 +590,8 @@
   :name "clj-test-print-ex-data.diff",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1216",
+  :name "0001-Create-a-DoExpr.Parser-class-that-delegates-to-BodyE.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  )
