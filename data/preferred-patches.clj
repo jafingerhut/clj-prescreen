@@ -475,7 +475,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1125",
-  :name "threadlocal-removal-tcrawley-2012-12-11.diff",
+  :name "threadlocal-removal-tcrawley-2013-06-14.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1128",
@@ -599,6 +599,10 @@
   }
  {:ticket "CLJ-1216",
   :name "0001-Create-a-DoExpr.Parser-class-that-delegates-to-BodyE.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1217",
+  :name "0001-Don-t-realize-seq-exprs-in-for-unless-necessary.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  )
