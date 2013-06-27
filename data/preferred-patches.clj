@@ -605,4 +605,20 @@
   :name "0001-Don-t-realize-seq-exprs-in-for-unless-necessary.patch",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1222",
+  :name "min_value_multiplication.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1224",
+  :name "0001-CLJ-1224-cache-hasheq-and-hashCode-for-records.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1225",
+  :name "clj-1225-fix-division-overflow-patch-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1226",
+  :name "0001-fix-CLJ-1226.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  )
