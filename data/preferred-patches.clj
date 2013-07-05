@@ -400,7 +400,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1093",
-  :name "clj-1093-fix-empty-record-literal-patch-v2.txt",
+  :name "0001-CLJ-1093-fix-empty-records-literal-v2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1094",
@@ -550,7 +550,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1184",
-  :name "CLJ-1184-p1.patch",
+  :name "CLJ-1184-p2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1185",
@@ -620,5 +620,9 @@
  {:ticket "CLJ-1226",
   :name "0001-fix-CLJ-1226.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1228",
+  :name "clj-1228-fix-multiple-typos-2.patch",
+  :patch-category "Doc string fixes only",
   }
  )
