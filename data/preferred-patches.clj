@@ -625,4 +625,8 @@
   :name "clj-1228-fix-multiple-typos-2.patch",
   :patch-category "Doc string fixes only",
   }
+ {:ticket "CLJ-1229",
+  :name "clj-1229-count-overflow-patch-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
  )
