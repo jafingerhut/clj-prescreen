@@ -163,6 +163,10 @@
  {:ticket "CLJ-849",
   :name "CLJ-849-line-number-pesudo-variable.diff",
   :patch-category "Debug/tooling enhancement",
+  :patch-extra-note
+     "Applied cleanly until Jul 7 2013 when a conflicting change with
+      subject \"don't presume Integer for LINE and COLUMN, fixes
+      round-trip\" was made.",
   }
  {:ticket "CLJ-850",
   :name "CLJ-850-conform-to-invokePrim.diff",
