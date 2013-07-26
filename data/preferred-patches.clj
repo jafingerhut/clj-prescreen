@@ -502,6 +502,10 @@
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
   }
+ {:ticket "CLJ-1154",
+  :name "CLJ-1154.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1157",
   :name "20130204_fix_classloader.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -554,7 +558,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1184",
-  :name "CLJ-1184-p2.patch",
+  :name "CLJ-1184-p3.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1185",
