@@ -26,7 +26,7 @@
 {:display-name "Alex Miller"
  :aliases #{ "puredanger" }
  :usernames #{ "alexmiller" }
- :emails #{ "alexdmiller@yahoo.com" }
+ :emails #{ "alexdmiller@yahoo.com" "alex.miller@thinkrelevance.com" }
  :contributor true
  }
 {:display-name "Alex Ott"
