@@ -289,11 +289,6 @@
  {:ticket "CLJ-1036",
   :name "clj-1036-hasheq-for-biginteger-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "TBD: Andy F should change from Vetted back to Not Approved if
-      Not Approved shouldn't be changed by anyone besides screeners,
-      even if the reason it was marked Not Approved has been
-      addressed.",
   }
  {:ticket "CLJ-1044",
   :name "001-enable-factory-ctor-inside-deftype.diff",
