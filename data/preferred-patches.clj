@@ -128,13 +128,6 @@
  {:ticket "CLJ-771",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "TBD: The patch clj-771-move-unchecked-casts-patch-v5.txt applies
-      cleanly to latest master and passes all tests. Rich marked this
-      ticket as Incomplete on Dec 9 2011 with the comment \"still
-      considering when to incorporate this\" above. Is it reasonable
-      to change it back to Vetted or Screened so it can be considered
-      again, perhaps after Release 1.5 is made?",
   }
  {:ticket "CLJ-787",
   :name "CLJ-787-p1.patch",
@@ -225,18 +218,10 @@
  {:ticket "CLJ-957",
   :name "clj-957-allow-typehinting-of-method-signatures-in-deftype-patch2.txt",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "TBD: Why marked Not Approved by Rich?  Should this be closed, or
-      does he want something about the existing patches modified
-      before considering it?",
   }
  {:ticket "CLJ-958",
   :name "0001-Make-APersistentVector.iterator-slightly-more-effici.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "TBD: Why marked Not Approved by Rich?  Should this be closed, or
-      does he want something about the existing patches modified
-      before considering it?",
   }
  {:ticket "CLJ-970",
   :name "clj-970-extend-implement-parameterized-types-patch2.txt",
@@ -635,6 +620,10 @@
   }
  {:ticket "CLJ-1229",
   :name "clj-1229-count-overflow-patch-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1233",
+  :name "clj-1233-minimal.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  )
