@@ -618,6 +618,76 @@ Check it to see if it was created incorrectly."})
        "/" (:name p)))
 
 
+(def next-release-short "1.6")
+
+(def next-release (str "Release " next-release-short))
+
+(defn next-rel? [fix-versions]
+  (some #(= % next-release) fix-versions))
+
+(defn backlog? [fix-versions]
+  (some #(= % "Backlog") fix-versions))
+
+
+(defn derived-ticket-state-seq [att]
+  (let [status (:status att)
+        open (contains? #{"Open" "In Progress" "Reopened"} status)
+        approval (get att "Approval")
+        fix-versions (:fixVersion att)
+        next-rel (next-rel? fix-versions)
+        backlog (backlog? fix-versions)
+        patch (get att "Patch")
+        bad-field-vals
+        (filter identity
+                [(when (not (contains? #{"Closed" "Resolved"
+                                         "Open" "In Progress" "Reopened"}
+                                       status))
+                   "Bad: Unknown Status")
+                 (when (not (or (nil? approval)
+                                (contains? #{"Triaged" "Vetted" "Incomplete"
+                                             "Screened" "Ok"}
+                                           approval)))
+                   "Bad: Unknown Approval")
+                 (when (not (or (empty? fix-versions) next-rel backlog))
+                   "Bad: Unknown Fix Version")
+                 (when (not (or (nil? patch)
+                                (contains? #{"Code" "Code and Test"}
+                                           patch)))
+                   "Bad: Unknown Patch")
+                 ]) ]
+    (cond
+     (not (empty? bad-field-vals)) bad-field-vals
+     (not open) ["Closed"]
+     :else (filter identity
+                   [(when (nil? approval) "Open")
+                    (when (= approval "Triaged") "Triaged")
+                    (when (and (= approval "Vetted")
+                               (empty? fix-versions))
+                      "Vetted")
+                    (when backlog "Backlog")
+                    (when (and next-rel
+                               (= approval "Vetted")
+                               (nil? patch))
+                      "Needs Patch")
+                    (when (and next-rel
+                               (= approval "Vetted")
+                               (contains? #{"Code" "Code and Test"} patch))
+                      "Screenable")
+                    (when (and next-rel (= approval "Incomplete")) "Incomplete")
+                    (when (and next-rel (= approval "Screened")) "Screened")
+                    (when (and next-rel (= approval "Ok")) "Ok")
+                    ]))))
+
+
+(defn derived-ticket-state [att]
+  (let [s (derived-ticket-state-seq att)
+        n (count s)]
+    (cond (= 1 n) (first s)
+          (zero? n) "Bad: Matches no state"
+          :else (str "Bad: Matches >1 state: "
+                     (str/join ", " s)))))
+  
+
 (defn add-author-info
   [p attach-dir people-info]
   (if (nil? (:name p))
@@ -742,12 +812,13 @@ Check it to see if it was created incorrectly."})
                     (or (:display-name (first ai))
                         (:name (first ai))))]
     ;; Properties of the ticket as a whole
-    (iprintf "%-8s %1s %2s %-8s %-11s"
+    (iprintf "%-8s %1s %2s %-8s %-11s %-24s"
              (:ticket p)
              (subs (:type p) 0 1)
              (:votes p)
              (trunc-str (or (get p "Approval") "--") 8)
-             (trunc-str (fixVersion-to-string (:fixVersion p)) 11))
+             (trunc-str (fixVersion-to-string (:fixVersion p)) 11)
+             (trunc-str (derived-ticket-state p) 24))
     ;; Properties specific to each patch
     (iprintf " %-13s %-10s %-5s %-15s %s\n"
              (name-or-default p :patch-author-summary "--")
@@ -836,7 +907,7 @@ apply the patch, and try to build with 'ant' in that copy."
        (not= (:ant-status att) :ok)))
 
 (defn next-release? [att]
-  (some #(= % "Release 1.6") (:fixVersion att)))
+  (some #(= % next-release) (:fixVersion att)))
 
 (defn approval-in? [att approval-set]
   (approval-set (get att "Approval")))
@@ -994,9 +1065,10 @@ whose tickets have 'Patch' attribute that is neither 'Code' nor 'Code and Test':
           (printf "\n      %s:\n\n" cat)
           (doseq [twpp (sort-by #(extract-dec-num (:ticket %))
                                 (twpp-by-cat cat))]
-            (printf "%1s  %-8s %s\n"
+            (printf "%1s  %-8s %-12s %s\n"
                     (or (first (get twpp "Approval")) " ")
                     (:ticket twpp)
+                    (derived-ticket-state twpp)
                     (:name twpp))
             (when (:patch-extra-note twpp)
               (printf "      %s\n" (:patch-extra-note twpp)))))))))
@@ -1034,15 +1106,17 @@ whose tickets have 'Patch' attribute that is neither 'Code' nor 'Code and Test':
   (with-out-str
     (doseq [[filter-pred heading-str]
             [ [ prescreened-not-screened-not-next-release?
+               (str
 "----------------------------------------------------------------------
-Prescreened patches *not* marked with Fix Version/s = \"Release 1.6\"
-----------------------------------------------------------------------"
+Prescreened patches *not* marked with Fix Version/s = \"" next-release "\"
+----------------------------------------------------------------------")
                ]
               [ prescreened-not-screened-next-release?
+               (str
 "----------------------------------------------------------------------
-Prescreened patches that are marked with Fix Version/s = \"Release
-1.6\", but not screened
-----------------------------------------------------------------------"
+Prescreened patches that are marked with Fix Version/s =
+\"" next-release "\", but not screened
+----------------------------------------------------------------------")
                ]
               [ prescreened-and-screened?
 "----------------------------------------------------------------------
@@ -1075,10 +1149,11 @@ ticket is marked Incomplete (I).
     (doseq [[filter-pred heading-str]
             [
              [ next-release?
+              (str
 "----------------------------------------------------------------------
-Tickets marked for Clojure release 1.6 that have no prescreened
+Tickets marked for Clojure " next-release " that have no prescreened
 patches (see also Note 3 at the bottom):
-----------------------------------------------------------------------"
+----------------------------------------------------------------------")
               ]
 
              [ #(and (not (next-release? %))
@@ -1243,6 +1318,7 @@ contributor, and it does not build and pass tests.
         :type (printf " %s" (subs (:type info) 0 1))
         :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
         :fixVersion (printf " %-11s" (trunc-str (fixVersion-to-string (:fixVersion info)) 11))
+        :derivedState (printf " %-12s" (trunc-str (derived-ticket-state info) 12))
         "Patch" (printf " %-11s" (trunc-str (or (get info "Patch") "--") 11))
         :voter-details
         (printf "\n             %s"
@@ -1283,6 +1359,7 @@ contributor, and it does not build and pass tests.
               :type "Type"
               :approval "Approval"
               :fixVersion "Fix Version(s)"
+              :derivedState "State"
               "Patch" "Patch"
               :ticket-with-link "Ticket"
               :title "Summary"
@@ -1304,6 +1381,7 @@ contributor, and it does not build and pass tests.
           :type (printf "%s" (subs (:type info) 0 1))
           :approval (printf "%s" (or (get info "Approval") "--"))
           :fixVersion (printf "%s" (fixVersion-to-string (:fixVersion info)))
+          :derivedState (printf "%s" (derived-ticket-state info))
           "Patch" (printf "%s" (or (get info "Patch") "--"))
           :ticket-with-link (printf "<a href=\"%s\">%s</a>"
                                     (url-for-clj-ticket ticket-abbrev)
@@ -1351,13 +1429,15 @@ project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
 
 Each ticket is listed with:
 
-<weighted vote>  <vote count>  <Approval> <Fix Version>   [<project>-<n>] <summary line>
+<weighted vote>  <vote count>  <Approval> <Fix Version> <State>   [<project>-<n>] <summary line>
              voter #1 (weight that voter #1 contributes)
              voter #2 (weight that voter #2 contributes)
              ...
 
 where Approval is one of \"--\" (blank), Vetted, Screened, Incomplete,
-Not Approved, etc.
+etc. and State is one of the states in the JIRA flow diagram at
+
+    http://dev.clojure.org/display/community/JIRA+workflow
 "
             project date-str project)
     :html
@@ -1386,6 +1466,10 @@ to change the rankings.
 <p>
 Each person gets 1 weighted vote to divide up as they wish for each
 project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+
+<p>
+State is one of the states in the JIRA flow diagram <a
+href=\"http://dev.clojure.org/display/community/JIRA+workflow\">here</a>.
 "
             project project date-str project)))
 
@@ -1424,7 +1508,7 @@ Project %s tickets
                   ticket-type)
           (print-tickets (get tickets-by-type ticket-type)
                          [:weighted-vote :num-votes :approval
-                          :fixVersion
+                          :fixVersion :derivedState
                           ;; "Patch"
                           :title :voter-details]))
         :html
@@ -1432,7 +1516,7 @@ Project %s tickets
           (printf "<h2>%s</h2>\n\n" ticket-type)
           (print-tickets-html-table (get tickets-by-type ticket-type)
                                     [:weighted-vote :num-votes :approval
-                                     :fixVersion
+                                     :fixVersion :derivedState
                                      ;; "Patch"
                                      :ticket-with-link
                                      :title :voter-details]))))))
