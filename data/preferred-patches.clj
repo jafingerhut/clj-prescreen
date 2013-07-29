@@ -181,17 +181,6 @@
   :name "clj-866-test-vars.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-873",
-  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "Currently has Approval \"Ok\" because an earlier patch was
-      approved and comitted for it, then the ticket was reopened with
-      another related patch for the EDN reader.  Most likely that
-      patch has not been screened, so either the current Approval is
-      misleading and should be changed, or perhaps a new ticket
-      created for the EDN reader change.",
-  }
  {:ticket "CLJ-935",
   :name "fix-trim-fns-different-whitespace-patch.txt",
   :patch-category "Clojure language/library bug fixes",
@@ -619,6 +608,10 @@
   }
  {:ticket "CLJ-1233",
   :name "clj-1233-minimal.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1238",
+  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  )
