@@ -407,6 +407,12 @@
   :name "clj-1104-doc-unsafety-of-concurrent-with-redefs-v1.txt",
   :patch-category "Doc string fixes only",
   }
+ {:ticket "CLJ-1105",
+  :name "0001-CLJ-1105-Support-records-in-clojure.walk.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "See also CLJ-1239, which might be preferable to this ticket",
+  }
  {:ticket "CLJ-1107",
   :name "clj-1107-throw-on-get-for-unsupported-types-patch-v2.txt",
   :patch-category "Better error reporting",
@@ -607,11 +613,29 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1233",
-  :name "clj-1233-minimal.diff",
+  :name "clj-1233-with-test.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1238",
   :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1239",
+  :name "0001-CLJ-1239-protocol-dispatch-for-clojure.walk.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "This one is perhaps preferable to CLJ-1105",
+  }
+ {:ticket "CLJ-1240",
+  :name "0001-CLJ-1240-Note-limits-of-clojure.walk-macroexpand-all.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1241",
+  :name "0001-fix-CLJ-1241.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1242",
+  :name "0001-fix-for-CLJ-1242-tests.patch",
+  :patch-category "Allow more correct-looking Clojure code to work",
   }
  )
