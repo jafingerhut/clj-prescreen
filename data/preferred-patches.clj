@@ -180,6 +180,9 @@
  {:ticket "CLJ-866",
   :name "clj-866-test-vars.patch",
   :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "See also patch CLJ-866-test.patch, which contains tests for this
+      patch.",
   }
  {:ticket "CLJ-935",
   :name "fix-trim-fns-different-whitespace-patch.txt",
@@ -251,7 +254,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1020",
-  :name "clj-1020-inspect-table-skip-nil-rows-patch1.txt",
+  :name "clj-1020-inspect-table-skip-nil-rows-patch2.txt",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1021",
@@ -486,7 +489,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1160",
-  :name "lazy-rmapcat.diff",
+  :name "lazy-rmapcat2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1161",
