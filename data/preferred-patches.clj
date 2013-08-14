@@ -85,7 +85,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-669",
-  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v2.txt",
+  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v3.txt",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-700",
@@ -279,7 +279,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1036",
-  :name "clj-1036-hasheq-for-biginteger-patch-v2.txt",
+  :name "clj-1036-hasheq-for-biginteger-patch-v4.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1044",
