@@ -7,4 +7,5 @@
                  [fs "1.3.3"]
                  [clj-http "0.6.3"]
                  [joda-time "2.1"]
-                 ])
+                 ]
+  :main clj-prescreen.core)

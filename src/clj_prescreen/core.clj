@@ -1343,7 +1343,7 @@ contributor, and it does not build and pass tests.
 
 (defn print-tickets-html-table [sorted-ticket-info col-order]
   ;; HTML table tag
-  (printf "<table style=\"text-align: left; width: 800px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n")
+  (printf "<table style=\"text-align: left; width: 950px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n")
   (printf "  <tbody>\n")
 
   ;; Headings
@@ -1532,6 +1532,110 @@ Project %s tickets
             (print-top-ticket-body! ticket-info format)))))
 
 
+;; Print a report of top tickets sorted from highest weighted vote to
+;; lowest.
+(defn gen-top-ticket-reports! [cur-eval-dir]
+  (doseq [project ["CLJ" "CLJS"]]
+    (let [open-tickets-info (ticket-plus-vote-info
+                             (str cur-eval-dir
+                                  (if (= project "CLJ")
+                                    "open.xml"
+                                    "non-CLJ-open.xml"))
+                             (str cur-eval-dir "votes-on-tickets.clj")
+                             project)]
+      (printf "Project %s vote-diffs:\n" project)
+      (println (vote-diffs open-tickets-info))
+      
+      (print-top-tickets-by-vote-weight!
+       (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
+       open-tickets-info :text project)
+      (print-top-tickets-by-vote-weight!
+       (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
+       open-tickets-info :html project)))
+
+  ;; Now do the same for all other Clojure projects with votes on open
+  ;; tickets, except put them all in one file together, since they
+  ;; tend to have far fewer tickets and votes than the CLJ or CLJS
+  ;; projects above.
+  (doseq [format [:text :html]]
+    (let [out-fname (str cur-eval-dir "OTHERS-top-tickets-by-weighted-vote."
+                         (case format
+                           :text "txt"
+                           :html "html"))
+          date-str (local-date-str)]
+      (spit out-fname
+            (with-out-str
+              (print-top-ticket-header! format "OTHERS" date-str)
+              (doseq [project (sort (disj (all-vote-projects
+                                           (str cur-eval-dir "votes-on-tickets.clj"))
+                                          "CLJ" "CLJS"))]
+                (let [open-tickets-info (ticket-plus-vote-info
+                                         (str cur-eval-dir "non-CLJ-open.xml")
+                                         (str cur-eval-dir "votes-on-tickets.clj")
+                                         project)]
+                  (when (= format :text)
+                    (binding [*out* *err*]
+                      (printf "Project %s vote-diffs:\n" project)
+                      (println (vote-diffs open-tickets-info))))
+                  (print-top-ticket-short-project-header! format project)
+                  (print-top-ticket-body! open-tickets-info format))))))))
+
+
+
+(defn show-usage [prog-name]
+  (iprintf *err* "usage:
+    %s [ help | -h | --help ]
+    %s top-tickets <jira-account-name> <jira-password>
+" prog-name prog-name))
+
+
+(def prog-name "lein run")
+
+
+(defn -main [& args]
+  (when (or (= 0 (count args))
+            (#{"-h" "--help" "-help" "help"} (first args)))
+    (show-usage prog-name)
+    (System/exit 0))
+  (let [[action & args] args]
+    (case action
+      
+      "top-tickets"
+      (if (= 2 (count args))
+        (let [[jira-account jira-pw] args
+              eval-root (str fs/*cwd* "/eval-results/")
+              yyyy-mm-dd (str (LocalDate/now))
+              cur-eval-dir (str eval-root yyyy-mm-dd "/")
+              auth-info {:basic-auth [jira-account jira-pw]}]
+          (when-not (fs/exists? eval-root)
+            (die "Directory %s must exist, but does not.  Aborting." eval-root))
+          (when (fs/exists? cur-eval-dir)
+            (die "Eval directory %s
+where all results will go already exists.
+Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
+"
+                 cur-eval-dir))
+          (when-not (fs/mkdirs cur-eval-dir)
+            (die "mkdirs %s failed.  Aborting.\n" cur-eval-dir))
+
+          (dl-open-tickets! (str cur-eval-dir "open.xml") :CLJ)
+          (dl-open-tickets! (str cur-eval-dir "non-CLJ-open.xml") :non-CLJ)
+          (let [fname (str cur-eval-dir "votes-on-tickets.clj")
+                all-users (read-safely "data/all-clojure-jira-users.clj")
+                votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
+            (spit-pretty fname votes-by-user))
+          (gen-top-ticket-reports! cur-eval-dir))
+        (do (iprintf *err* "Wrong number of args %d for '%s' action\n"
+                     (count args) action)
+            (show-usage prog-name)
+            (System/exit 1)))
+
+      ;; default case
+      (do (iprintf *err* "Urecognized first arg '%s'\n" action)
+          (show-usage prog-name)
+          (System/exit 1)))))
+
+
 
 (comment
 
@@ -1551,7 +1655,8 @@ Project %s tickets
 
 ;; Step 4: Evaluate these expressions in a REPL.
 
-(use 'clj-prescreen.core 'clojure.pprint)
+(in-ns 'user)
+(use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-07/"))
 (def clojure-tree "./eval-results/2013-07-07-clojure-to-prescreen/clojure")
@@ -1657,53 +1762,7 @@ Project %s tickets
 ;; or I am missing a user, and should get an updated user list.  See
 ;; Note 2.
 
-;; Print a report of top tickets sorted from highest weighted vote to
-;; lowest.
-(doseq [project ["CLJ" "CLJS"]]
-  (let [open-tickets-info (ticket-plus-vote-info
-                           (str cur-eval-dir
-                                (if (= project "CLJ")
-                                  "open.xml"
-                                  "non-CLJ-open.xml"))
-                           (str cur-eval-dir "votes-on-tickets.clj")
-                           project)]
-    (printf "Project %s vote-diffs:\n" project)
-    (println (vote-diffs open-tickets-info))
-
-    (print-top-tickets-by-vote-weight!
-     (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
-     open-tickets-info :text project)
-    (print-top-tickets-by-vote-weight!
-     (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
-     open-tickets-info :html project)))
-
-;; Now do the same for all other Clojure projects with votes on open
-;; tickets, except put them all in one file together, since they tend
-;; to have far fewer tickets and votes than the CLJ or CLJS projects
-;; above.
-(doseq [format [:text :html]]
-  (let [out-fname (str cur-eval-dir
-                       "OTHERS-top-tickets-by-weighted-vote."
-                       (case format
-                         :text "txt"
-                         :html "html"))
-        date-str (local-date-str)]
-    (spit out-fname
-          (with-out-str
-            (print-top-ticket-header! format "OTHERS" date-str)
-            (doseq [project (sort (disj (all-vote-projects
-                                         (str cur-eval-dir "votes-on-tickets.clj"))
-                                        "CLJ" "CLJS"))]
-              (let [open-tickets-info (ticket-plus-vote-info
-                                       (str cur-eval-dir "non-CLJ-open.xml")
-                                       (str cur-eval-dir "votes-on-tickets.clj")
-                                       project)]
-                (when (= format :text)
-                  (binding [*out* *err*]
-                    (printf "Project %s vote-diffs:\n" project)
-                    (println (vote-diffs open-tickets-info))))
-                (print-top-ticket-short-project-header! format project)
-                (print-top-ticket-body! open-tickets-info format)))))))
+(gen-top-ticket-reports! cur-eval-dir)
 ;;;; End of Note 6 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
