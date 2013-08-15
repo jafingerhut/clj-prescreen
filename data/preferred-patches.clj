@@ -29,10 +29,6 @@
       sorted-set-by or sorted-map-by, but perhaps such documentation
       could be put at a link that could be added to the doc string."
   }
- {:ticket "CLJ-196",
-  :name "0002-Don-t-promise-the-value-of-file-in-the-REPL.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-200",
   :name "clj-200-cond-let-clauses-fixed-test-v2-patch.txt",
   :patch-category "Language/library enhancement",
@@ -160,10 +156,6 @@
      "Applied cleanly until Jul 7 2013 when a conflicting change with
       subject \"don't presume Integer for LINE and COLUMN, fixes
       round-trip\" was made.",
-  }
- {:ticket "CLJ-850",
-  :name "CLJ-850-conform-to-invokePrim.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-858",
   :name "stm-rm-msecs-patch.diff",
@@ -448,10 +440,6 @@
   :name "0001-CLJ-1120-ex-message-ex-cause.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1121",
-  :name "0001-CLJ-1121-Reimplement-and-without-recursion.patch",
-  :patch-category "Allow more correct-looking Clojure code to work",
-  }
  {:ticket "CLJ-1122",
   :name "contributing.patch",
   :patch-category "Debug/tooling enhancement",
@@ -480,21 +468,9 @@
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
   }
- {:ticket "CLJ-1154",
-  :name "CLJ-1154.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1157",
   :name "20130204_fix_classloader.diff",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1160",
-  :name "lazy-rmapcat2.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1161",
-  :name "0001-CLJ-1161-Remove-version.properties-from-sources-JAR.patch",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1162",
   :name "CLJ-1162-p1.patch",
@@ -507,17 +483,6 @@
  {:ticket "CLJ-1169",
   :name "0001-CLJ-1169-proposed-patch.patch",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1171",
-  :name "0002-CLJ-1171-Obey-lexical-scope-for-class-argument-in-in.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "0001-* patch adds new tests, 0002-* fixes a bug, 0003-* relies
-      on 0002-* being applied before it.",
-  }
- {:ticket "CLJ-1175",
-  :name "delayed-exceptions.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1176",
   :name "0001-CLJ-1176-Bind-read-eval-true-in-clojure.repl-source-.patch",
@@ -555,10 +520,6 @@
   :name "clj-1191-patch-v1.txt",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1193",
-  :name "clj-1197-make-bigint-work-on-all-doubles-v1.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1197",
   :name "foldable-seq.diff",
   :patch-category "Language enhancement, reducers",
@@ -567,17 +528,9 @@
   :name "no-getComponentType--v001.patch",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1202",
-  :name "CLJ-1202.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1204",
   :name "clj-1204-make-hash-consistent-with-equal-for-bigintegers-v1.txt",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1205",
-  :name "0001-nexus-2.4-releases.patch",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1209",
   :name "clj-test-print-ex-data.diff",
