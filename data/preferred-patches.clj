@@ -174,7 +174,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-865",
-  :name "updated.patch",
+  :name "clj-865-updated-v2-patch.txt",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-866",
@@ -441,7 +441,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1118",
-  :name "clj-1118-make-double-equals-true-for-more-bigdecimals-patch-v3.txt",
+  :name "clj-1118-make-double-equals-true-for-more-bigdecimals-patch-v4.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1120",
