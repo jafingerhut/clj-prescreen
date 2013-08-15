@@ -1658,8 +1658,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-07/"))
-(def clojure-tree "./eval-results/2013-07-07-clojure-to-prescreen/clojure")
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-14/"))
+(def clojure-tree "./eval-results/2013-08-14-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def patch-type-list [ "open" ])
 ;; Note: Don't check any password into git
