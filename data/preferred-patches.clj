@@ -294,10 +294,6 @@
   :name "001-simplify-fj-importing.patch",
   :patch-category "Language enhancement, reducers",
   }
- {:ticket "CLJ-1049",
-  :name "0001-reduce-kv-transformations.diff",
-  :patch-category "Language enhancement, reducers",
-  }
  {:ticket "CLJ-1059",
   :name "001-clj-1059-make-persistentqueue-implement-list.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -350,10 +346,6 @@
  {:ticket "CLJ-1083",
   :name "better-throw-arity-messages.diff",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1086",
-  :name "thread-last-arity-1.diff",
-  :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1087",
   :name "clj-1087-diff-perf-enhance-patch-v1.txt",
@@ -501,7 +493,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1184",
-  :name "CLJ-1184-p3.patch",
+  :name "CLJ-1184-p4.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1185",
@@ -593,5 +585,9 @@
  {:ticket "CLJ-1242",
   :name "0001-fix-for-CLJ-1242-tests.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
+  }
+ {:ticket "CLJ-1246",
+  :name "clj-1246-fix-type-reflect-exception-patch-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
