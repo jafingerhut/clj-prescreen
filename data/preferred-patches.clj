@@ -87,8 +87,6 @@
  {:ticket "CLJ-700",
   :name "clj-700-patch6.txt",
   :patch-category "Allow more correct-looking Clojure code to work",
-  :patch-extra-note
-     "Was Screened, then Incomplete in Aug 2012, now Approval is empty.",
   }
  {:ticket "CLJ-703",
   :name "improve-writeclassfile-perf.patch",
@@ -215,6 +213,9 @@
   :name "clj-976-queue-literal-eval-and-synquote-patch-v3.txt",
   :patch-category "Language/library enhancement",
   :stale-patch-last-time-applied-cleanly "Oct 2012",
+  :patch-extra-note
+     "Applied cleanly until Oct 20 2012 when a conflicting patch for
+      CLJ-1070 was applied.",
   }
  {:ticket "CLJ-978",
   :name "clojure--bean-support-for-private-implementation-classes-v3.diff",
@@ -232,6 +233,8 @@
   :name "0001-repeat-for-clojure.core.reducers.patch",
   :patch-category "Language enhancement, reducers",
   :stale-patch-last-time-applied-cleanly "Jul 2012",
+  :patch-extra-note
+     "None of the patches apply cleanly, but did on Jul 26, 2012.",
   }
  {:ticket "CLJ-1004",
   :name "arraychunk-seq-10004.diff",
