@@ -1,4 +1,8 @@
 (
+ {:ticket "CLJ-15",
+  :name "lazy-incremental-hashes.diff",
+  :patch-category "Performance enhancement",
+  }
  {:ticket "CLJ-99",
   :name "clj-99-min-key-max-key-performance-v1.txt",
   :patch-category "Performance enhancement",
@@ -183,7 +187,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-939",
-  :name "clj-939-report-load-exceptions-with-file-and-line-patch-v2.txt",
+  :name "clj-939-report-load-exceptions-with-file-and-line-patch-v3.txt",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-944",
@@ -347,7 +351,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1083",
-  :name "better-throw-arity-messages.diff",
+  :name "clj-1083-better-throw-arity-messages-patch-v5.txt",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1087",
@@ -386,7 +390,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1102",
-  :name "clj-1102-improve-empty-stack-trace-handling-v1.txt",
+  :name "clj-1102-improve-empty-stack-trace-handling-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
@@ -567,6 +571,10 @@
   :name "clj-1233-with-test.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1237",
+  :name "CLJ-1237c.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1238",
   :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -592,5 +600,9 @@
  {:ticket "CLJ-1246",
   :name "clj-1246-fix-type-reflect-exception-patch-v1.txt",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1248",
+  :name "Include-type-information-in-reflection-warning-messa.patch",
+  :patch-category "Better error reporting",
   }
  )
