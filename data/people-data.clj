@@ -658,6 +658,12 @@
  :emails #{ "philipgpotter@gmail.com" }
  :contributor true
  }
+{:display-name "Christoffer Sawicki"
+ :aliases #{ }
+ :usernames #{ "qerub" }
+ :emails #{ "christoffer.sawicki@gmail.com" }
+ :contributor true
+ }
 {:display-name "Rasmus Svensson"
  :aliases #{ }
  :usernames #{ "raek" }
