@@ -479,7 +479,14 @@ type."
                                         "--ignore-whitespace" "-s"
                                         patch-filename)]
     (if (zero? exit)
-      (merge p {:patch-status :ok :patch-msg "Success."})
+      (cond (zero? (count err))
+            (merge p {:patch-status :ok :patch-msg "Success."})
+
+            (re-find #"warn" err)
+            (merge p {:patch-status :warn :patch-msg "Warning."})
+
+            :else
+            (merge p {:patch-status :stderr :patch-msg "Something on stderr."}))
       ;; Otherwise check whether the output says it is because the
       ;; patch did not apply cleanly.
       (if (and (re-find #"Patch failed" out)
@@ -664,18 +671,18 @@ Check it to see if it was created incorrectly."})
                 [(when (not (contains? #{"Closed" "Resolved"
                                          "Open" "In Progress" "Reopened"}
                                        status))
-                   "Bad: Unknown Status")
+                   "Bad: Unkn Status")
                  (when (not (or (nil? approval)
                                 (contains? #{"Triaged" "Vetted" "Incomplete"
                                              "Screened" "Ok"}
                                            approval)))
-                   "Bad: Unknown Approval")
+                   "Bad: Unkn Approval")
                  (when (not (or (empty? fix-versions) next-rel backlog))
-                   "Bad: Unknown Fix Version")
+                   "Bad: Unkn Fix Version")
                  (when (not (or (nil? patch)
                                 (contains? #{"Code" "Code and Test"}
                                            patch)))
-                   "Bad: Unknown Patch")
+                   "Bad: Unkn Patch")
                  ]) ]
     (cond
      (not (empty? bad-field-vals)) bad-field-vals
@@ -705,8 +712,8 @@ Check it to see if it was created incorrectly."})
   (let [s (derived-ticket-state-seq att)
         n (count s)]
     (cond (= 1 n) (first s)
-          (zero? n) "Bad: Matches no state"
-          :else (str "Bad: Matches >1 state: "
+          (zero? n) "Bad: Match no state"
+          :else (str "Bad: Match >1 state: "
                      (str/join ", " s)))))
   
 
@@ -728,6 +735,22 @@ Check it to see if it was created incorrectly."})
       ;; else not a git patch
       (merge p {:patch-author-info nil
                 :patch-author-summary :not-git-patch}))))
+
+
+(defn add-preferred-patch-info
+  [p pref-pats]
+  (if (nil? (:name p))
+    p
+    (if-let [pref-pat (get pref-pats (:ticket p))]  ;; (:name p)])]
+      (if (= (:name pref-pat) (:name p))
+        (merge p {:preferred-patch :yes})
+        ;; :no means a preferred patch is specified for this ticket,
+        ;; but this patch is not the one.
+        (merge p {:preferred-patch :no}))
+      ;; Then there is no preferred patch specified for this ticket.
+      ;; Do not use :preferred-patch :no, but distinguish this case by
+      ;; having no :preferred-patch key for the patch at all.
+      p)))
 
 
 (defn eval-patch! [p attach-dir idx num-patches
@@ -766,7 +789,7 @@ Check it to see if it was created incorrectly."})
                            patch-status))
                 (iprintf "    Patch status: %s (%s)\n" patch-msg patch-status)
                 (case patch-status
-                  :ok
+                  (:ok :warn)
                   (if try-to-build?
                     ;; (3) Try to build and test
                     (let [{:keys [ant-status ant-msg] :as p} (build-and-test-clojure p)]
@@ -778,7 +801,7 @@ Check it to see if it was created incorrectly."})
                     ;; otherwise don't try to build and test
                     p)
                   
-                  :fail ;; patch attempt failed.
+                  (:stderr :fail) ;; patch attempt failed.
                   ;; Don't try to build, but try other patches if there are
                   ;; more.
                   p
@@ -828,24 +851,42 @@ Check it to see if it was created incorrectly."})
     "--"))
 
 
+(defn preferred-patch-summary-status [p]
+  (if-let [preferred-patch (:preferred-patch p)]
+    (let [derived-state (derived-ticket-state p)]
+      (cond (= preferred-patch :no) "notme"
+            ;; otherwise :preferred-patch must be :yes
+            (= (:patch-status p) :ok) "pp-ok"
+            ;; otherwise something is not perfect with the patch
+            (#{"Screenable" "Incomplete" "Screened" "Ok"} derived-state)
+            "fixnow"
+            (#{"Vetted"} derived-state) "fixsoon"
+            :else "fixlater"))
+    ;; In this case there is no preferred patch for the ticket
+    ;; specified at all.  Make this visually distinct from
+    ;; :preferred-patch :no in the report.
+    "--"))
+
+
 (defn one-patch-summary [p]
   (let [ai (:patch-author-info p)
         auth-name (if-not (nil? ai)
                     (or (:display-name (first ai))
                         (:name (first ai))))]
     ;; Properties of the ticket as a whole
-    (iprintf "%-8s %1s %2s %-8s %-11s %-24s"
+    (iprintf "%-8s %1s %2s %-8s %-11s %-16s"
              (:ticket p)
              (subs (:type p) 0 1)
              (:votes p)
              (trunc-str (or (get p "Approval") "--") 8)
              (trunc-str (fixVersion-to-string (:fixVersion p)) 11)
-             (trunc-str (derived-ticket-state p) 24))
+             (trunc-str (derived-ticket-state p) 16))
     ;; Properties specific to each patch
-    (iprintf " %-13s %-10s %-5s %-15s %s\n"
+    (iprintf " %-13s %-10s %-5s %-8s %-15s %s\n"
              (name-or-default p :patch-author-summary "--")
              (name-or-default p :patch-status "--")
              (name-or-default p :ant-status "--")
+             (trunc-str (preferred-patch-summary-status p) 8)
              (trunc-str (or auth-name "--") 15)
              (:name p))))
 
@@ -860,7 +901,7 @@ Check it to see if it was created incorrectly."})
 (defn dl-patches-check-ca!
   "Download all attachments for selected tickets.  Do this once on one
 machine, not once for each OS/JDK combo I want to test."
-  [cur-eval-dir patch-type-list ticket-dir clojure-tree]
+  [cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree]
   (doseq [patch-type patch-type-list]
     (let [as1 (xml->attach-info (str cur-eval-dir patch-type ".xml"))
           as2 (download-attachments! as1 ticket-dir)
@@ -868,8 +909,12 @@ machine, not once for each OS/JDK combo I want to test."
                 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure"
                                false)
                 as2)
+          pref-pats (->> (read-safely ppat-fname)
+                         (group-by :ticket)
+                         (map-vals first))
+          as3b (map #(add-preferred-patch-info % pref-pats) as3)
           as4 (let [people-info (read-safely "data/people-data.clj")]
-                (map #(add-author-info % ticket-dir people-info) as3))]
+                (map #(add-author-info % ticket-dir people-info) as3b))]
       (spit-pretty (str cur-eval-dir patch-type "-downloaded-only.txt") as4)
       (spit (str cur-eval-dir patch-type "-author-info.txt")
             (with-out-str (eval-patches-summary as4))))))
@@ -883,13 +928,17 @@ the directory structure created by dl-patches-check-ca!  For the
 version of the Clojure repo in the local directory whose path name is
 given by clojure-tree, for each patch to evaluate copy it, try to
 apply the patch, and try to build with 'ant' in that copy."
-  [cur-eval-dir ticket-dir clojure-tree patch-type-list]
+  [cur-eval-dir ticket-dir clojure-tree patch-type-list ppat-fname]
   (doseq [patch-type patch-type-list]
     (let [fname2 (str cur-eval-dir patch-type "-downloaded-only.txt")
           as2 (read-safely fname2)
           as3 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure" true)
+          pref-pats (->> (read-safely ppat-fname)
+                         (group-by :ticket)
+                         (map-vals first))
+          as3b (map #(add-preferred-patch-info % pref-pats) as3)
           as4 (let [people-info (read-safely "data/people-data.clj")]
-                (map #(add-author-info % ticket-dir people-info) as3))]
+                (map #(add-author-info % ticket-dir people-info) as3b))]
       (spit-pretty (str cur-eval-dir patch-type "-evaled-authors.txt") as4)
       (spit (str cur-eval-dir patch-type "-patch-summary.txt")
             (with-out-str (eval-patches-summary as4))))))
@@ -1813,6 +1862,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-29/"))
 (def clojure-tree "./eval-results/2013-08-14-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
+(def ppat-fname "./data/preferred-patches.clj")
 (def patch-type-list [ "open" ])
 ;; Note: Don't check any password into git
 (def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
@@ -1842,7 +1892,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    | http://dev.clojure.org   in html and plain text formats.
 ;;    |  |
 ;;    |  |  +-----------------Clojure source code tree
-;;    |  |  |  +---------------|-data/people-data.clj
+;;    |  |  |  +---------------|-data/{people-data.clj, preferred-patches.clj}
 ;;    v  v  v  v               |  |
 ;; dl-patches-check-ca!        |  |
 ;; Code at Note 7              |  |
@@ -1855,7 +1905,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    |     +------------------+  |
 ;;    |     |  +------------------+
 ;;    v     v  v
-;; dl-eval-check-ca! (Code at Note 8)
+;; do-eval-check-ca! (Code at Note 8)
 ;;    |        |
 ;;    |        +-------------------------+
 ;;    v                                  v
@@ -1939,13 +1989,14 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;     A text file with only a fraction of the data in
 ;;     open-downloaded-only.txt.  Useful for looking at, and for
 ;;     diff'ing against a previous set of downloaded attachments.
-(dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir clojure-tree)
+(dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree)
+
 ;;;; End of Note 7 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;; Note 8 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Evaluate downloaded attachments.  Do this once for each OS/JDK
 ;; combo.
-(do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list)
+(do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list ppat-fname)
 
 ;; After doing the dl-patches-check-ca! above, if you edit
 ;; data/people-data.clj and want to redo the author evaluations only,
@@ -1967,7 +2018,6 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         atts (read-safely fname1)
-        ppat-fname "./data/preferred-patches.clj"
         ppats (read-safely ppat-fname)
         fname-warnings (str cur-eval-dir patch-type "-warnings.txt")
         fname-prescreened (str cur-eval-dir patch-type "-prescreened-report.txt")
