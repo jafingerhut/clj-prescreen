@@ -120,7 +120,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-766",
-  :name "byte-short-array-ctors.diff",
+  :name "clj766-2.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-771",
@@ -179,7 +179,7 @@
       patch.",
   }
  {:ticket "CLJ-935",
-  :name "fix-trim-fns-different-whitespace-patch.txt",
+  :name "clj935-2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-937",

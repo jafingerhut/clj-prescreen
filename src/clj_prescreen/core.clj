@@ -1,6 +1,6 @@
 (ns clj-prescreen.core
   (:import (java.io File ByteArrayInputStream))
-  (:import (org.joda.time LocalDate))
+  (:import (org.joda.time LocalDate DateTime Duration))
   (:require [clojure.xml :as xml]
             [clojure.data :as data]
             [clojure.data.zip.xml :as dzx]
@@ -107,9 +107,14 @@
     (bigint num-str)))
 
 
+(defn days-between-dates [^DateTime earlier-joda-date
+                          ^DateTime later-joda-date]
+  (. (Duration. earlier-joda-date later-joda-date) getStandardDays))
+
+
 (defn ticket-fields [ticket]
   (let [fields [:key :title :type :attrs :status :resolution :reporter :labels
-                :created :updated :votes :watches :fixVersion]
+                :created :resolved :updated :votes :watches :fixVersion]
         tick-name (dzx/xml1-> ticket :key dzx/text)
         t (into {} (map (fn [fld]
                           [ fld
@@ -208,6 +213,10 @@ TBENCH-11"
     (map #(dzx/xml1-> % :key dzx/text) tickets-zip)))
 
 
+(defn url-all-CLJ-tickets []
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ&tempMax=2000")
+
+
 (defn url-all-open-CLJ-tickets []
   "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
 
@@ -222,14 +231,11 @@ TBENCH-11"
     (str url-part1 username url-part2)))
 
 
-(defn dl-open-tickets!
-  "Download XML data about all open CLJ tickets and save it to a local
-file."
-  [file-name project]
-  (let [url (if (= project :CLJ)
-              (url-all-open-CLJ-tickets)
-              (url-all-open-non-CLJ-tickets))
-        resp (http/get url {:throw-exceptions false})]
+(defn get-url-to-file!
+  "Write body of response from HTTP GET request to specified url to a
+file with name file-name"
+  [file-name url]
+  (let [resp (http/get url {:throw-exceptions false})]
     (if (= 200 (:status resp))
       (spit file-name (:body resp))
       (do
@@ -237,6 +243,22 @@ file."
           (println
            (format "Got response status %d when trying to get URL:\n%s\n"
                    (:status resp) url)))))))
+
+
+(defn dl-all-CLJ-tickets!
+  "Download XML data about all CLJ tickets and save it to a local
+file."
+  [file-name]
+  (get-url-to-file! file-name (url-all-CLJ-tickets)))
+
+
+(defn dl-open-tickets!
+  "Download XML data about all open CLJ tickets and save it to a local
+file."
+  [file-name project]
+  (get-url-to-file! file-name (if (= project :CLJ)
+                                (url-all-open-CLJ-tickets)
+                                (url-all-open-non-CLJ-tickets))))
 
 
 (defn dl-open-ticket-votes!
@@ -1581,6 +1603,136 @@ Project %s tickets
                   (print-top-ticket-body! open-tickets-info format))))))))
 
 
+(def month-abbrev-to-num
+  {"Jan" 1, "Feb" 2, "Mar" 3, "Apr" 4, "May" 5, "Jun" 6,
+   "Jul" 7, "Aug" 8, "Sep" 9, "Oct" 10, "Nov" 11, "Dec" 12})
+
+
+(defn my-jodatime [yr mon date]
+  (DateTime. (int yr) (int mon) (int date) (int 0) (int 0)))
+
+
+(defn convert-date-fmt [date-str]
+  (if-let [[_ date mon yr] (and (string? date-str)
+                                (re-matches #"(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d+) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+) \d+:\d+:\d+ [+-]\d+"
+                                            date-str))]
+    (let [yr (long (extract-dec-num yr))
+          mon (month-abbrev-to-num mon)
+          date (long (extract-dec-num date))]
+      {:err nil
+       :s (format "%04d-%02d-%02d" yr mon date)
+       :jodatime (my-jodatime yr mon date)})
+    {:err (format "convert-date-fmt could not match date string '%s'" date-str)}))
+
+
+(defn today-date-fmt []
+  (let [today-date (LocalDate/now)
+        yr (.getYear today-date)
+        mon (.getMonthOfYear today-date)
+        date (.getDayOfMonth today-date)]
+    {:err nil
+     :s (format "%04d-%02d-%02d" yr mon date)
+     :jodatime (my-jodatime yr mon date)}))
+
+
+(defn rgb-map [r g b]
+  {:redness r :greenness g :blueness b})
+
+(def red      (rgb-map 192   0   0))
+(def bright-red
+              (rgb-map 255   0   0))
+(def green    (rgb-map   0 192   0))
+(def dk-green (rgb-map   0 100   0))
+(def black    (rgb-map   0   0   0))
+(def blue     (rgb-map   0   0 192))
+(def lt-blue  (rgb-map   0   0 255))
+
+
+(def ticket-state-to-color
+  {"Closed"      green
+   "Resolved"    green
+   "Open"        lt-blue
+   "In Progress" lt-blue
+   "Reopened"    lt-blue
+   })
+
+
+(defn color-by-state-only [ti]
+  (get ticket-state-to-color (:status ti)))
+
+
+(defn normalized-status [status]
+  (cond (= status "Resolved") "Closed"
+        (contains? #{"In Progress" "Reopened"} status) "Open"
+        :else status))
+
+
+(defn color-by-status-and-resolution [ti]
+  (let [{:keys [status resolution]} ti
+        status (normalized-status status)]
+    (if (= status "Open")
+      lt-blue
+      ;; else "Closed"
+      (cond (= resolution "Completed") green
+            (= resolution "Duplicate") dk-green
+            :else bright-red))))  ;; Denied
+
+
+(defn print-gnuplot-data! [file-name all-ts
+                           sort-all-tickets-cmp-fn
+                           ticket-grouping-key-fn
+                           grouping-key-cmp-fn
+                           color-for-ticket-fn]
+  (let [today (today-date-fmt)
+        all-ts
+        (into
+         {}
+         (map (fn [[ticket-id-str ticket-info]]
+                (let [cre (convert-date-fmt (:created ticket-info))
+                      res (if-let [r (:resolved ticket-info)]
+                            (convert-date-fmt r))]
+                  [ticket-id-str
+                   (assoc ticket-info
+                     :ticket-num (long (extract-dec-num ticket-id-str))
+                     :created-gnuplot-fmt cre
+                     :resolved-gnuplot-fmt res
+                     :open-duration-days (days-between-dates
+                                          (:jodatime cre)
+                                          (:jodatime (or res today)))
+                     )]))
+              all-ts))
+        sorted-ts (sort sort-all-tickets-cmp-fn (vals all-ts))
+        grouped-ts (group-by ticket-grouping-key-fn sorted-ts)]
+    (with-open [datf (io/writer file-name)]
+      (binding [*out* datf]
+        (with-local-vars [idx 0]
+          (doseq [x (sort grouping-key-cmp-fn (keys grouped-ts))
+                  ticket-info (get grouped-ts x)]
+            (let [{:keys [status created-gnuplot-fmt resolved-gnuplot-fmt]} ticket-info
+                  res (or resolved-gnuplot-fmt today)
+                  color (color-for-ticket-fn ticket-info)]
+              ;; TBD: Have an option to set idx equal to (:ticket-num ticket-info)
+              (var-set idx (inc @idx))
+              ;;(var-set idx (:ticket-num ticket-info))
+              (printf "\n")
+              (cond (:err created-gnuplot-fmt)
+                    (printf "# ERROR in created date: %s\n"
+                            (:s created-gnuplot-fmt))
+                    
+                    (:err res)
+                    (printf "# ERROR in resolved date: %s\n"
+                            (:s res))
+                    
+                    :else
+                    (do
+                      (printf "%s %d %d %d %d %d\n" (:s created-gnuplot-fmt) @idx
+                              (:redness color) (:greenness color) (:blueness color)
+                              (:ticket-num ticket-info))
+                      (printf "%s %d %d %d %d %d\n" (:s res) @idx
+                              (:redness color) (:greenness color) (:blueness color)
+                              (:ticket-num ticket-info)))))))))))
+
+
 
 (defn show-usage [prog-name]
   (iprintf *err* "usage:
@@ -1827,6 +1979,76 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
                (not-prescreened-needs-work-report-text atts ppats)))
     ))
 ;;;; End of Note 9 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; Note 10 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Scratch pad of some code that can be used to generate some charts
+;; showing history of dates when tickets were created vs. when they
+;; were closed/resolved.  Some of this should be cleaned up a bit and
+;; added above.
+
+(dl-all-CLJ-tickets! (str cur-eval-dir "all-CLJ.xml"))
+
+(in-ns 'user)
+(use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
+(require '[clojure.java.io :as io] '[fs.core :as fs] '[clojure.tools.trace :as t])
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-18/"))
+
+(def all-ts (ticket-info-from-xml (slurp (str cur-eval-dir "all-CLJ.xml"))))
+(pprint (frequencies (map (fn [ti] [(normalized-status (:status ti))
+                                    (:resolution ti)])
+                          (vals all-ts))))
+
+;; Print tickets sorted by :ticket-num, then grouped by :ticket-num,
+;; then compared by :ticket-num.
+(print-gnuplot-data! "./data/test-date-ranges2.dat" all-ts
+                     (fn [a b] (compare (:ticket-num a) (:ticket-num b)))
+                     :ticket-num
+                     compare
+                     color-by-status-and-resolution)
+                     ;color-by-state-only)
+
+;; Print tickets sorted by :open-duration-days, then grouped by
+;; :open-duration-days, then compared by :open-duration-days.
+(print-gnuplot-data! "./data/test-date-ranges2.dat" all-ts
+                     (fn [a b] (compare (:open-duration-days a) (:open-duration-days b)))
+                     :open-duration-days
+                     compare
+                     color-by-status-and-resolution)
+                     ;color-by-state-only)
+
+(def status-compare-key
+  {"Closed"      1
+   "Resolved"    1
+   "Open"        2
+   "In Progress" 2
+   "Reopened"    2
+   })
+
+(defn status-then-open-duration-key [ticket-info]
+  [(status-compare-key (:status ticket-info))
+   (:open-duration-days ticket-info)])
+
+(defn norm-status-resolution-open-duration [ti]
+  [(normalized-status (:status ti))
+   (:resolution ti)
+   (:open-duration-days ti)])
+
+(defn resolved-created [ti]
+  [(:s (:resolved-gnuplot-fmt ti))
+   (:s (:created-gnuplot-fmt ti))])
+
+(def f1 norm-status-resolution-open-duration)
+(def f1 resolved-created)
+
+(print-gnuplot-data! "./data/test-date-ranges2.dat" all-ts
+                     (fn [a b]
+                       (compare (f1 a)
+                                (f1 b)))
+                     f1
+                     compare
+                     color-by-status-and-resolution)
+
+;;;; End of Note 10 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;; Note 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
