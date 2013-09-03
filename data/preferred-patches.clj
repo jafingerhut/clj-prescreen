@@ -198,7 +198,7 @@
       why it fails some tests, which are fixable.",
   }
  {:ticket "CLJ-949",
-  :name "0001-let-undeclared-exceptions-continue-unchecked.patch",
+  :name "clj949-patch-v2.txt",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-957",
@@ -351,7 +351,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1083",
-  :name "clj-1083-better-throw-arity-messages-patch-v5.txt",
+  :name "clj-1083-better-throw-arity-messages-patch-v6.txt",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1087",
@@ -488,7 +488,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1177",
-  :name "clj-1177-patch-v1.txt",
+  :name "clj-1177-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1180",
@@ -542,6 +542,10 @@
  {:ticket "CLJ-1217",
   :name "0001-Don-t-realize-seq-exprs-in-for-unless-necessary.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1219",
+  :name "0001-CLJ-1219-make-identical-variadic.patch",
+  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1222",
   :name "min_value_multiplication.diff",
@@ -604,5 +608,9 @@
  {:ticket "CLJ-1248",
   :name "Include-type-information-in-reflection-warning-messa.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1251",
+  :name "update.patch",
+  :patch-category "Language/library enhancement",
   }
  )
