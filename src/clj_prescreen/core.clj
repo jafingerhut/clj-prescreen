@@ -968,13 +968,13 @@ apply the patch, and try to build with 'ant' in that copy."
 (defn prescreened? [att]
   (and (:name att)
        (= (:patch-author-summary att) :CA-ok)
-       (= (:patch-status att) :ok)
+       (contains? #{:ok :warn} (:patch-status att))
        (= (:ant-status att) :ok)))
 
 (defn all-but-prescreened? [att]
   (and (:name att)
        (= (:patch-author-summary att) :CA-ok)
-       (= (:patch-status att) :ok)
+       (contains? #{:ok :warn} (:patch-status att))
        (not= (:ant-status att) :ok)))
 
 (defn next-release? [att]
