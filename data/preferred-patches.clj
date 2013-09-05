@@ -347,7 +347,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
-  :name "clj-1082.patch",
+  :name "clj-1082-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1083",
@@ -363,7 +363,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1090",
-  :name "var-clear-locals.diff",
+  :name "var-clear-locals-patch-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1093",
@@ -572,7 +572,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1233",
-  :name "clj-1233-with-test.diff",
+  :name "clj-1233-with-test-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1237",
