@@ -467,6 +467,23 @@ once, using a set."
               (merge p (one-author-contributor-status people p))))))
 
 
+(defn split-lines-preserve-CRs
+  "Like clojure.string/split, but preserves \\r characters."
+  [s]
+  (str/split s #"\n"))
+
+
+(defn git-patch-added-line-includes-CR [line-str]
+  (re-find #"^\+.*\r" line-str))
+
+
+(defn patch-adds-lines-with-CRs [patch-filename]
+  (->> patch-filename
+       slurp
+       split-lines-preserve-CRs
+       (some git-patch-added-line-includes-CR)))
+
+
 (defn patch-type
   "Use the patch's actual type if specified, otherwise the guessed
 type."
@@ -480,7 +497,9 @@ type."
                                         patch-filename)]
     (if (zero? exit)
       (cond (zero? (count err))
-            (merge p {:patch-status :ok :patch-msg "Success."})
+            (if (patch-adds-lines-with-CRs patch-filename)
+              (merge p {:patch-status :warn :patch-msg "Warning: adds CRs"})
+              (merge p {:patch-status :ok :patch-msg "Success."}))
 
             (re-find #"warn" err)
             (merge p {:patch-status :warn :patch-msg "Warning."})
