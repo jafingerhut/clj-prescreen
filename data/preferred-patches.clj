@@ -107,7 +107,7 @@
       706-* patches and then they pass.",
   }
  {:ticket "CLJ-713",
-  :name "asm-split.txt",
+  :name "asm41.patch",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
      "This patch applies cleanly, but fails to compile with
@@ -274,12 +274,8 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1030",
-  :name "improved-int-char-casting-error-messages.diff",
+  :name "string-coerce-to-int.diff",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1036",
-  :name "clj-1036-hasheq-for-biginteger-patch-v4.txt",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1044",
   :name "001-enable-factory-ctor-inside-deftype.diff",
@@ -382,7 +378,7 @@
       new tests",
   }
  {:ticket "CLJ-1096",
-  :name "desctructure-keyword-lookup.diff",
+  :name "inline-get-keyword.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1097",
@@ -495,10 +491,6 @@
   :name "001-CLJ-1180.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1182",
-  :name "fix-CLJ-1182.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1184",
   :name "CLJ-1184-p4.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -527,10 +519,6 @@
   :name "no-getComponentType--v001.patch",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1204",
-  :name "clj-1204-make-hash-consistent-with-equal-for-bigintegers-v1.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1209",
   :name "clj-test-print-ex-data.diff",
   :patch-category "Debug/tooling enhancement",
@@ -556,7 +544,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1225",
-  :name "clj-1225-fix-division-overflow-patch-v1.txt",
+  :name "clj-1225-2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1226",
@@ -612,5 +600,21 @@
  {:ticket "CLJ-1251",
   :name "update.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1252",
+  :name "numkeyword.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1253",
+  :name "clj-1253-1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1254",
+  :name "clj-1254-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1257",
+  :name "clj-1257.diff",
+  :patch-category "Better error reporting",
   }
  )
