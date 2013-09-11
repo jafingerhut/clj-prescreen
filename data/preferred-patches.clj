@@ -297,6 +297,10 @@
   :name "001-simplify-fj-importing.patch",
   :patch-category "Language enhancement, reducers",
   }
+ {:ticket "CLJ-1056",
+  :name "clj-1056-1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1059",
   :name "001-clj-1059-make-persistentqueue-implement-list.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -339,7 +343,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1080",
-  :name "clj-1080-eliminate-many-reflection-warnings-patch-v3.txt",
+  :name "clj-1080-v4.txt",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
@@ -446,6 +450,10 @@
  {:ticket "CLJ-1128",
   :name "0002-Improve-merge-with.patch",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1130",
+  :name "clj-1130-v1.txt",
+  :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1134",
   :name "clj-1134-star-directive-in-cl-format.txt",
@@ -563,6 +571,10 @@
   :name "clj-1233-with-test-v2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1234",
+  :name "clj-1234-v1.txt",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1237",
   :name "CLJ-1237c.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -614,7 +626,11 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1257",
-  :name "clj-1257.diff",
+  :name "clj-1257-2.diff",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1259",
+  :name "clj-1259-1.txt",
+  :patch-category "Performance enhancement",
   }
  )
