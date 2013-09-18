@@ -112,6 +112,12 @@
  :emails #{ "brobronsa@gmail.com" }
  :contributor true
  }
+{:display-name "Bruce Adams"
+ :aliases #{ }
+ :usernames #{ "bruceadams" }
+ :emails #{ "bruce.adams@acm.org" }
+ :contributor true
+ }
 {:display-name "Ben Smith-Mannschott"
  :aliases #{ }
  :usernames #{ "bsmith.occs@gmail.com" }
