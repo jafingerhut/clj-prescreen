@@ -562,14 +562,15 @@ Check it to see if it was created incorrectly."})
   (let [p (System/getProperties)
         orig-s s
         s (if (and (= "Oracle Corporation" (get p "java.vendor"))
-                   (.startsWith ^String (get p "java.version") "1.7.0"))
+                   (or (.startsWith ^String (get p "java.version") "1.7.0")
+                       (.startsWith ^String (get p "java.version") "1.8.0")))
             (-> s
                 (str/replace #"(?xms)
 (^ compile-java: \s* $
  .*)
 ^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
 (.*)
-^ \s* \[javac\]\ 1\ warning \s* $
+(?: ^ \s* \[javac\]\ 1\ warning \s* $ )?
 (.*
  ^ compile-clojure: \s* $)"
                              "$1$2$3")
@@ -578,7 +579,7 @@ Check it to see if it was created incorrectly."})
  .*)
 ^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
 (.*)
-^ \s* \[javac\]\ 1\ warning \s* $
+(?: ^ \s* \[javac\]\ 1\ warning \s* $ )?
 (.*
  ^ test: \s* $)"
                              "$1$2$3"))
