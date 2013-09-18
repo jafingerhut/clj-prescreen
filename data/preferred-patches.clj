@@ -301,6 +301,10 @@
   :name "clj-1056-1.txt",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1058",
+  :name "patch-for-clj-1058.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1059",
   :name "001-clj-1059-make-persistentqueue-implement-list.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -327,7 +331,7 @@
       CLJ-873 is applied first.",
   }
  {:ticket "CLJ-1076",
-  :name "clj-1076-fix-tests-on-windows-patch-v2.txt",
+  :name "clj-1076-v3.txt",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1077",
@@ -632,5 +636,13 @@
  {:ticket "CLJ-1259",
   :name "clj-1259-1.txt",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1261",
+  :name "clj-1261-v1.txt",
+  :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1264",
+  :name "clj-1264-1.txt",
+  :patch-category "Code cleanup",
   }
  )
