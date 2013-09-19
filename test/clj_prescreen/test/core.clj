@@ -244,41 +244,54 @@ Total time: 5 seconds
 ")
 
 
+;; These should cover the variety of cases in the implementation of
+;; check-ant-output.
+
+(def interesting-props-to-test [
+                                {"java.vendor" "Oracle Corporation",
+                                 "java.version" "1.6.0"}
+                                {"java.vendor" "Oracle Corporation",
+                                 "java.version" "1.7.0"}
+                                {"java.vendor" "Oracle Corporation",
+                                 "java.version" "1.8.0"}
+                                ])
+
 
 (deftest test-check-ant-output
-  (is (= [:ok "Success"]
-         (let [{:keys [ant-status ant-msg] :as p}
-               (check-ant-output ant-output-good)]
-           [ant-status (and ant-msg (re-find #"Success" ant-msg))])))
-;;  (is (let [{:keys [ant-status ant-msg] :as p}
-;;            (check-ant-output ant-output-good)]
-;;        (and (= ant-status :ok)
-;;             (re-find #"Success" ant-msg))))
-  (is (= [:fail "Reflection warning"]
-         (let [{:keys [ant-status ant-msg] :as p}
-               (check-ant-output ant-output-warning-but-no-errors)]
-           [ant-status (and ant-msg (re-find #"Reflection warning" ant-msg))])))
-;;  (is (let [{:keys [ant-status ant-msg] :as p}
-;;            (check-ant-output ant-output-warning-but-no-errors)]
-;;        (and (= ant-status :fail)
-;;             (re-find #"Reflection warning" ant-msg))))
-  (is (= [:fail "1 failures, 0 errors"]
-         (let [{:keys [ant-status ant-msg] :as p}
-               (check-ant-output ant-output-test-failure)]
-           [ant-status (and ant-msg (re-find #"1 failures, 0 errors" ant-msg))])))
-;;  (is (let [{:keys [ant-status ant-msg] :as p}
-;;               (check-ant-output ant-output-test-failure)]
-;;        (and (= ant-status :fail)
-;;             (re-find #"test: 1 failure, 0 errors" ant-msg))))
-  (is (= [:fail "Compile failed"]
-         (let [{:keys [ant-status ant-msg] :as p}
-               (check-ant-output ant-output-compilation-error)]
-           [ant-status (and ant-msg (re-find #"(?i)Compile failed" ant-msg))])))
-;;  (is (let [{:keys [ant-status ant-msg] :as p}
-;;            (check-ant-output ant-output-compilation-error)]
-;;        (and (= ant-status :fail)
-;;             (re-find #"compile-java: 2 errors" ant-msg))))
-  )
+  (doseq [props interesting-props-to-test]
+    (is (= [:ok "Success"]
+           (let [{:keys [ant-status ant-msg] :as p}
+                 (check-ant-output ant-output-good props)]
+             [ant-status (and ant-msg (re-find #"Success" ant-msg))])))
+;;    (is (let [{:keys [ant-status ant-msg] :as p}
+;;              (check-ant-output ant-output-good props)]
+;;          (and (= ant-status :ok)
+;;               (re-find #"Success" ant-msg))))
+    (is (= [:fail "Reflection warning"]
+           (let [{:keys [ant-status ant-msg] :as p}
+                 (check-ant-output ant-output-warning-but-no-errors props)]
+             [ant-status (and ant-msg (re-find #"Reflection warning" ant-msg))])))
+;;    (is (let [{:keys [ant-status ant-msg] :as p}
+;;              (check-ant-output ant-output-warning-but-no-errors props)]
+;;          (and (= ant-status :fail)
+;;               (re-find #"Reflection warning" ant-msg))))
+    (is (= [:fail "1 failures, 0 errors"]
+           (let [{:keys [ant-status ant-msg] :as p}
+                 (check-ant-output ant-output-test-failure props)]
+             [ant-status (and ant-msg (re-find #"1 failures, 0 errors" ant-msg))])))
+;;    (is (let [{:keys [ant-status ant-msg] :as p}
+;;              (check-ant-output ant-output-test-failure props)]
+;;          (and (= ant-status :fail)
+;;               (re-find #"test: 1 failure, 0 errors" ant-msg))))
+    (is (= [:fail "Compile failed"]
+           (let [{:keys [ant-status ant-msg] :as p}
+                 (check-ant-output ant-output-compilation-error props)]
+             [ant-status (and ant-msg (re-find #"(?i)Compile failed" ant-msg))])))
+;;    (is (let [{:keys [ant-status ant-msg] :as p}
+;;              (check-ant-output ant-output-compilation-error props)]
+;;          (and (= ant-status :fail)
+;;               (re-find #"compile-java: 2 errors" ant-msg))))
+    ))
 
 
 (def test-patch-content-1 "From 7459a805b37c1e24cc024e4bd34410b4e62f714b Mon Sep 17 00:00:00 2001

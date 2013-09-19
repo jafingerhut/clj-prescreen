@@ -558,32 +558,49 @@ Check it to see if it was created incorrectly."})
 ;; as little as possible, and only for those OS/JDK combos where we
 ;; have problems we don't yet know how to work around otherwise.
 
-(defn remove-acceptable-ant-output-problems [s]
-  (let [p (System/getProperties)
+(defn remove-acceptable-ant-output-problems [s system-props]
+  (let [p system-props
         orig-s s
-        s (if (and (= "Oracle Corporation" (get p "java.vendor"))
-                   (or (.startsWith ^String (get p "java.version") "1.7.0")
-                       (.startsWith ^String (get p "java.version") "1.8.0")))
-            (-> s
-                (str/replace #"(?xms)
+        s (cond (and (= "Oracle Corporation" (get p "java.vendor"))
+                     (.startsWith ^String (get p "java.version") "1.7.0"))
+                (-> s
+                    (str/replace #"(?xms)
 (^ compile-java: \s* $
  .*)
 ^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
 (.*)
-(?: ^ \s* \[javac\]\ 1\ warning \s* $ )?
+^ \s* \[javac\]\ 1\ warning \s* $
 (.*
  ^ compile-clojure: \s* $)"
-                             "$1$2$3")
-                (str/replace #"(?xms)
+                                 "$1$2$3")
+                    (str/replace #"(?xms)
 (^ compile-tests: \s* $
  .*)
 ^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
 (.*)
-(?: ^ \s* \[javac\]\ 1\ warning \s* $ )?
+^ \s* \[javac\]\ 1\ warning \s* $
 (.*
  ^ test: \s* $)"
-                             "$1$2$3"))
-            s)]
+                                 "$1$2$3"))
+
+                (and (= "Oracle Corporation" (get p "java.vendor"))
+                     (.startsWith ^String (get p "java.version") "1.8.0"))
+                (-> s
+                    (str/replace #"(?xms)
+(^ compile-java: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+(.*
+ ^ compile-clojure: \s* $)"
+                                 "$1$2")
+                    (str/replace #"(?xms)
+(^ compile-tests: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+(.*
+ ^ test: \s* $)"
+                                 "$1$2"))
+                :else s)]
     (comment
       (printf "andy-debug: remove-acceptable-ant-output-problems ")
       (if (= orig-s s)
@@ -593,8 +610,8 @@ Check it to see if it was created incorrectly."})
     s))
 
 
-(defn check-ant-output [s]
-  (condp re-find (remove-acceptable-ant-output-problems s)
+(defn check-ant-output [s system-props]
+  (condp re-find (remove-acceptable-ant-output-problems s system-props)
     #"(?im)^.*compile failed.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
     #"(?im)^.*[1-9]\d* failures, 0 errors.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
     #"(?im)^.*0 failures, [1-9]\d* errors.*$" :>> (fn [m] {:ant-status :fail, :ant-msg m})
@@ -650,7 +667,8 @@ Check it to see if it was created incorrectly."})
 (defn build-and-test-clojure [p]
   (try-cmd :throw-on-error "ant" "clean")
   (let [{:keys [exit out err]} (try-cmd "ant")
-        p (merge p (check-ant-output out))]
+        system-props (System/getProperties)
+        p (merge p (check-ant-output out system-props))]
     (cond
      ;; We've already found a problem just looking at the output, so
      ;; return it.  More specific error messages are good.
