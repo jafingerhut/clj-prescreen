@@ -12,7 +12,7 @@
             [clojure.java.shell :as sh]
             [clojure.pprint :as p]
             [clj-http.client :as http]
-            [fs.core :as fs]))
+            [me.raynes.fs :as fs]))
 
 (set! *warn-on-reflection* true)
 
