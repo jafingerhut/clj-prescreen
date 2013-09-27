@@ -645,4 +645,8 @@
   :name "clj-1264-1.txt",
   :patch-category "Code cleanup",
   }
+ {:ticket "CLJ-1266",
+  :name "floats.diff",
+  :patch-category "Language/library enhancement",
+  }
  )
