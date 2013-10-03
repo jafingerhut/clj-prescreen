@@ -436,7 +436,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1118",
-  :name "clj-1118-make-double-equals-true-for-more-bigdecimals-patch-v4.txt",
+  :name "clj-1118-v6.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1120",
@@ -522,10 +522,6 @@
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1197",
-  :name "foldable-seq.diff",
-  :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1200",
   :name "no-getComponentType--v001.patch",
@@ -648,5 +644,13 @@
  {:ticket "CLJ-1266",
   :name "floats.diff",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1268",
+  :name "clj-1268.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1275",
+  :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
