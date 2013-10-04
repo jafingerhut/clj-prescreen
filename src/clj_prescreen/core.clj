@@ -567,7 +567,7 @@ Check it to see if it was created incorrectly."})
                     (str/replace #"(?xms)
 (^ compile-java: \s* $
  .*)
-^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.[56] \s* $
 (.*)
 ^ \s* \[javac\]\ 1\ warning \s* $
 (.*
@@ -589,7 +589,7 @@ Check it to see if it was created incorrectly."})
                     (str/replace #"(?xms)
 (^ compile-java: \s* $
  .*)
-^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.5 \s* $
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.[56] \s* $
 (.*
  ^ compile-clojure: \s* $)"
                                  "$1$2")
