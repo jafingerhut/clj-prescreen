@@ -110,7 +110,8 @@
   :name "asm41.patch",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
-     "This patch applies cleanly, but fails to compile with
+     "Patch asm41.patch is more up to date of the two.  Patch
+      asm-split.txt applies cleanly, but fails to compile with
       './antsetup.sh ; ant' due to some extra package dependencies
       added by the patch.  It did compile and test successfully as of
       Mar 14, 2013 using the command 'mvn package'.",
