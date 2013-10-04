@@ -196,7 +196,7 @@
  :emails #{ "cstejerean@gmail.com" "cosmin@offbytwo.com" }
  :contributor true
  }
-{:display-name "Alex Coventry "
+{:display-name "Alex Coventry"
  :aliases #{ }
  :usernames #{ "coventry" }
  :emails #{ "coventry@gmail.com" }
