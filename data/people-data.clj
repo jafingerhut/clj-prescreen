@@ -27,7 +27,7 @@
  :aliases #{ "puredanger" }
  :usernames #{ "alexmiller" }
  :emails #{ "alexdmiller@yahoo.com" "alex.miller@thinkrelevance.com"
-            "alex@puredanger.com" }
+            "alex@puredanger.com" "alex.miller@cognitect.com" }
  :contributor true
  }
 {:display-name "Alex Ott"
@@ -663,6 +663,12 @@
  :aliases #{ "Paul Bauer" "Paul M Bauer" }
  :usernames #{ "pmbauer" }
  :emails #{ "paul.michael.bauer@gmail.com" }
+ :contributor true
+ }
+{:display-name "Paavo Parkkinen"
+ :aliases #{ }
+ :usernames #{ "pparkkin" }
+ :emails #{ "pparkkin@gmail.com" }
  :contributor true
  }
 {:display-name "Philip Potter"
