@@ -72,6 +72,10 @@
       clojure.test.generative were moved to clojure.core,
       test.generative could use that one.",
   }
+ {:ticket "CLJ-420",
+  :name "CLJ-420.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
  {:ticket "CLJ-428",
   :name "clj-428-change-Sorted-seqFrom-to-take-inclusive-patch-v3.txt",
   :patch-category "Language/library enhancement",
@@ -107,14 +111,14 @@
       706-* patches and then they pass.",
   }
  {:ticket "CLJ-713",
-  :name "asm41.patch",
+  :name "asm41ws.patch",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
-     "Patch asm41.patch is more up to date of the two.  Patch
-      asm-split.txt applies cleanly, but fails to compile with
-      './antsetup.sh ; ant' due to some extra package dependencies
-      added by the patch.  It did compile and test successfully as of
-      Mar 14, 2013 using the command 'mvn package'.",
+     "Patch asm41ws.patch is most up to date.  Patch asm-split.txt
+      applies cleanly, but fails to compile with './antsetup.sh ; ant'
+      due to some extra package dependencies added by the patch.  It
+      did compile and test successfully as of Mar 14, 2013 using the
+      command 'mvn package'.",
   }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
@@ -457,7 +461,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1130",
-  :name "clj-1130-v1.txt",
+  :name "clj-1130-v2.txt",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1134",
@@ -525,7 +529,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1200",
-  :name "no-getComponentType--v001.patch",
+  :name "no-getComponentType--v002.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1209",
