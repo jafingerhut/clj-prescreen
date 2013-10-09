@@ -1404,14 +1404,15 @@ contributor, and it does not build and pass tests.
 
 
 (defn sort-key-weighted-vote-then-num-votes [[ticket vote-info]]
-  [(- (or (:weighted-vote vote-info) 0))
-   (- (or (:num-votes vote-info) 0))
+  [(- (:weighted-vote vote-info 0))
+   (- (:num-votes vote-info 0))
+   (derived-ticket-state vote-info)
    (extract-dec-num ticket)])
 
 
 (defn sort-key-num-votes-then-weighted-vote [[ticket vote-info]]
-  [(- (or (:num-votes vote-info) 0))
-   (- (or (:weighted-vote vote-info) 0))
+  [(- (:num-votes vote-info 0))
+   (- (:weighted-vote vote-info 0))
    (extract-dec-num ticket)])
 
 
@@ -1420,8 +1421,8 @@ contributor, and it does not build and pass tests.
     ;(pprint info)
     (doseq [col col-order]
       (case col
-        :num-votes (printf " %3d" (:num-votes info))
-        :weighted-vote (printf " %7.2f" (double (:weighted-vote info)))
+        :num-votes (printf " %3d" (:num-votes info 0))
+        :weighted-vote (printf " %7.2f" (double (:weighted-vote info 0)))
         :ticket (printf " %-8s" ticket)
         :title (printf " %s" (:title info))
         :type (printf " %s" (subs (:type info) 0 1))
@@ -1430,15 +1431,16 @@ contributor, and it does not build and pass tests.
         :derivedState (printf " %-12s" (trunc-str (derived-ticket-state info) 12))
         "Patch" (printf " %-11s" (trunc-str (or (get info "Patch") "--") 11))
         :voter-details
-        (printf "\n             %s"
-                (str/join "\n             "
-                          (map #(format "%s (%s)"
-                                        (:display-name %)
-                                        (let [nv (:user-num-votes %)]
-                                          (if (and (number? nv) (> nv 1))
-                                            (str "1/" nv)
-                                            nv)))
-                               (:vote-list info))))))
+        (if (seq (:vote-list info))
+          (printf "\n             %s"
+                  (str/join "\n             "
+                            (map #(format "%s (%s)"
+                                          (:display-name %)
+                                          (let [nv (:user-num-votes %)]
+                                            (if (and (number? nv) (> nv 1))
+                                              (str "1/" nv)
+                                              nv)))
+                                 (:vote-list info)))))))
     (printf "\n")))
 
 
@@ -1485,8 +1487,8 @@ contributor, and it does not build and pass tests.
       (doseq [col col-order]
         (printf "        <td style=\"vertical-align: top;\">")
         (case col
-          :weighted-vote (printf "%.2f" (double (:weighted-vote info)))
-          :num-votes (printf "%d" (:num-votes info))
+          :weighted-vote (printf "%.2f" (double (:weighted-vote info 0)))
+          :num-votes (printf "%d" (:num-votes info 0))
           :type (printf "%s" (subs (:type info) 0 1))
           :approval (printf "%s" (or (get info "Approval") "--"))
           :fixVersion (printf "%s" (fixVersion-to-string (:fixVersion info)))
@@ -1526,7 +1528,10 @@ contributor, and it does not build and pass tests.
 Date: %s
  
 Open %s tickets with at least one vote, sorted in descending order of
-their \"weighted vote\".
+their \"weighted vote\".  At the end of each list are tickets with no
+votes, but they have been at least Triaged.  For the CLJ project,
+Triaged means that at least one Clojure screener thinks the ticket
+describes a real issue.
 
 Suppose someone has currently voted on N open tickets.  Then their
 vote counts as 1/N for each of those tickets.  Thus voting on all
@@ -1565,6 +1570,11 @@ Date: %s<br>
 
 Open %s tickets with at least one vote, sorted in descending order of
 their <span style=\"font-style: italic;\">weighted vote</span>.&nbsp;
+At the end of each list are tickets with no votes, but they have been
+at least Triaged.  For the CLJ project, Triaged means that at least
+one Clojure screener thinks the ticket describes a real issue.
+
+<p>
 Suppose someone has currently voted on <span style=\"font-style:
 italic;\">N</span> open tickets.&nbsp; Then their vote counts as <span
 style=\"font-style: italic;\">1/N</span> for each of those
@@ -1604,8 +1614,8 @@ Project %s tickets
 (defn print-top-ticket-body!
   [ticket-info format]
   (let [tickets-with-votes (->> ticket-info
-                                (filter-vals #(and (:weighted-vote %)
-                                                   (> (:weighted-vote %) 0)))
+                                (filter-vals #(or (> (:weighted-vote % 0) 0)
+                                                  (not= "Open" (derived-ticket-state %))))
                                 (sort-by sort-key-weighted-vote-then-num-votes))
         tickets-by-type (group-by (fn [[ticket info]] (:type info))
                                   tickets-with-votes)]
@@ -2180,8 +2190,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; in JIRA.
 
 (def open-tickets-1-vote-or-more (filter-vals
-                                  #(and (:weighted-vote %)
-                                        (> (:weighted-vote %) 0))
+                                  #(> (:weighted-vote % 0) 0)
                                   open-tickets-info))
 
 ;; Print sequence of tickets in descending order of number of votes,
