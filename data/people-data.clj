@@ -666,7 +666,7 @@
  :contributor true
  }
 {:display-name "Paavo Parkkinen"
- :aliases #{ }
+ :aliases #{ "Paavo" }
  :usernames #{ "pparkkin" }
  :emails #{ "pparkkin@gmail.com" }
  :contributor true
