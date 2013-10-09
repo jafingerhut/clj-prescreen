@@ -2040,13 +2040,13 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; data/people-data.clj and want to redo the author evaluations only,
 ;; do this:
 (doseq [patch-type patch-type-list]
-  (let [fname1 (str cur-eval-dir patch-type "-downloaded-only.txt")
-        fname-sum (str cur-eval-dir patch-type "-author-info.txt")
+  (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         as1 (read-safely fname1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as1))]
     (spit-pretty fname1 as1)
-    (spit fname-sum (with-out-str (eval-patches-summary as1)))))
+    (spit (str cur-eval-dir patch-type "-patch-summary.txt")
+          (with-out-str (eval-patches-summary as1)))))
 
 ;;;; Note 9 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After doing the do-eval-check-ca! above, and hand-edited a file
