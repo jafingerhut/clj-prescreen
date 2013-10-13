@@ -395,6 +395,12 @@
  :emails #{ "redchin@gmail.com" }
  :contributor true
  }
+{:display-name "Howard Lewis Ship"
+ :aliases #{ "\"Howard M. Lewis Ship\"" }
+ :usernames #{ "hlewisship" }
+ :emails #{ "hlship@gmail.com" }
+ :contributor true
+ }
 {:display-name "Hugo Duncan"
  :aliases #{ }
  :usernames #{ "hugoduncan" }
@@ -591,6 +597,12 @@
  :aliases #{ }
  :usernames #{ "michael-drogalis" }
  :emails #{ "madrush131@gmail.com" "mjd3089@rit.edu" }
+ :contributor true
+ }
+{:display-name "Michael O. Church"
+ :aliases #{ "\"Michael O. Church\"" }
+ :usernames #{ "michaelochurch" }
+ :emails #{ "michael.o.church@gmail.com" }
  :contributor true
  }
 {:display-name "Michal Marczyk"
