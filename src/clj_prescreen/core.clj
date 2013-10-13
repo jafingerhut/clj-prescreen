@@ -2039,6 +2039,18 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;     diff'ing against a previous set of downloaded attachments.
 (dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree)
 
+;; After doing the dl-patches-check-ca! above, if you edit
+;; data/people-data.clj and want to redo the author evaluations only,
+;; do this:
+(doseq [patch-type patch-type-list]
+  (let [fname1 (str cur-eval-dir patch-type "-downloaded-only.txt")
+        as1 (read-safely fname1)
+        as1 (let [people-info (read-safely "data/people-data.clj")]
+              (map #(add-author-info % ticket-dir people-info) as1))]
+    (spit-pretty fname1 as1)
+    (spit (str cur-eval-dir patch-type "-author-info.txt")
+          (with-out-str (eval-patches-summary as1)))))
+
 ;;;; End of Note 7 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;; Note 8 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2046,7 +2058,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; combo.
 (do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list ppat-fname)
 
-;; After doing the dl-patches-check-ca! above, if you edit
+;; After doing the do-eval-check-ca! above, if you edit
 ;; data/people-data.clj and want to redo the author evaluations only,
 ;; do this:
 (doseq [patch-type patch-type-list]
