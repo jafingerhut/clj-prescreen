@@ -173,7 +173,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-865",
-  :name "clj-865-updated-v2-patch.txt",
+  :name "2013-10-11_CLJ-865_Fix-With-Tests.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-866",
@@ -352,7 +352,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1080",
-  :name "clj-1080-v4.txt",
+  :name "clj-1080-v5.txt",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
@@ -657,5 +657,13 @@
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1277",
+  :name "clj-1277-1.txt",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1278",
+  :name "CLJ-1278-2.patch",
+  :patch-category "Debug/tooling enhancement",
   }
  )
