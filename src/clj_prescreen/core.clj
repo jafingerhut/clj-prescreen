@@ -1543,13 +1543,12 @@ project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
 
 Each ticket is listed with:
 
-<weighted vote>  <vote count>  <Approval> <Fix Version> <State>   [<project>-<n>] <summary line>
+<weighted vote>  <vote count>  <State>   [<project>-<n>] <summary line>
              voter #1 (weight that voter #1 contributes)
              voter #2 (weight that voter #2 contributes)
              ...
 
-where Approval is one of \"--\" (blank), Vetted, Screened, Incomplete,
-etc. and State is one of the states in the JIRA flow diagram at
+where State is one of the states in the JIRA flow diagram at
 
     http://dev.clojure.org/display/community/JIRA+workflow
 "
@@ -1626,16 +1625,14 @@ Project %s tickets
           (printf "\n========================================\n%s\n\n"
                   ticket-type)
           (print-tickets (get tickets-by-type ticket-type)
-                         [:weighted-vote :num-votes :approval
-                          :fixVersion :derivedState
+                         [:weighted-vote :num-votes :derivedState
                           ;; "Patch"
                           :title :voter-details]))
         :html
         (do
           (printf "<h2>%s</h2>\n\n" ticket-type)
           (print-tickets-html-table (get tickets-by-type ticket-type)
-                                    [:weighted-vote :num-votes :approval
-                                     :fixVersion :derivedState
+                                    [:weighted-vote :num-votes :derivedState
                                      ;; "Patch"
                                      :ticket-with-link
                                      :title :voter-details]))))))
