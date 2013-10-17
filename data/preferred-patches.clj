@@ -58,7 +58,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-394",
-  :name "clj-394-add-predicates-for-type-and-record.diff",
+  :name "clj-394-add-predicates-for-type-and-record-2.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-415",
@@ -145,7 +145,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-835",
-  :name "0001-CLJ-835-Refine-doc-string-for-defmulti-hierarchy-opt.patch",
+  :name "0001-CLJ-835-ReRefine-doc-string-for-defmulti-removing-examples-and-solidifying-language.patch",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-840",
@@ -654,6 +654,10 @@
   :name "clj-1268.patch",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1270",
+  :name "clj-1270-1.txt",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -664,6 +668,10 @@
   }
  {:ticket "CLJ-1278",
   :name "CLJ-1278-2.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1279",
+  :name "0001-Fix-macroexpand1-s-handling-of-ArityException.patch",
   :patch-category "Debug/tooling enhancement",
   }
  )
