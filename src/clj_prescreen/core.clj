@@ -896,7 +896,7 @@ Check it to see if it was created incorrectly."})
             ;; otherwise :preferred-patch must be :yes
             (= (:patch-status p) :ok) "pp-ok"
             ;; otherwise something is not perfect with the patch
-            (#{"Screenable" "Incomplete" "Screened" "Ok"} derived-state)
+            (#{"Screenable" "Screened" "Ok"} derived-state)
             "fixnow"
             (#{"Vetted"} derived-state) "fixsoon"
             :else "fixlater"))
