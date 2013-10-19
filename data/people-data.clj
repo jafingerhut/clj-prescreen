@@ -377,6 +377,12 @@
  :emails #{ "gshayban@gmail.com" }
  :contributor true
  }
+{:display-name "Guillermo Winkler"
+ :aliases #{ }
+ :usernames #{ "guilespi" }
+ :emails #{ "guillermo.winkler@gmail.com" }
+ :contributor true
+ }
 {:display-name "Timothy Baldridge"
  :aliases #{ }
  :usernames #{ "halgari" }
