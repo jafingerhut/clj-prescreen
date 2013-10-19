@@ -230,10 +230,6 @@
   :name "clojure--bean-support-for-private-implementation-classes-v3.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-980",
-  :name "extended-type-doc-fix-v2.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-991",
   :name "reducer-partition-by4.diff",
   :patch-category "Language enhancement, reducers",
@@ -303,11 +299,11 @@
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1056",
-  :name "clj-1056-1.txt",
+  :name "clj-1056-2.txt",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1058",
-  :name "patch-for-clj-1058.diff",
+  :name "patch-with-tests-clj-1058.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1059",
@@ -638,6 +634,10 @@
   :name "clj-1259-1.txt",
   :patch-category "Performance enhancement",
   }
+ {:ticket "CLJ-1260",
+  :name "clj-1260-fixws.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1261",
   :name "clj-1261-v1.txt",
   :patch-category "Better error reporting",
@@ -654,10 +654,6 @@
   :name "clj-1268.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1270",
-  :name "clj-1270-1.txt",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -672,6 +668,6 @@
   }
  {:ticket "CLJ-1279",
   :name "0001-Fix-macroexpand1-s-handling-of-ArityException.patch",
-  :patch-category "Debug/tooling enhancement",
+  :patch-category "Better error reporting",
   }
  )
