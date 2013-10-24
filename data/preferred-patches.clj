@@ -183,6 +183,10 @@
      "See also patch CLJ-866-test.patch, which contains tests for this
       patch.",
   }
+ {:ticket "CLJ-888",
+  :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-935",
   :name "clj935-2.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -469,7 +473,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1148",
-  :name "0001-new-defonce-hotness.patch",
+  :name "defonce_fixes.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1151",
@@ -519,6 +523,10 @@
  {:ticket "CLJ-1189",
   :name "CLJ-1189-p1.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1190",
+  :name "clj-1190-2.diff",
+  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
