@@ -4,11 +4,11 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-99",
-  :name "clj-99-min-key-max-key-performance-v1.txt",
+  :name "clj-99-v1.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-107",
-  :name "clj-107-add-bit-count-v1.txt",
+  :name "clj-107-v1.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-124",
@@ -34,7 +34,7 @@
       could be put at a link that could be added to the doc string."
   }
  {:ticket "CLJ-200",
-  :name "clj-200-cond-let-clauses-fixed-test-v2-patch.txt",
+  :name "clj-200-cond-let-clauses-fixed-test-v2.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-248",
@@ -73,7 +73,7 @@
       test.generative could use that one.",
   }
  {:ticket "CLJ-420",
-  :name "CLJ-420.patch",
+  :name "CLJ-420-3.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-428",
@@ -89,7 +89,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-669",
-  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v3.txt",
+  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v3.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-700",
@@ -188,11 +188,11 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-937",
-  :name "clj-937-cl-format-coerces-ratios-patch2.txt",
+  :name "clj-937-cl-format-coerces-ratios-patch2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-939",
-  :name "clj-939-report-load-exceptions-with-file-and-line-patch-v3.txt",
+  :name "clj-939-report-load-exceptions-with-file-and-line-patch-v3.diff",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-944",
@@ -203,7 +203,7 @@
       why it fails some tests, which are fixable.",
   }
  {:ticket "CLJ-949",
-  :name "clj949-patch-v2.txt",
+  :name "clj949-patch-v2.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-957",
@@ -299,7 +299,7 @@
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1056",
-  :name "clj-1056-2.txt",
+  :name "clj-1056-2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1058",
@@ -352,11 +352,11 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
-  :name "clj-1082-patch-v2.txt",
+  :name "clj-1082-patch-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1083",
-  :name "clj-1083-better-throw-arity-messages-patch-v6.txt",
+  :name "clj-1083-better-throw-arity-messages-patch-v6.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1087",
@@ -368,7 +368,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1090",
-  :name "var-clear-locals-patch-v2.txt",
+  :name "var-clear-locals-patch-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1093",
@@ -395,7 +395,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1102",
-  :name "clj-1102-improve-empty-stack-trace-handling-v2.txt",
+  :name "clj-1102-improve-empty-stack-trace-handling-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
@@ -437,7 +437,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1118",
-  :name "clj-1118-v6.txt",
+  :name "clj-1118-v7.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1120",
@@ -457,7 +457,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1130",
-  :name "clj-1130-v2.txt",
+  :name "clj-1130-v2.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1134",
@@ -497,7 +497,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1177",
-  :name "clj-1177-patch-v2.txt",
+  :name "clj-1177-patch-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1180",
@@ -569,11 +569,11 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1233",
-  :name "clj-1233-with-test-v2.txt",
+  :name "clj-1233-with-test-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1234",
-  :name "clj-1234-v1.txt",
+  :name "clj-1234-v1.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1237",
@@ -643,7 +643,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1264",
-  :name "clj-1264-1.txt",
+  :name "clj-1264-1.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1266",
