@@ -889,17 +889,36 @@ Check it to see if it was created incorrectly."})
     "--"))
 
 
+;; Rich Hickey prefers patch file names ending in ".diff" or ".patch",
+;; so that they come up with the desired mode in various text editors
+;; that have special modes for viewing diff output.
+
+(defn patch-file-name-ok? [fname]
+  (or (re-find #"\.diff$" fname)
+      (re-find #"\.patch$" fname)))
+
+
 (defn preferred-patch-summary-status [p]
   (if-let [preferred-patch (:preferred-patch p)]
-    (let [derived-state (derived-ticket-state p)]
+    (let [derived-state (derived-ticket-state p)
+          patch-status-ok? (= (:patch-status p) :ok)
+          name-ok? (patch-file-name-ok? (:name p))]
       (cond (= preferred-patch :no) "notme"
             ;; otherwise :preferred-patch must be :yes
-            (= (:patch-status p) :ok) "pp-ok"
+            (and name-ok? patch-status-ok?) "pp-ok"
             ;; otherwise something is not perfect with the patch
             (#{"Screenable" "Screened" "Ok"} derived-state)
-            "fixnow"
-            (#{"Vetted"} derived-state) "fixsoon"
-            :else "fixlater"))
+            (if patch-status-ok?
+              "rename"
+              "fixnow")
+            (#{"Vetted"} derived-state)
+            (if patch-status-ok?
+              "rensoon"
+              "fixsoon")
+            :else
+            (if patch-status-ok?
+              "renlater"
+              "fixlater")))
     ;; In this case there is no preferred patch for the ticket
     ;; specified at all.  Make this visually distinct from
     ;; :preferred-patch :no in the report.
@@ -2037,11 +2056,15 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree)
 
 ;; After doing the dl-patches-check-ca! above, if you edit
-;; data/people-data.clj and want to redo the author evaluations only,
-;; do this:
+;; data/people-data.clj or preferred-patches.clj and want to redo
+;; [patch-type]-author-info.txt report, do this:
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-downloaded-only.txt")
         as1 (read-safely fname1)
+        pref-pats (->> (read-safely ppat-fname)
+                       (group-by :ticket)
+                       (map-vals first))
+        as1 (map #(add-preferred-patch-info % pref-pats) as1)
         as1 (let [people-info (read-safely "data/people-data.clj")]
               (map #(add-author-info % ticket-dir people-info) as1))]
     (spit-pretty fname1 as1)
