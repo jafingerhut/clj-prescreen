@@ -120,10 +120,6 @@
   :name "protocolerr.diff",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-766",
-  :name "clj766-2.patch",
-  :patch-category "Allow more correct-looking Clojure code to work",
-  }
  {:ticket "CLJ-771",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
@@ -139,10 +135,6 @@
  {:ticket "CLJ-827",
   :name "clj-827-unsigned-bit-shift-right-with-tests.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-835",
-  :name "0001-CLJ-835-ReRefine-doc-string-for-defmulti-removing-examples-and-solidifying-language.patch",
-  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-840",
   :name "clj840-2.diff",
@@ -185,10 +177,6 @@
   }
  {:ticket "CLJ-935",
   :name "clj935-2.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-937",
-  :name "clj-937-cl-format-coerces-ratios-patch2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-939",
@@ -298,10 +286,6 @@
   :name "001-simplify-fj-importing.patch",
   :patch-category "Language enhancement, reducers",
   }
- {:ticket "CLJ-1056",
-  :name "clj-1056-2.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1058",
   :name "patch-with-tests-clj-1058.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -331,10 +315,6 @@
      "Patch only applies cleanly as of May 25 2013 if patch for
       CLJ-873 is applied first.",
   }
- {:ticket "CLJ-1076",
-  :name "clj-1076-v3.txt",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1077",
   :name "thread-bound.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -355,10 +335,6 @@
   :name "clj-1082-patch-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1083",
-  :name "clj-1083-better-throw-arity-messages-patch-v7.diff",
-  :patch-category "Better error reporting",
-  }
  {:ticket "CLJ-1087",
   :name "clj-1087-diff-perf-enhance-patch-v1.txt",
   :patch-category "Performance enhancement",
@@ -366,10 +342,6 @@
  {:ticket "CLJ-1088",
   :name "0001-Add-support-for-protocol-fns-to-repl-source.-CLJ-1088.patch",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1090",
-  :name "var-clear-locals-patch-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1093",
   :name "0001-CLJ-1093-fix-empty-records-literal-v2.patch",
@@ -393,10 +365,6 @@
  {:ticket "CLJ-1097",
   :name "node-seq.diff",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1102",
-  :name "clj-1102-improve-empty-stack-trace-handling-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
   :name "clj-1103-make-conj-assoc-dissoc-handle-args-similarly-v1.txt",
@@ -447,10 +415,6 @@
  {:ticket "CLJ-1122",
   :name "contributing.patch",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1125",
-  :name "threadlocal-removal-tcrawley-2013-06-14.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1128",
   :name "0002-Improve-merge-with.patch",
