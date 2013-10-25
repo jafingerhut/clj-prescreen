@@ -72,10 +72,6 @@
       clojure.test.generative were moved to clojure.core,
       test.generative could use that one.",
   }
- {:ticket "CLJ-420",
-  :name "CLJ-420-3.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-428",
   :name "clj-428-change-Sorted-seqFrom-to-take-inclusive-patch-v3.txt",
   :patch-category "Language/library enhancement",
@@ -111,7 +107,7 @@
       706-* patches and then they pass.",
   }
  {:ticket "CLJ-713",
-  :name "asm41ws.patch",
+  :name "clj-713-2.diff",
   :patch-category "Debug/tooling enhancement",
   :patch-extra-note
      "Patch asm41ws.patch is most up to date.  Patch asm-split.txt
@@ -196,7 +192,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-939",
-  :name "clj-939-report-load-exceptions-with-file-and-line-patch-v3.diff",
+  :name "clj-939-v4.diff",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-944",
@@ -360,7 +356,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1083",
-  :name "clj-1083-better-throw-arity-messages-patch-v6.diff",
+  :name "clj-1083-better-throw-arity-messages-patch-v7.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1087",
@@ -500,16 +496,8 @@
   :name "0001-CLJ-1176-Bind-read-eval-true-in-clojure.repl-source-.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1177",
-  :name "clj-1177-patch-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1180",
   :name "001-CLJ-1180.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1184",
-  :name "CLJ-1184-p4.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1185",
@@ -568,20 +556,8 @@
   :name "0001-fix-CLJ-1226.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1228",
-  :name "clj-1228-fix-multiple-typos-2.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-1229",
   :name "clj-1229-count-overflow-patch-v1.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1233",
-  :name "clj-1233-with-test-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1234",
-  :name "clj-1234-v1.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1237",
@@ -589,7 +565,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1238",
-  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
+  :name "clj-1238-2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1239",
@@ -610,10 +586,6 @@
   :name "0001-fix-for-CLJ-1242-tests.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
- {:ticket "CLJ-1246",
-  :name "clj-1246-fix-type-reflect-exception-patch-v1.txt",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1248",
   :name "Include-type-information-in-reflection-warning-messa.patch",
   :patch-category "Better error reporting",
@@ -621,10 +593,6 @@
  {:ticket "CLJ-1251",
   :name "update.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1252",
-  :name "numkeyword.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1253",
   :name "clj-1253-1.txt",
@@ -658,10 +626,6 @@
   :name "floats.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1268",
-  :name "clj-1268.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -673,9 +637,5 @@
  {:ticket "CLJ-1278",
   :name "CLJ-1278-2.patch",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1279",
-  :name "0001-Fix-macroexpand1-s-handling-of-ArityException.patch",
-  :patch-category "Better error reporting",
   }
  )
