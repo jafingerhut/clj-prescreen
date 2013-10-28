@@ -109,12 +109,6 @@
  {:ticket "CLJ-713",
   :name "clj-713-2.diff",
   :patch-category "Debug/tooling enhancement",
-  :patch-extra-note
-     "Patch asm41ws.patch is most up to date.  Patch asm-split.txt
-      applies cleanly, but fails to compile with './antsetup.sh ; ant'
-      due to some extra package dependencies added by the patch.  It
-      did compile and test successfully as of Mar 14, 2013 using the
-      command 'mvn package'.",
   }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
