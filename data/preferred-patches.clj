@@ -519,7 +519,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1238",
-  :name "clj-1238-2.diff",
+  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1239",
