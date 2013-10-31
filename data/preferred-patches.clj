@@ -442,10 +442,6 @@
   :name "CLJ-1162-p1.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1165",
-  :name "0001-Protocol-interface-method-declarations-don-t-allow-f.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1169",
   :name "0001-CLJ-1169-proposed-patch.patch",
   :patch-category "Debug/tooling enhancement",
@@ -595,5 +591,9 @@
  {:ticket "CLJ-1278",
   :name "CLJ-1278-2.patch",
   :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1285",
+  :name "persistent-assoc-after-collision.diff",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
