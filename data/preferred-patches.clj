@@ -89,7 +89,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-700",
-  :name "clj-700-patch6.txt",
+  :name "clj-700-7.diff",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-703",
@@ -361,7 +361,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-make-conj-assoc-dissoc-handle-args-similarly-v1.txt",
+  :name "clj-1103-2.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
@@ -592,8 +592,16 @@
   :name "CLJ-1278-2.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1285",
-  :name "persistent-assoc-after-collision.diff",
-  :patch-category "Clojure language/library bug fixes",
+ {:ticket "CLJ-1281",
+  :name "alpha.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1287",
+  :name "clj-1287-2.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1293",
+  :name "CLJ-1293-v001.patch",
+  :patch-category "Language/library enhancement",
   }
  )
