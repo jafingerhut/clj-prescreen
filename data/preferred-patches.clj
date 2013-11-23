@@ -58,7 +58,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-394",
-  :name "clj-394-add-predicates-for-type-and-record-2.diff",
+  :name "clj-394-add-predicate-for-record-3.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-415",
@@ -77,16 +77,12 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-457",
-  :name "CLJ-457-2.diff",
+  :name "clj-457-3.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-666",
   :name "0001-Add-Big-support-to-Reflector-Updated.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
-  }
- {:ticket "CLJ-669",
-  :name "clj-669-use-java.nio-in-do-copy-for-files-patch-v3.diff",
-  :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-700",
   :name "clj-700-7.diff",
@@ -126,9 +122,9 @@
   :name "0001-atom-interface.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-827",
-  :name "clj-827-unsigned-bit-shift-right-with-tests.patch",
-  :patch-category "Language/library enhancement",
+ {:ticket "CLJ-825",
+  :name "clj-825-1.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-840",
   :name "clj840-2.diff",
@@ -146,10 +142,6 @@
       subject \"don't presume Integer for LINE and COLUMN, fixes
       round-trip\" was made.",
   }
- {:ticket "CLJ-858",
-  :name "stm-rm-msecs-patch.diff",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-862",
   :name "pmap-chunking-862.diff",
   :patch-category "Performance enhancement",
@@ -157,13 +149,6 @@
  {:ticket "CLJ-865",
   :name "2013-10-11_CLJ-865_Fix-With-Tests.diff",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-866",
-  :name "clj-866-test-vars.patch",
-  :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "See also patch CLJ-866-test.patch, which contains tests for this
-      patch.",
   }
  {:ticket "CLJ-888",
   :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
@@ -173,20 +158,12 @@
   :name "clj935-2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-939",
-  :name "clj-939-v4.diff",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-944",
   :name "0001-Fix-for-CLJ-944.patch",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
      "See comments for another patch 0002-Fix-for-CLJ-944.patch and
       why it fails some tests, which are fixable.",
-  }
- {:ticket "CLJ-949",
-  :name "clj949-patch-v2.diff",
-  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-957",
   :name "clj-957-allow-typehinting-of-method-signatures-in-deftype-patch2.txt",
@@ -361,18 +338,12 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-2.diff",
+  :name "clj-1103-3.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
   :name "clj-1104-doc-unsafety-of-concurrent-with-redefs-v1.txt",
   :patch-category "Doc string fixes only",
-  }
- {:ticket "CLJ-1105",
-  :name "0001-CLJ-1105-Support-records-in-clojure.walk.patch",
-  :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "See also CLJ-1239, which might be preferable to this ticket",
   }
  {:ticket "CLJ-1107",
   :name "clj-1107-throw-on-get-for-unsupported-types-patch-v2.txt",
@@ -398,17 +369,9 @@
   :name "clj-1117.patch",
   :patch-category "Doc string fixes only",
   }
- {:ticket "CLJ-1118",
-  :name "clj-1118-v7.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1120",
   :name "0001-CLJ-1120-ex-message-ex-cause.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1122",
-  :name "contributing.patch",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1128",
   :name "0002-Improve-merge-with.patch",
@@ -494,10 +457,6 @@
   :name "0001-CLJ-1219-make-identical-variadic.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1222",
-  :name "min_value_multiplication.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1224",
   :name "0001-CLJ-1224-cache-hasheq-and-hashCode-for-records.patch",
   :patch-category "Performance enhancement",
@@ -516,10 +475,6 @@
   }
  {:ticket "CLJ-1237",
   :name "CLJ-1237c.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1238",
-  :name "0001-Fix-CLJ-873-for-EdnReader-too.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1239",
@@ -553,7 +508,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1254",
-  :name "clj-1254-v1.txt",
+  :name "clj-1254-2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1257",
@@ -569,12 +524,8 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1261",
-  :name "clj-1261-v1.txt",
+  :name "clj-1261-2.diff",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1264",
-  :name "clj-1264-1.diff",
-  :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1266",
   :name "floats.diff",
@@ -592,10 +543,6 @@
   :name "CLJ-1278-2.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1281",
-  :name "alpha.patch",
-  :patch-category "Doc string fixes only",
-  }
  {:ticket "CLJ-1287",
   :name "clj-1287-2.diff",
   :patch-category "Language/library enhancement",
@@ -603,5 +550,9 @@
  {:ticket "CLJ-1293",
   :name "CLJ-1293-v001.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1295",
+  :name "clj-1295-1.diff",
+  :patch-category "Performance enhancement",
   }
  )
