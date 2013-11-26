@@ -12,6 +12,7 @@
             [clojure.java.shell :as sh]
             [clojure.pprint :as p]
             [clj-http.client :as http]
+            [clj-http.util :as util]
             [me.raynes.fs :as fs]))
 
 (set! *warn-on-reflection* true)
@@ -228,7 +229,7 @@ TBENCH-11"
 (defn url-for-tickets-voted-by-user [username]
   (let [url-part1 "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
         url-part2 "%27&tempMax=1000&field=title"]
-    (str url-part1 username url-part2)))
+    (str url-part1 (util/url-encode username) url-part2)))
 
 
 (defn get-url-to-file!
