@@ -282,9 +282,6 @@
  {:ticket "CLJ-1074",
   :name "clj-1074-read-infinity-and-nan-patch-v2-plus-edn-reader.patch",
   :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "Patch only applies cleanly as of May 25 2013 if patch for
-      CLJ-873 is applied first.",
   }
  {:ticket "CLJ-1077",
   :name "thread-bound.diff",
