@@ -147,7 +147,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-865",
-  :name "2013-10-11_CLJ-865_Fix-With-Tests.diff",
+  :name "clj865.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-888",
@@ -155,7 +155,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-935",
-  :name "clj935-2.patch",
+  :name "clj935-3.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-944",
@@ -176,6 +176,10 @@
  {:ticket "CLJ-970",
   :name "clj-970-extend-implement-parameterized-types-patch2.txt",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-971",
+  :name "clj-971-2.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-976",
   :name "clj-976-queue-literal-eval-and-synquote-patch-v3.txt",
@@ -300,7 +304,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1082",
-  :name "clj-1082-patch-v2.diff",
+  :name "clj-1082-patch-v3.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1087",
@@ -370,6 +374,10 @@
   :name "0001-CLJ-1120-ex-message-ex-cause.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1125",
+  :name "threadlocal-removal-tcrawley-2013-11-24.diff",
+  :patch-category "Performance enhancement",
+  }
  {:ticket "CLJ-1128",
   :name "0002-Improve-merge-with.patch",
   :patch-category "Performance enhancement",
@@ -427,7 +435,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1190",
-  :name "clj-1190-2.diff",
+  :name "clj-1190-3.diff",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1191",
@@ -528,6 +536,10 @@
   :name "floats.diff",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1274",
+  :name "CLJ-1274.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -551,5 +563,13 @@
  {:ticket "CLJ-1295",
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1301",
+  :name "clj-1301-1.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1303",
+  :name "remove-vestigial-defs.diff",
+  :patch-category "Code cleanup",
   }
  )
