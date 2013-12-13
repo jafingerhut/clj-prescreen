@@ -931,6 +931,12 @@
  :emails #{ "vyacheslav.dimitrov@gmail.com" }
  :contributor false
  }
+{:display-name "Vipul A M"
+ :aliases #{ }
+ :usernames #{ "vipulnsward" }
+ :emails #{ "vipulnsward@gmail.com" }
+ :contributor true
+ }
 {:display-name "Jozef Wagner"
  :aliases #{ }
  :usernames #{ "wagjo" }
