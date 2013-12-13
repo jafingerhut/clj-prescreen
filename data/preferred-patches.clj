@@ -147,7 +147,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-865",
-  :name "clj865.patch",
+  :name "clj-865.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-888",
@@ -383,7 +383,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1130",
-  :name "clj-1130-v2.diff",
+  :name "clj-1130-v3.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1134",
@@ -504,6 +504,10 @@
   :name "Include-type-information-in-reflection-warning-messa.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1250",
+  :name "CLJ-1250-20131211.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1251",
   :name "update.patch",
   :patch-category "Language/library enhancement",
@@ -552,6 +556,10 @@
   :name "CLJ-1278-2.patch",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1282",
+  :name "CLJ-1282-p1.patch",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1287",
   :name "clj-1287-2.diff",
   :patch-category "Language/library enhancement",
@@ -569,7 +577,11 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1303",
-  :name "remove-vestigial-defs.diff",
+  :name "generalize-unquote.diff",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1304",
+  :name "doc-comment-typos.diff",
   :patch-category "Code cleanup",
   }
  )
