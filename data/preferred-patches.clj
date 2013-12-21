@@ -447,7 +447,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1209",
-  :name "clj-test-print-ex-data.diff",
+  :name "0002-CLJ-1209-show-ex-data-in-clojure-test.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1216",
@@ -483,10 +483,8 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1239",
-  :name "0001-CLJ-1239-protocol-dispatch-for-clojure.walk.patch",
+  :name "0002-CLJ-1239-protocol-dispatch-for-clojure.walk.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "This one is perhaps preferable to CLJ-1105",
   }
  {:ticket "CLJ-1240",
   :name "0001-CLJ-1240-Note-limits-of-clojure.walk-macroexpand-all.patch",
@@ -505,7 +503,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-20131211.patch",
+  :name "CLJ-1250-AllInvokeSites-20131214.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1251",

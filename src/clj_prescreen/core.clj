@@ -1924,7 +1924,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[me.raynes.fs :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-11-22/"))
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-12-20/"))
 (def clojure-tree "./eval-results/2013-11-22-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def ppat-fname "./data/preferred-patches.clj")
