@@ -59,7 +59,7 @@ while (my $line = <>) {
 
 	$line = <>;
 	chomp $line;
-	if ($line =~ /<span class="username">(\S+)<\/span>/) {
+	if ($line =~ /<span class="username">(.+)<\/span>/) {
 	    $user->{'username'} = $1;
 	} else {
 	    die sprintf "Expecting line %d to contain class=\"username\" but found the following instead:\n%s\n", $., $line;
