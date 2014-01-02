@@ -720,7 +720,7 @@
  :contributor true
  }
 {:display-name "Aaron Cohen"
- :aliases #{ }
+ :aliases #{ "Joel Aaron Cohen" }
  :usernames #{ "remleduff" }
  :emails #{ "aaron@assonance.org" }
  :contributor true
