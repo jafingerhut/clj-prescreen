@@ -395,7 +395,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1148",
-  :name "defonce_fixes.patch",
+  :name "clj-1148-defonce-2.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1151",
@@ -415,7 +415,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1176",
-  :name "0001-CLJ-1176-Bind-read-eval-true-in-clojure.repl-source-.patch",
+  :name "clj-1176-source-read-eval-2.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1180",
@@ -581,5 +581,21 @@
  {:ticket "CLJ-1304",
   :name "doc-comment-typos.diff",
   :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1313",
+  :name "clj-1313-v1.diff",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1314",
+  :name "clj-1314-v2.diff",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1315",
+  :name "0001-Don-t-initialize-classes-during-import.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1317",
+  :name "0001-CLJ-1317-fix-seq-zip-to-avoid-spurious-nils.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
