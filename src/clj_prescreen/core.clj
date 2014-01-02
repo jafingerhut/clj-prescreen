@@ -219,11 +219,11 @@ TBENCH-11"
 
 
 (defn url-all-open-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=2000")
 
 
-(defn url-all-open-non-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=1000")
+(defn url-all-non-CLJ-tickets []
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax=2000")
 
 
 (defn url-for-tickets-voted-by-user [username]
@@ -253,13 +253,13 @@ file."
   (get-url-to-file! file-name (url-all-CLJ-tickets)))
 
 
-(defn dl-open-tickets!
-  "Download XML data about all open CLJ tickets and save it to a local
-file."
+(defn dl-all-tickets!
+  "Download XML data about all CLJ (or all non-CLJ) tickets and save
+it to a local file."
   [file-name project]
   (get-url-to-file! file-name (if (= project :CLJ)
-                                (url-all-open-CLJ-tickets)
-                                (url-all-open-non-CLJ-tickets))))
+                                (url-all-CLJ-tickets)
+                                (url-all-non-CLJ-tickets))))
 
 
 (defn dl-open-ticket-votes!
@@ -956,12 +956,17 @@ Check it to see if it was created incorrectly."})
               (partition-by :ticket patches))))
 
 
+(defn status-closed? [att]
+  (contains? #{"Closed" "Resolved"} (:status att)))
+
+
 (defn dl-patches-check-ca!
   "Download all attachments for selected tickets.  Do this once on one
 machine, not once for each OS/JDK combo I want to test."
   [cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree]
   (doseq [patch-type patch-type-list]
-    (let [as1 (xml->attach-info (str cur-eval-dir patch-type ".xml"))
+    (let [as1 (->> (xml->attach-info (str cur-eval-dir patch-type ".xml"))
+                   (remove status-closed?))
           as2 (download-attachments! as1 ticket-dir)
           as3 (if clojure-tree
                 (eval-patches! as2 ticket-dir clojure-tree "./temp-clojure"
@@ -1329,6 +1334,12 @@ contributor, and it does not build and pass tests.
     (set (map vote-project vote-tickets))))
 
 
+(defn all-projects [ticket-xml-fname]
+  (let [ticket-info (->> (slurp ticket-xml-fname)
+                         (ticket-info-from-xml))]
+    (set (map vote-project (keys ticket-info)))))
+
+
 (defn ticket-plus-vote-info [ticket-xml-fname votes-fname project]
   (let [;; votes-by-user is expected to be a map where:
         ;;
@@ -1548,10 +1559,11 @@ contributor, and it does not build and pass tests.
 Date: %s
  
 Open %s tickets with at least one vote, sorted in descending order of
-their \"weighted vote\".  At the end of each list are tickets with no
-votes, but they have been at least Triaged.  For the CLJ project,
-Triaged means that at least one Clojure screener thinks the ticket
-describes a real issue.
+their \"weighted vote\".  At the end of the CLJ and CLJS lists are
+tickets with no votes, but they have been at least Triaged.  For the
+CLJ project, Triaged means that at least one Clojure screener thinks
+the ticket describes a real issue.  At the end of other project ticket
+lists are all open tickets, whether they have votes or not.
 
 Suppose someone has currently voted on N open tickets.  Then their
 vote counts as 1/N for each of those tickets.  Thus voting on all
@@ -1589,9 +1601,11 @@ Date: %s<br>
 
 Open %s tickets with at least one vote, sorted in descending order of
 their <span style=\"font-style: italic;\">weighted vote</span>.&nbsp;
-At the end of each list are tickets with no votes, but they have been
-at least Triaged.  For the CLJ project, Triaged means that at least
-one Clojure screener thinks the ticket describes a real issue.
+At the end of the CLJ and CLJS lists are tickets with no votes, but
+they have been at least Triaged.  For the CLJ project, Triaged means
+that at least one Clojure screener thinks the ticket describes a real
+issue.  At the end of other project ticket lists are all open tickets,
+whether they have votes or not.
 
 <p>
 Suppose someone has currently voted on <span style=\"font-style:
@@ -1632,10 +1646,8 @@ Project %s tickets
 
 (defn print-top-ticket-body!
   [ticket-info format]
-  (let [tickets-with-votes (->> ticket-info
-                                (filter-vals #(or (> (:weighted-vote % 0) 0)
-                                                  (not= "Open" (derived-ticket-state %))))
-                                (sort-by sort-key-weighted-vote-then-num-votes))
+  (let [tickets-with-votes (sort-by sort-key-weighted-vote-then-num-votes
+                                    ticket-info)
         tickets-by-type (group-by (fn [[ticket info]] (:type info))
                                   tickets-with-votes)]
     (doseq [ticket-type (sort (keys tickets-by-type))]
@@ -1672,13 +1684,16 @@ Project %s tickets
 ;; lowest.
 (defn gen-top-ticket-reports! [cur-eval-dir]
   (doseq [project ["CLJ" "CLJS"]]
-    (let [open-tickets-info (ticket-plus-vote-info
-                             (str cur-eval-dir
-                                  (if (= project "CLJ")
-                                    "open.xml"
-                                    "non-CLJ-open.xml"))
-                             (str cur-eval-dir "votes-on-tickets.clj")
-                             project)]
+    (let [open-tickets-info
+          (->> (ticket-plus-vote-info (str cur-eval-dir
+                                           (if (= project "CLJ")
+                                             "CLJ-all.xml"
+                                             "non-CLJ-all.xml"))
+                                      (str cur-eval-dir "votes-on-tickets.clj")
+                                      project)
+               (filter-vals #(and (not (status-closed? %))
+                                  (or (> (:weighted-vote % 0) 0)
+                                      (not= "Open" (derived-ticket-state %))))))]
       (printf "Project %s vote-diffs:\n" project)
       (println (vote-diffs open-tickets-info))
       
@@ -1702,13 +1717,16 @@ Project %s tickets
       (spit out-fname
             (with-out-str
               (print-top-ticket-header! format "OTHERS" date-str)
-              (doseq [project (sort (disj (all-vote-projects
-                                           (str cur-eval-dir "votes-on-tickets.clj"))
-                                          "CLJ" "CLJS"))]
-                (let [open-tickets-info (ticket-plus-vote-info
-                                         (str cur-eval-dir "non-CLJ-open.xml")
-                                         (str cur-eval-dir "votes-on-tickets.clj")
-                                         project)]
+              (doseq [project (sort (disj (all-projects
+                                           (str cur-eval-dir "non-CLJ-all.xml"))
+                                          "CLJ" "CLJS"
+                                          ;; projects not to include in report
+                                          "CONTRIB" "IGNOREJIRAEXP"))]
+                (let [open-tickets-info
+                      (->> (ticket-plus-vote-info (str cur-eval-dir "non-CLJ-all.xml")
+                                                  (str cur-eval-dir "votes-on-tickets.clj")
+                                                  project)
+                           (filter-vals #(not (status-closed? %))))]
                   (when (= format :text)
                     (binding [*out* *err*]
                       (printf "Project %s vote-diffs:\n" project)
@@ -1884,8 +1902,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
           (when-not (fs/mkdirs cur-eval-dir)
             (die "mkdirs %s failed.  Aborting.\n" cur-eval-dir))
 
-          (dl-open-tickets! (str cur-eval-dir "open.xml") :CLJ)
-          (dl-open-tickets! (str cur-eval-dir "non-CLJ-open.xml") :non-CLJ)
+          (dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
+          (dl-all-tickets! (str cur-eval-dir "non-CLJ-all.xml") :non-CLJ)
           (let [fname (str cur-eval-dir "votes-on-tickets.clj")
                 all-users (read-safely "data/all-clojure-jira-users.clj")
                 votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
@@ -1924,11 +1942,11 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[me.raynes.fs :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2013-12-20/"))
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2014-01-02/"))
 (def clojure-tree "./eval-results/2013-11-22-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def ppat-fname "./data/preferred-patches.clj")
-(def patch-type-list [ "open" ])
+(def patch-type-list [ "CLJ-all" ])
 ;; Note: Don't check any password into git
 (def auth-info {:basic-auth ["jafingerhut" "tbd-password-here"]})
 ;;(def patch-type-list [ "screened" "incomplete" "np" "rfs"])
@@ -1939,12 +1957,12 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; http://dev.clojure.org -----> Download via manual steps (Note 2)
 ;;         |           |           |
 ;;         |           |           v
-;; dl-open-tickets!    |         data/all-clojure-jira-users.clj
+;; dl-all-tickets!     |         data/all-clojure-jira-users.clj
 ;; Code at Note 4      +-----------+  |
 ;;    |         |                  v  v
 ;;    |         |                Code at Note 5
 ;;    v         v                  |
-;; open.xml  non-CLJ-open.xml      v
+;; CLJ-all.xml non-CLJ-all.xml     v
 ;;    |  |                 |     <cur-eval-dir>/votes-on-tickets.clj
 ;;    |  |                 +---------+ |
 ;;    |  +-------------------------+ | |
@@ -1964,9 +1982,9 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    |        |               |  |
 ;;    |        +---------------|--|------+
 ;;    v                        |  |      v
-;; <cur-eval-dir>/             |  |  <cur-eval-dir>/open-author-info.txt
+;; <cur-eval-dir>/             |  |  <cur-eval-dir>/CLJ-all-author-info.txt
 ;;   ticket-info/ ...          |  |
-;;   open-downloaded-only.txt  |  |
+;; CLJ-all-downloaded-only.txt |  |
 ;;    |     +------------------+  |
 ;;    |     |  +------------------+
 ;;    v     v  v
@@ -1974,8 +1992,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    |        |
 ;;    |        +-------------------------+
 ;;    v                                  v
-;; <cur-eval-dir>/                   <cur-eval-dir>/open-patch-summary.txt
-;;   open-evaled-authors.txt
+;; <cur-eval-dir>/                   <cur-eval-dir>/CLJ-all-patch-summary.txt
+;;   CLJ-all-evaled-authors.txt
 ;;    |
 ;;    |  data/preferred-patches.clj
 ;;    |   |
@@ -1984,9 +2002,9 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    |
 ;;    v
 ;; <cur-eval-dir>/
-;;     open-warnings.txt
-;;     open-prescreened-report.txt
-;;     open-needs-work.txt
+;;     CLJ-all-warnings.txt
+;;     CLJ-all-prescreened-report.txt
+;;     CLJ-all-needs-work.txt
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -2003,13 +2021,13 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; will fail their tests.
 
 ;;;; Note 4 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Download info about all open tickets and save in file open.xml.
-;; Download votes cast by each CLJ JIRA user and save in file
-;; votes-on-tickets.clj.
-(dl-open-tickets! (str cur-eval-dir "open.xml") :CLJ)
-(dl-open-tickets! (str cur-eval-dir "non-CLJ-open.xml") :non-CLJ)
+;; Download info about all tickets and save in files CLJ-all.xml and
+;; non-CLJ-all.xml
+(dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
+(dl-all-tickets! (str cur-eval-dir "non-CLJ-all.xml") :non-CLJ)
 ;;;; Note 5 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Download all votes on open tickets.
+;; Download votes cast by each JIRA user on open tickets and save in
+;; file votes-on-tickets.clj.
 (let [fname (str cur-eval-dir "votes-on-tickets.clj")
       all-users (read-safely "data/all-clojure-jira-users.clj")
       votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
@@ -2017,12 +2035,12 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 
 
 ;;;; Note 6 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Read JIRA ticket info from open.xml and non-CLJ-open.xml, and vote
-;; info from votes-on-tickets.clj.  Produce reports of top tickets by
-;; weighted vote, with a separate report for CLJ and CLJS tickets, but
-;; one combined report for all other Clojure projects (since they
-;; currently have so few tickets by comparison to CLJ and CLJS
-;; projects).
+;; Read JIRA ticket info from CLJ-all.xml and non-CLJ-all.xml, and
+;; vote info from votes-on-tickets.clj.  Produce reports of top
+;; tickets by weighted vote, with a separate report for CLJ and CLJS
+;; tickets, but one combined report for all other Clojure projects
+;; (since they currently have so few tickets by comparison to CLJ and
+;; CLJS projects).
 
 ;; If vote-differences is anything other than '(nil nil), there is a
 ;; mismatch.  Either votes have been cast while I downloaded the info,
@@ -2046,13 +2064,13 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; In <cur-eval-dir>/ticket-info/
 ;;     One new dir per ticket containing attachments on that ticket
 ;;     from dev.clojure.org
-;; <cur-eval-dir>/open-downloaded-only.txt
+;; <cur-eval-dir>/CLJ-all-downloaded-only.txt
 ;;     Clojure list of maps with lots of details about each
 ;;     attachment, including whether it applies cleanly or not to the
 ;;     Clojure source tree specified by clojure-tree.
-;; <cur-eval-dir>/open-author-info.txt
+;; <cur-eval-dir>/CLJ-all-author-info.txt
 ;;     A text file with only a fraction of the data in
-;;     open-downloaded-only.txt.  Useful for looking at, and for
+;;     CLJ-all-downloaded-only.txt.  Useful for looking at, and for
 ;;     diff'ing against a previous set of downloaded attachments.
 (dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree)
 
@@ -2117,14 +2135,14 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; were closed/resolved.  Some of this should be cleaned up a bit and
 ;; added above.
 
-(dl-all-CLJ-tickets! (str cur-eval-dir "all-CLJ.xml"))
+(dl-all-CLJ-tickets! (str cur-eval-dir "CLJ-all.xml"))
 
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs] '[clojure.tools.trace :as t])
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-18/"))
 
-(def all-ts (ticket-info-from-xml (slurp (str cur-eval-dir "all-CLJ.xml"))))
+(def all-ts (ticket-info-from-xml (slurp (str cur-eval-dir "CLJ-all.xml"))))
 (pprint (frequencies (map (fn [ti] [(normalized-status (:status ti))
                                     (:resolution ti)])
                           (vals all-ts))))
