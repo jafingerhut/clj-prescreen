@@ -54,12 +54,8 @@
       extensive.",
   }
  {:ticket "CLJ-373",
-  :name "0001-Support-empty-path-in-update-in.-CLJ-373.patch",
+  :name "CLJ-373-nested-ops.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
-  }
- {:ticket "CLJ-394",
-  :name "clj-394-add-predicate-for-record-3.diff",
-  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-415",
   :name "clj-415-assert-prints-locals-v1.txt",
@@ -101,10 +97,6 @@
       implements the warnings when using deprecated symbols, but fails
       tests when applied by itself.  It needs test fixes in other
       706-* patches and then they pass.",
-  }
- {:ticket "CLJ-713",
-  :name "clj-713-2.diff",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-735",
   :name "protocolerr.diff",
@@ -193,6 +185,10 @@
   :name "clojure--bean-support-for-private-implementation-classes-v3.diff",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-983",
+  :name "clj-983-2.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-991",
   :name "reducer-partition-by4.diff",
   :patch-category "Language enhancement, reducers",
@@ -262,7 +258,7 @@
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1058",
-  :name "patch-with-tests-clj-1058.diff",
+  :name "declarative-clj-1058.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1059",
@@ -302,10 +298,6 @@
  {:ticket "CLJ-1080",
   :name "clj-1080-v5.txt",
   :patch-category "Performance enhancement",
-  }
- {:ticket "CLJ-1082",
-  :name "clj-1082-patch-v3.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1087",
   :name "clj-1087-diff-perf-enhance-patch-v1.txt",
@@ -374,10 +366,6 @@
   :name "0001-CLJ-1120-ex-message-ex-cause.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1125",
-  :name "threadlocal-removal-tcrawley-2013-11-24.diff",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1128",
   :name "0002-Improve-merge-with.patch",
   :patch-category "Performance enhancement",
@@ -395,7 +383,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1148",
-  :name "clj-1148-defonce-2.patch",
+  :name "clj-1148-defonce-3.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1151",
@@ -433,10 +421,6 @@
  {:ticket "CLJ-1189",
   :name "CLJ-1189-p1.patch",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1190",
-  :name "clj-1190-3.diff",
-  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
@@ -579,7 +563,7 @@
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1304",
-  :name "doc-comment-typos.diff",
+  :name "clj-1304-v2.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1313",
@@ -597,5 +581,9 @@
  {:ticket "CLJ-1317",
   :name "0001-CLJ-1317-fix-seq-zip-to-avoid-spurious-nils.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1318",
+  :name "clj-1318-4.diff",
+  :patch-category "Language/library enhancement",
   }
  )
