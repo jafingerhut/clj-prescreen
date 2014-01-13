@@ -76,6 +76,16 @@
   (System/exit 1))
 
 
+(defmacro cfor [seq-exprs body-expr]
+  `(apply concat (for ~seq-exprs ~body-expr)))
+
+
+(defn print-strs [strs]
+  (doseq [s strs]
+    (when (string? s)
+      (print s))))
+
+
 (defn read-safely [x & opts]
   (with-open [r (java.io.PushbackReader. (apply io/reader x opts))]
     (edn/read r)))
@@ -1334,13 +1344,11 @@ contributor, and it does not build and pass tests.
     (set (map vote-project vote-tickets))))
 
 
-(defn all-projects [ticket-xml-fname]
-  (let [ticket-info (->> (slurp ticket-xml-fname)
-                         (ticket-info-from-xml))]
-    (set (map vote-project (keys ticket-info)))))
+(defn all-projects [ticket-info]
+  (set (map vote-project (keys ticket-info))))
 
 
-(defn ticket-plus-vote-info [ticket-xml-fname votes-fname project]
+(defn ticket-plus-vote-info [tickets-info votes-by-user project]
   (let [;; votes-by-user is expected to be a map where:
         ;;
         ;; + The keys are themselves maps describing JIRA users.
@@ -1351,7 +1359,6 @@ contributor, and it does not build and pass tests.
         ;; {:display-name "Brian Siebert",
         ;;  :usernames #{"bsiebert"},
         ;;  :emails #{"bsiebert@fgm.com"}}
-        votes-by-user (read-safely votes-fname)
         votes-by-user (map-vals (fn [ticket-strs]
                                   (filter #(= (vote-project %) project)
                                           ticket-strs))
@@ -1400,11 +1407,8 @@ contributor, and it does not build and pass tests.
                                          users)})
                   votes-by-ticket)
 
-;;        tickets-info (ticket-info-from-xml (slurp ticket-xml-fname))
-;;        tickets-info (filter-keys #(= (vote-project %) project) tickets-info)
-        tickets-info (->> (slurp ticket-xml-fname)
-                          (ticket-info-from-xml)
-                          (filter-keys #(= (vote-project %) project)))]
+        tickets-info (filter-keys #(= (vote-project %) project)
+                                  tickets-info)]
 
     ;; Merge vote info for tickets with everything else we know about
     ;; them from JIRA.
@@ -1447,33 +1451,33 @@ contributor, and it does not build and pass tests.
    (extract-dec-num ticket)])
 
 
-(defn print-tickets [sorted-ticket-info col-order]
-  (doseq [[ticket info] sorted-ticket-info]
-    ;(pprint info)
-    (doseq [col col-order]
-      (case col
-        :num-votes (printf " %3d" (:num-votes info 0))
-        :weighted-vote (printf " %7.2f" (double (:weighted-vote info 0)))
-        :ticket (printf " %-8s" ticket)
-        :title (printf " %s" (:title info))
-        :type (printf " %s" (subs (:type info) 0 1))
-        :approval (printf " %-8s" (trunc-str (or (get info "Approval") "--") 8))
-        :fixVersion (printf " %-11s" (trunc-str (fixVersion-to-string (:fixVersion info)) 11))
-        :derivedState (printf " %-12s" (trunc-str (derived-ticket-state info) 12))
-        "Patch" (printf " %-11s" (trunc-str (or (get info "Patch") "--") 11))
-        :voter-details
-        (if (seq (:vote-list info))
-          (printf "\n             %s"
-                  (str/join "\n             "
-                            (map #(format "%s (%s)"
-                                          (:display-name %)
-                                          (let [nv (:user-num-votes %)]
-                                            (if (and (number? nv) (> nv 1))
-                                              (str "1/" nv)
-                                              nv)))
-                                 (:vote-list info)))))))
-    (printf "\n")))
-
+(defn ticket-strs [sorted-ticket-info col-order]
+  (cfor [[ticket info] sorted-ticket-info]
+    (concat
+     ;;[ (pprint info) ]
+     (cfor [col col-order]
+       [(case col
+          :num-votes (format " %3d" (:num-votes info 0))
+          :weighted-vote (format " %7.2f" (double (:weighted-vote info 0)))
+          :ticket (format " %-8s" ticket)
+          :title (format " %s" (:title info))
+          :type (format " %s" (subs (:type info) 0 1))
+          :approval (format " %-8s" (trunc-str (or (get info "Approval") "--") 8))
+          :fixVersion (format " %-11s" (trunc-str (fixVersion-to-string (:fixVersion info)) 11))
+          :derivedState (format " %-12s" (trunc-str (derived-ticket-state info) 12))
+          "Patch" (format " %-11s" (trunc-str (or (get info "Patch") "--") 11))
+          :voter-details
+          (if (seq (:vote-list info))
+            (format "\n             %s"
+                    (str/join "\n             "
+                              (map #(format "%s (%s)"
+                                            (:display-name %)
+                                            (let [nv (:user-num-votes %)]
+                                              (if (and (number? nv) (> nv 1))
+                                                (str "1/" nv)
+                                                nv)))
+                                   (:vote-list info))))))])
+     [ "\n" ])))
 
 (defn html-escape-text [s]
   (str/escape s {\& "&amp;" \< "&lt;" \> "&gt;"}))
@@ -1483,78 +1487,80 @@ contributor, and it does not build and pass tests.
   (str "http://dev.clojure.org/jira/browse/" ticket-abbrev))
 
 
-(defn print-tickets-html-table [sorted-ticket-info col-order]
-  ;; HTML table tag
-  (printf "<table style=\"text-align: left; width: 950px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n")
-  (printf "  <tbody>\n")
+(defn tickets-html-table-strs [sorted-ticket-info col-order]
+  (concat
+   [;; HTML table tag
+    "<table style=\"text-align: left; width: 950px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n"
+    "  <tbody>\n"
+    
+    ;; Headings
+    "    <tr>\n"]
+   (cfor [col col-order]
+     [(format "        <td style=\"vertical-align: bottom;%s\">%s\n"
+              (case col
+                :voter-details " width: 200px;"
+                "")
+              (case col
+                :weighted-vote "Weighted vote"
+                :num-votes "# of Votes"
+                :type "Type"
+                :approval "Approval"
+                :fixVersion "Fix Version(s)"
+                :derivedState "State"
+                "Patch" "Patch"
+                :ticket-with-link "Ticket"
+                :title "Summary"
+                :voter-details "Voters"))
+      "        </td>\n"])
+   ["    </tr>\n"]
+   
+   ;; Ticket info
+   (cfor [[ticket info] sorted-ticket-info]
+     (let [orig-title (:title info)
+           [_ ticket-abbrev summary] (re-find #"^\s*\[(\S+)\]\s*(.*)\s*$"
+                                              orig-title)]
+       (concat
+        ["    <tr>\n"]
+        (cfor [col col-order]
+          ["        <td style=\"vertical-align: top;\">"
+           (case col
+             :weighted-vote (format "%.2f" (double (:weighted-vote info 0)))
+             :num-votes (format "%d" (:num-votes info 0))
+             :type (format "%s" (subs (:type info) 0 1))
+             :approval (format "%s" (or (get info "Approval") "--"))
+             :fixVersion (format "%s" (fixVersion-to-string (:fixVersion info)))
+             :derivedState (format "%s" (derived-ticket-state info))
+             "Patch" (format "%s" (or (get info "Patch") "--"))
+             :ticket-with-link (format "<a href=\"%s\">%s</a>"
+                                       (url-for-clj-ticket ticket-abbrev)
+                                       ticket-abbrev)
+             :title (format "%s" (html-escape-text summary))
+             :voter-details
+             (format "%s" (str/join "<br>\n"
+                                    (map #(html-escape-text
+                                           (format "%s (%s)"
+                                                   (:display-name %)
+                                                   (let [nv (:user-num-votes %)]
+                                                     (if (and (number? nv) (> nv 1))
+                                                       (str "1/" nv)
+                                                       nv))))
+                                         (:vote-list info)))))
+           "\n        </td>\n"])
+        ["    </tr>\n"])))
 
-  ;; Headings
-  (printf "    <tr>\n")
-  (doseq [col col-order]
-    (printf "        <td style=\"vertical-align: bottom;%s\">%s\n"
-            (case col
-              :voter-details " width: 200px;"
-              "")
-            (case col
-              :weighted-vote "Weighted vote"
-              :num-votes "# of Votes"
-              :type "Type"
-              :approval "Approval"
-              :fixVersion "Fix Version(s)"
-              :derivedState "State"
-              "Patch" "Patch"
-              :ticket-with-link "Ticket"
-              :title "Summary"
-              :voter-details "Voters"))
-    (printf "        </td>\n"))
-  (printf "    </tr>\n")
-
-  ;; Ticket info
-  (doseq [[ticket info] sorted-ticket-info]
-    (let [orig-title (:title info)
-          [_ ticket-abbrev summary] (re-find #"^\s*\[(\S+)\]\s*(.*)\s*$"
-                                             orig-title)]
-      (printf "    <tr>\n")
-      (doseq [col col-order]
-        (printf "        <td style=\"vertical-align: top;\">")
-        (case col
-          :weighted-vote (printf "%.2f" (double (:weighted-vote info 0)))
-          :num-votes (printf "%d" (:num-votes info 0))
-          :type (printf "%s" (subs (:type info) 0 1))
-          :approval (printf "%s" (or (get info "Approval") "--"))
-          :fixVersion (printf "%s" (fixVersion-to-string (:fixVersion info)))
-          :derivedState (printf "%s" (derived-ticket-state info))
-          "Patch" (printf "%s" (or (get info "Patch") "--"))
-          :ticket-with-link (printf "<a href=\"%s\">%s</a>"
-                                    (url-for-clj-ticket ticket-abbrev)
-                                    ticket-abbrev)
-          :title (printf "%s" (html-escape-text summary))
-          :voter-details
-          (printf "%s" (str/join "<br>\n"
-                                 (map #(html-escape-text
-                                        (format "%s (%s)"
-                                                (:display-name %)
-                                                (let [nv (:user-num-votes %)]
-                                                  (if (and (number? nv) (> nv 1))
-                                                    (str "1/" nv)
-                                                    nv))))
-                                      (:vote-list info)))))
-        (printf "\n        </td>\n"))
-      (printf "    </tr>\n")))
-
-  (printf "  </tbody>\n")
-  (printf "</table>\n"))
+   ["  </tbody>\n"
+    "</table>\n"]))
 
 
 (defn local-date-str []
   (.toString (LocalDate/now) "MMMM d, yyyy"))
 
 
-(defn print-top-ticket-header!
-  [format project date-str]
-  (case format
+(defn top-ticket-header-strs
+  [fmt project date-str]
+  (case fmt
     :text
-    (printf "Top %s tickets by weighted vote
+    [ (format "Top %s tickets by weighted vote
 
 Date: %s
  
@@ -1584,9 +1590,9 @@ where State is one of the states in the JIRA flow diagram at
 
     http://dev.clojure.org/display/community/JIRA+workflow
 "
-            project date-str project)
+              project date-str project) ]
     :html
-    (printf "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
+    [ (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
 <html>
 <head>
 <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\">
@@ -1623,116 +1629,197 @@ project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
 State is one of the states in the JIRA flow diagram <a
 href=\"http://dev.clojure.org/display/community/JIRA+workflow\">here</a>.
 "
-            project project date-str project)))
+              project project date-str project) ]))
 
 
-(defn print-top-ticket-short-project-header!
-  [format project]
-  (case format
+(defn top-ticket-short-project-header-strs
+  [fmt project]
+  (case fmt
     :text
-    (printf "
+    [ (format "
 
 Project %s tickets"
-            project)
+            project) ]
     :html
-    (printf "
+    [ (format "
 <h2>
 Project %s tickets
 </h2>
 "
-            project)
+              project) ]
     ))
 
 
-(defn print-top-ticket-body!
-  [ticket-info format]
+(defn ticket-table-html-anchor-name [project ticket-type]
+  (format "%s_%s" project ticket-type))
+
+
+(defn top-ticket-body-strs
+  [fmt project ticket-info]
   (let [tickets-with-votes (sort-by sort-key-weighted-vote-then-num-votes
                                     ticket-info)
         tickets-by-type (group-by (fn [[ticket info]] (:type info))
                                   tickets-with-votes)]
-    (doseq [ticket-type (sort (keys tickets-by-type))]
-      (case format
+    (cfor [ticket-type (sort (keys tickets-by-type))]
+      (case fmt
         :text
-        (do
-          (printf "\n========================================\n%s\n\n"
-                  ticket-type)
-          (print-tickets (get tickets-by-type ticket-type)
-                         [:weighted-vote :num-votes :derivedState
-                          ;; "Patch"
-                          :title :voter-details]))
+        (concat
+         [(format "\n========================================\n%s\n\n"
+                  ticket-type)]
+         (ticket-strs (get tickets-by-type ticket-type)
+                      [:weighted-vote :num-votes :derivedState
+                       ;; "Patch"
+                       :title :voter-details]))
         :html
-        (do
-          (printf "<h2>%s</h2>\n\n" ticket-type)
-          (print-tickets-html-table (get tickets-by-type ticket-type)
-                                    [:weighted-vote :num-votes :derivedState
-                                     ;; "Patch"
-                                     :ticket-with-link
-                                     :title :voter-details]))))))
+        (concat
+         [(format "<h2><a name=\"%s\"></a>%s</h2>\n\n"
+                  (ticket-table-html-anchor-name project ticket-type)
+                  ticket-type)]
+         (tickets-html-table-strs (get tickets-by-type ticket-type)
+                                  [:weighted-vote :num-votes :derivedState
+                                   ;; "Patch"
+                                   :ticket-with-link
+                                   :title :voter-details]))))))
+
+
+(defn other-ticket-summary-table-html-strs [ticket-info projs col-order]
+  (concat
+   [;; HTML table tag
+    "<table style=\"text-align: left; width: 500px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n"
+    "  <tbody>\n"
+    
+    ;; Headings
+    "    <tr>\n"]
+   (cfor [col col-order]
+     [(format "        <td style=\"vertical-align: bottom;\">%s\n"
+              (if (= col :project)
+                "Project"
+                (format "Open %s tickets" col)))
+      "        </td>\n"])
+   ["    </tr>\n"]
+   
+   ;; Project # of tickets of each type
+   (cfor [proj projs]
+     (let []
+       (concat
+        ["    <tr>\n"]
+        (cfor [col col-order]
+          ["        <td style=\"vertical-align: top;\">"
+           (if (= col :project)
+             proj
+             (if-let [num-tickets (get-in ticket-info [proj col])]
+               (format "<a href=\"#%s\">%s</a>"
+                       (ticket-table-html-anchor-name proj col) num-tickets)
+               "0"))
+           "\n        </td>\n"])
+        ["    </tr>\n"])))
+
+   ["  </tbody>\n"
+    "</table>\n"]))
+
+
+(defn other-ticket-summary-table-strs [fmt ticket-info votes-by-user projs]
+  (let [ticket-info-by-proj (into {}
+                                  (map (fn [proj]
+                                         [proj
+                                          (->> (ticket-plus-vote-info
+                                                ticket-info votes-by-user proj)
+                                               (filter-vals
+                                                #(not (status-closed? %))))])
+                                       projs))
+
+        tickets-by-proj-then-type (map-vals (fn [m]
+                                              (->> m
+                                                   (group-by
+                                                    (fn [[ticket info]] (:type info)))
+                                                   (map-vals count)))
+                                            ticket-info-by-proj)
+        cols (->> tickets-by-proj-then-type
+                  vals
+                  (map #(set (keys %)))
+                  (apply set/union)
+                  sort
+                  (concat [:project]))]
+    (case fmt
+      :text
+      ""  ;; tbd
+      :html
+      (other-ticket-summary-table-html-strs tickets-by-proj-then-type
+                                            projs cols))))
 
 
 (defn print-top-tickets-by-vote-weight!
-  [out-fname ticket-info format project]
+  [out-fname ticket-info fmt project]
   ;; TBD: Might be better to extract the date from the input somehow.
   (let [date-str (local-date-str)]
-    (spit out-fname
-          (with-out-str
-            (print-top-ticket-header! format project date-str)
-            (print-top-ticket-body! ticket-info format)))))
+    (with-open [wrtr (io/writer out-fname)]
+      (binding [*out* wrtr]
+        (print-strs (concat
+                     (top-ticket-header-strs fmt project date-str)
+                     (top-ticket-body-strs fmt project ticket-info)))))))
 
 
 ;; Print a report of top tickets sorted from highest weighted vote to
 ;; lowest.
 (defn gen-top-ticket-reports! [cur-eval-dir]
-  (doseq [project ["CLJ" "CLJS"]]
-    (let [open-tickets-info
-          (->> (ticket-plus-vote-info (str cur-eval-dir
-                                           (if (= project "CLJ")
-                                             "CLJ-all.xml"
-                                             "non-CLJ-all.xml"))
-                                      (str cur-eval-dir "votes-on-tickets.clj")
-                                      project)
-               (filter-vals #(and (not (status-closed? %))
-                                  (or (> (:weighted-vote % 0) 0)
-                                      (not= "Open" (derived-ticket-state %))))))]
-      (printf "Project %s vote-diffs:\n" project)
-      (println (vote-diffs open-tickets-info))
-      
-      (print-top-tickets-by-vote-weight!
-       (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
-       open-tickets-info :text project)
-      (print-top-tickets-by-vote-weight!
-       (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
-       open-tickets-info :html project)))
+  (let [votes-fname (str cur-eval-dir "votes-on-tickets.clj")
+        votes-by-user (read-safely votes-fname)
+        ticket-info-CLJ (-> (str cur-eval-dir "CLJ-all.xml")
+                            slurp ticket-info-from-xml)
+        ticket-info-non-CLJ (-> (str cur-eval-dir "non-CLJ-all.xml")
+                                slurp ticket-info-from-xml)]
+    (doseq [project ["CLJ" "CLJS"]]
+      (let [open-tickets-info
+            (->> (ticket-plus-vote-info (if (= project "CLJ")
+                                          ticket-info-CLJ
+                                          ticket-info-non-CLJ)
+                                        votes-by-user project)
+                 (filter-vals #(and (not (status-closed? %))
+                                    (or (> (:weighted-vote % 0) 0)
+                                        (not= "Open" (derived-ticket-state %))))))]
+        (printf "Project %s vote-diffs:\n" project)
+        (println (vote-diffs open-tickets-info))
+        
+        (print-top-tickets-by-vote-weight!
+         (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
+         open-tickets-info :text project)
+        (print-top-tickets-by-vote-weight!
+         (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
+         open-tickets-info :html project)))
 
-  ;; Now do the same for all other Clojure projects with votes on open
-  ;; tickets, except put them all in one file together, since they
-  ;; tend to have far fewer tickets and votes than the CLJ or CLJS
-  ;; projects above.
-  (doseq [format [:text :html]]
-    (let [out-fname (str cur-eval-dir "OTHERS-top-tickets-by-weighted-vote."
-                         (case format
-                           :text "txt"
-                           :html "html"))
-          date-str (local-date-str)]
-      (spit out-fname
-            (with-out-str
-              (print-top-ticket-header! format "OTHERS" date-str)
-              (doseq [project (sort (disj (all-projects
-                                           (str cur-eval-dir "non-CLJ-all.xml"))
-                                          "CLJ" "CLJS"
-                                          ;; projects not to include in report
-                                          "CONTRIB" "IGNOREJIRAEXP"))]
-                (let [open-tickets-info
-                      (->> (ticket-plus-vote-info (str cur-eval-dir "non-CLJ-all.xml")
-                                                  (str cur-eval-dir "votes-on-tickets.clj")
-                                                  project)
-                           (filter-vals #(not (status-closed? %))))]
-                  (when (= format :text)
-                    (binding [*out* *err*]
-                      (printf "Project %s vote-diffs:\n" project)
-                      (println (vote-diffs open-tickets-info))))
-                  (print-top-ticket-short-project-header! format project)
-                  (print-top-ticket-body! open-tickets-info format))))))))
+    ;; Now do the same for all other Clojure projects with votes on
+    ;; open tickets, except put them all in one file together, since
+    ;; they tend to have far fewer tickets and votes than the CLJ or
+    ;; CLJS projects above.
+    (doseq [fmt [:text :html]]
+      (let [out-fname (str cur-eval-dir "OTHERS-top-tickets-by-weighted-vote."
+                           (case fmt
+                             :text "txt"
+                             :html "html"))
+            date-str (local-date-str)
+            all-projs (all-projects ticket-info-non-CLJ)
+            other-projs (sort (disj all-projs "CLJ" "CLJS"
+                                    ;; projects not to include in report
+                                    "CONTRIB" "IGNOREJIRAEXP"))
+            things (concat
+                    (top-ticket-header-strs fmt "OTHERS" date-str)
+                    (other-ticket-summary-table-strs fmt ticket-info-non-CLJ
+                                                     votes-by-user other-projs)
+                    (cfor [project other-projs]
+                      (let [open-tickets-info
+                            (->> (ticket-plus-vote-info ticket-info-non-CLJ
+                                                        votes-by-user project)
+                                 (filter-vals #(not (status-closed? %))))]
+                        (when (= fmt :text)
+                          (binding [*out* *err*]
+                            (printf "Project %s vote-diffs:\n" project)
+                            (println (vote-diffs open-tickets-info))))
+                        (concat
+                         (top-ticket-short-project-header-strs fmt project)
+                         (top-ticket-body-strs fmt project open-tickets-info)))))]
+        (with-open [wrtr (io/writer out-fname)]
+          (binding [*out* wrtr]
+            (print-strs things)))))))
 
 
 (def month-abbrev-to-num
