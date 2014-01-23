@@ -258,7 +258,7 @@
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1058",
-  :name "declarative-clj-1058.diff",
+  :name "sneakyThrow-clj-1058.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1059",
@@ -391,7 +391,7 @@
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1157",
-  :name "20130204_fix_classloader.diff",
+  :name "20140121_fix_classloader.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1162",
@@ -403,7 +403,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1176",
-  :name "clj-1176-source-read-eval-2.patch",
+  :name "clj-1176-source-read-eval-3.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1180",
@@ -487,7 +487,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-AllInvokeSites-20131214.patch",
+  :name "CLJ-1250-AllInvokeSites-20140113.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1251",
@@ -509,10 +509,6 @@
  {:ticket "CLJ-1259",
   :name "clj-1259-1.txt",
   :patch-category "Performance enhancement",
-  }
- {:ticket "CLJ-1260",
-  :name "clj-1260-fixws.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1261",
   :name "clj-1261-2.diff",
@@ -585,5 +581,17 @@
  {:ticket "CLJ-1318",
   :name "clj-1318-4.diff",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1328",
+  :name "clj-1328-v1.diff",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1329",
+  :name "fix.patch",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1330",
+  :name "0001-Fix-CLJ-1330-make-top-level-named-functions-classnam.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
