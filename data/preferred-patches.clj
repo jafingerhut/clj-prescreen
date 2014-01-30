@@ -550,10 +550,6 @@
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1301",
-  :name "clj-1301-1.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1303",
   :name "generalize-unquote.diff",
   :patch-category "Code cleanup",
@@ -579,11 +575,15 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1318",
-  :name "clj-1318-4.diff",
+  :name "clj-1318-6.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1328",
-  :name "clj-1328-v1.diff",
+ {:ticket "CLJ-1319",
+  :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
+  :patch-category "Better error reporting",
+  }
+{:ticket "CLJ-1328",
+  :name "clj-1328-v3.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1329",
@@ -592,6 +592,10 @@
   }
  {:ticket "CLJ-1330",
   :name "0001-Fix-CLJ-1330-make-top-level-named-functions-classnam.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1331",
+  :name "clj-1331-v1.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  )
