@@ -456,7 +456,7 @@ once, using a set."
   (->> s
        (re-seq #"(?m)^From: (.*)$")
        (map second)
-       (set)))
+       (distinct)))
 
 
 (defn one-author-contributor-status
