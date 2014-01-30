@@ -323,6 +323,12 @@
  :emails #{ "ekoontz@hiro-tan.org" }
  :contributor true
  }
+{:display-name "Jason Felice"
+ :aliases #{ }
+ :usernames #{ "eraserhd" }
+ :emails #{ "jason.m.felice@gmail.com" }
+ :contributor true
+ }
 {:display-name "Eric Schoonover"
  :aliases #{ }
  :usernames #{ "spoon16" }
