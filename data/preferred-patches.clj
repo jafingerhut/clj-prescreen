@@ -146,10 +146,6 @@
   :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-935",
-  :name "clj935-3.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-944",
   :name "0001-Fix-for-CLJ-944.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -184,10 +180,6 @@
  {:ticket "CLJ-978",
   :name "clojure--bean-support-for-private-implementation-classes-v3.diff",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-983",
-  :name "clj-983-2.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-991",
   :name "reducer-partition-by4.diff",
@@ -371,7 +363,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1130",
-  :name "clj-1130-v3.diff",
+  :name "clj-1130-v5.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1134",
@@ -402,10 +394,6 @@
   :name "0001-CLJ-1169-proposed-patch.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1176",
-  :name "clj-1176-source-read-eval-3.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1180",
   :name "001-CLJ-1180.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -425,10 +413,6 @@
  {:ticket "CLJ-1191",
   :name "clj-1191-patch-v1.txt",
   :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1200",
-  :name "no-getComponentType--v002.patch",
-  :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1209",
   :name "0002-CLJ-1209-show-ex-data-in-clojure-test.patch",
@@ -550,16 +534,12 @@
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1303",
-  :name "generalize-unquote.diff",
-  :patch-category "Code cleanup",
-  }
  {:ticket "CLJ-1304",
   :name "clj-1304-v2.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1313",
-  :name "clj-1313-v1.diff",
+  :name "clj-1313-v2.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1314",
@@ -574,16 +554,12 @@
   :name "0001-CLJ-1317-fix-seq-zip-to-avoid-spurious-nils.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1318",
-  :name "clj-1318-6.diff",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1319",
   :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
   :patch-category "Better error reporting",
   }
 {:ticket "CLJ-1328",
-  :name "clj-1328-v3.diff",
+  :name "clj-1328-v4.diff",
   :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1329",
@@ -597,5 +573,13 @@
  {:ticket "CLJ-1331",
   :name "clj-1331-v1.diff",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1335",
+  :name "clj-1335-v1.diff",
+  :patch-category "Clojure language/library bug fixes",
+  :patch-extra-note
+     "This patch is written assuming that the patch for CLJ-1331 was
+      committed first.  It may be modified depending upon results of
+      screening.",
   }
  )
