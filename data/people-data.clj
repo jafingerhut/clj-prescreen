@@ -806,7 +806,7 @@
 {:display-name "Stuart Halloway"
  :aliases #{ }
  :usernames #{ "stu" }
- :emails #{ "stu@thinkrelevance.com" "stu@Stuart-Halloways-MacBook-Air.local" "stu@Orolo.local" }
+ :emails #{ "stu@cognitect.com" "stu@thinkrelevance.com" "stu@Stuart-Halloways-MacBook-Air.local" "stu@Orolo.local" }
  :contributor true
  }
 {:display-name "Stuart Sierra"
