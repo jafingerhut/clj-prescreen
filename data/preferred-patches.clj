@@ -280,7 +280,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1078",
-  :name "clj-1048-queue-takes-collections.diff",
+  :name "clj-1048-add-queue-functions.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1079",
@@ -471,7 +471,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-AllInvokeSites-20140113.patch",
+  :name "CLJ-1250-AllInvokeSites-20140204.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1251",
@@ -499,7 +499,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1266",
-  :name "floats.diff",
+  :name "floats-intrinsics.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1274",
@@ -519,7 +519,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1282",
-  :name "CLJ-1282-p1.patch",
+  :name "CLJ-1282-p2.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1287",
@@ -534,9 +534,9 @@
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1304",
-  :name "clj-1304-v2.diff",
-  :patch-category "Code cleanup",
+ {:ticket "CLJ-1302",
+  :name "clj-1302-2.patch",
+  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1313",
   :name "clj-1313-v2.diff",
@@ -571,15 +571,37 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1331",
-  :name "clj-1331-v1.diff",
+  :name "clj-1331-v2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1335",
-  :name "clj-1335-v1.diff",
+  :name "clj-1335-v2.patch",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
-     "This patch is written assuming that the patch for CLJ-1331 was
-      committed first.  It may be modified depending upon results of
-      screening.",
+     "Patch depends upon patches for CLJ-1338, CLJ-1339, and CLJ-1331
+      being applied before this one.",
+  }
+ {:ticket "CLJ-1336",
+  :name "clj-1336-4.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "Patch depends upon patches for CLJ-1338, CLJ-1339, CLJ-1335, and
+      CLJ-1331 being applied before this one.",
+  }
+ {:ticket "CLJ-1337",
+  :name "0001-Update-defprotocol-s-docstring-to-remove-an-out-of-d.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1338",
+  :name "clj-1338.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1339",
+  :name "CLJ-1339.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1340",
+  :name "primitive-cohercion.diff",
+  :patch-category "Language/library enhancement",
   }
  )
