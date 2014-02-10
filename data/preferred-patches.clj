@@ -249,10 +249,6 @@
   :name "001-simplify-fj-importing.patch",
   :patch-category "Language enhancement, reducers",
   }
- {:ticket "CLJ-1058",
-  :name "sneakyThrow-clj-1058.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1059",
   :name "001-clj-1059-make-persistentqueue-implement-list.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -558,10 +554,6 @@
   :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
   :patch-category "Better error reporting",
   }
-{:ticket "CLJ-1328",
-  :name "clj-1328-v4.diff",
-  :patch-category "Code cleanup",
-  }
  {:ticket "CLJ-1329",
   :name "fix.patch",
   :patch-category "Code cleanup",
@@ -578,23 +570,19 @@
   :name "clj-1335-v2.patch",
   :patch-category "Clojure language/library bug fixes",
   :patch-extra-note
-     "Patch depends upon patches for CLJ-1338, CLJ-1339, and CLJ-1331
+     "Patch depends upon patches for CLJ-1339, and CLJ-1331
       being applied before this one.",
   }
  {:ticket "CLJ-1336",
   :name "clj-1336-4.patch",
   :patch-category "Language/library enhancement",
   :patch-extra-note
-     "Patch depends upon patches for CLJ-1338, CLJ-1339, CLJ-1335, and
+     "Patch depends upon patches for CLJ-1339, CLJ-1335, and
       CLJ-1331 being applied before this one.",
   }
  {:ticket "CLJ-1337",
   :name "0001-Update-defprotocol-s-docstring-to-remove-an-out-of-d.patch",
   :patch-category "Doc string fixes only",
-  }
- {:ticket "CLJ-1338",
-  :name "clj-1338.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1339",
   :name "CLJ-1339.patch",
@@ -603,5 +591,17 @@
  {:ticket "CLJ-1340",
   :name "primitive-cohercion.diff",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1343",
+  :name "clj-1343-1.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1344",
+  :name "clj-1344-1.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1345",
+  :name "clj-1345.patch",
+  :patch-category "Doc string fixes only",
   }
  )
