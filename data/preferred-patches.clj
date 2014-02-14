@@ -69,7 +69,7 @@
       test.generative could use that one.",
   }
  {:ticket "CLJ-428",
-  :name "clj-428-change-Sorted-seqFrom-to-take-inclusive-patch-v3.txt",
+  :name "clj-428-v4.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-457",
@@ -319,7 +319,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-3.diff",
+  :name "clj-1103-4.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
@@ -327,7 +327,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1107",
-  :name "clj-1107-throw-on-get-for-unsupported-types-patch-v2.txt",
+  :name "0003-CLJ-1107-Throw-exception-for-get-on-unsupported-type.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1108",
@@ -462,10 +462,6 @@
   :name "0001-fix-for-CLJ-1242-tests.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
- {:ticket "CLJ-1248",
-  :name "Include-type-information-in-reflection-warning-messa.patch",
-  :patch-category "Better error reporting",
-  }
  {:ticket "CLJ-1250",
   :name "CLJ-1250-AllInvokeSites-20140204.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -519,8 +515,12 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1287",
-  :name "clj-1287-2.diff",
+  :name "clj-1287-3.diff",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1289",
+  :name "CLJ-1289-p1.patch",
+  :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1293",
   :name "CLJ-1293-v001.patch",
@@ -529,10 +529,6 @@
  {:ticket "CLJ-1295",
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
-  }
- {:ticket "CLJ-1302",
-  :name "clj-1302-2.patch",
-  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1313",
   :name "clj-1313-v2.diff",
@@ -554,6 +550,10 @@
   :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1324",
+  :name "clj-1324-1.patch",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-1329",
   :name "fix.patch",
   :patch-category "Code cleanup",
@@ -562,46 +562,16 @@
   :name "0001-Fix-CLJ-1330-make-top-level-named-functions-classnam.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1331",
-  :name "clj-1331-v2.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1335",
-  :name "clj-1335-v2.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "Patch depends upon patches for CLJ-1339, and CLJ-1331
-      being applied before this one.",
-  }
- {:ticket "CLJ-1336",
-  :name "clj-1336-4.patch",
-  :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "Patch depends upon patches for CLJ-1339, CLJ-1335, and
-      CLJ-1331 being applied before this one.",
-  }
  {:ticket "CLJ-1337",
   :name "0001-Update-defprotocol-s-docstring-to-remove-an-out-of-d.patch",
   :patch-category "Doc string fixes only",
-  }
- {:ticket "CLJ-1339",
-  :name "CLJ-1339.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1340",
   :name "primitive-cohercion.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1343",
-  :name "clj-1343-1.patch",
-  :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1344",
-  :name "clj-1344-1.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1345",
-  :name "clj-1345.patch",
-  :patch-category "Doc string fixes only",
+ {:ticket "CLJ-1341",
+  :name "keyword-1341-2014-02-12.2.patch",
+  :patch-category "Better error reporting",
   }
  )
