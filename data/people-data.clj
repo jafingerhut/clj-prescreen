@@ -329,6 +329,12 @@
  :emails #{ "jason.m.felice@gmail.com" }
  :contributor true
  }
+{:display-name "Eric Normand"
+ :aliases #{ }
+ :usernames #{ "ericnormand" }
+ :emails #{ "ericwnormand@gmail.com" }
+ :contributor true
+ }
 {:display-name "Eric Schoonover"
  :aliases #{ }
  :usernames #{ "spoon16" }
