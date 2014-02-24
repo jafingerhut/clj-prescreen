@@ -414,6 +414,10 @@
   :name "0002-CLJ-1209-show-ex-data-in-clojure-test.patch",
   :patch-category "Debug/tooling enhancement",
   }
+ {:ticket "CLJ-1210",
+  :name "extend-io-factory-to-nil.diff",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1216",
   :name "0001-Create-a-DoExpr.Parser-class-that-delegates-to-BodyE.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -514,10 +518,6 @@
   :name "CLJ-1282-p2.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1287",
-  :name "clj-1287-3.diff",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1289",
   :name "CLJ-1289-p1.patch",
   :patch-category "Performance enhancement",
@@ -529,6 +529,10 @@
  {:ticket "CLJ-1295",
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1297",
+  :name "better-error-messages-for-require.diff",
+  :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1313",
   :name "clj-1313-v2.diff",
@@ -573,5 +577,53 @@
  {:ticket "CLJ-1341",
   :name "keyword-1341-2014-02-12.2.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1351",
+  :name "0001-remove-unused-swapThunk-method-generation.patch",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1352",
+  :name "tcrawley-fixtures-with-non-test-vars-2014-02-14.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1353",
+  :name "clj-1353-v3.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1354",
+  :name "0001-CLJ-1354-make-APersistentVector.SubVector-public.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1355",
+  :name "clj-1355-v2.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1357",
+  :name "CLJ-1357-its-typo.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1358",
+  :name "CLJ-1358.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1359",
+  :name "clj-1359.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1361",
+  :name "simple-ns-pprint-fix.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1362",
+  :name "clj-1362-v1.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1363",
+  :name "clj-1363-v2.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1365",
+  :name "clj-1365-v1.patch",
+  :patch-category "Performance enhancement",
   }
  )
