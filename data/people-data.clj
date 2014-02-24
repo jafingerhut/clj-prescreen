@@ -64,6 +64,12 @@
  :emails #{ "alex.redington@thinkrelevance.com" }
  :contributor true
  }
+{:display-name "Alex Redington and Russ Olsen"
+ :aliases #{ }
+ :usernames #{ }
+ :emails #{ "pair+ar+ro@cognitect.com" }
+ :contributor true
+ }
 {:display-name "Allen Rohner"
  :aliases #{ }
  :usernames #{ "arohner" }
@@ -755,6 +761,12 @@
  :emails #{ "robertlachlan@gmail.com" }
  :contributor true
  }
+{:display-name "Russ Olsen"
+ :aliases #{ }
+ :usernames #{ "russolsen" }
+ :emails #{ "russ@russolsen.com" }
+ :contributor true
+ }
 {:display-name "Ryan Senior"
  :aliases #{ }
  :usernames #{ "ryansenior" }
@@ -795,6 +807,12 @@
  :aliases #{ "Micah" }
  :usernames #{ "slagyr" }
  :emails #{ "micahmartin@gmail.com" "micah@8thlight.com" }
+ :contributor true
+ }
+{:display-name "OHTA Shogo"
+ :aliases #{ }
+ :usernames #{ "sohta" }
+ :emails #{ "athos0220@gmail.com" "sohta0220@gmail.com" }
  :contributor true
  }
 {:display-name "Steve Miner"
@@ -867,6 +885,12 @@
  :aliases #{ }
  :usernames #{ "technomancy" }
  :emails #{ "technomancy@gmail.com" }
+ :contributor true
+ }
+{:display-name "Chad Taylor"
+ :aliases #{ }
+ :usernames #{ "tessellator" }
+ :emails #{ "caepo3@gmail.com" }
  :contributor true
  }
 {:display-name "Thomas Heller"
