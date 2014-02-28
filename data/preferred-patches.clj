@@ -582,22 +582,6 @@
   :name "0001-remove-unused-swapThunk-method-generation.patch",
   :patch-category "Code cleanup",
   }
- {:ticket "CLJ-1352",
-  :name "tcrawley-fixtures-with-non-test-vars-2014-02-14.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1353",
-  :name "clj-1353-v3.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
- {:ticket "CLJ-1354",
-  :name "0001-CLJ-1354-make-APersistentVector.SubVector-public.patch",
-  :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1355",
-  :name "clj-1355-v2.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1357",
   :name "CLJ-1357-its-typo.patch",
   :patch-category "Doc string fixes only",
@@ -605,10 +589,6 @@
  {:ticket "CLJ-1358",
   :name "CLJ-1358.patch",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1359",
-  :name "clj-1359.patch",
-  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1361",
   :name "simple-ns-pprint-fix.patch",
@@ -619,7 +599,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1363",
-  :name "clj-1363-v2.patch",
+  :name "clj-1363-v3.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1365",
