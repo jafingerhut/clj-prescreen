@@ -102,6 +102,10 @@
   :name "protocolerr.diff",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-738",
+  :name "738.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-771",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
@@ -145,13 +149,6 @@
  {:ticket "CLJ-888",
   :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-944",
-  :name "0001-Fix-for-CLJ-944.patch",
-  :patch-category "Clojure language/library bug fixes",
-  :patch-extra-note
-     "See comments for another patch 0002-Fix-for-CLJ-944.patch and
-      why it fails some tests, which are fixable.",
   }
  {:ticket "CLJ-957",
   :name "clj-957-allow-typehinting-of-method-signatures-in-deftype-patch2.txt",
@@ -598,12 +595,20 @@
   :name "clj-1362-v1.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1363",
-  :name "clj-1363-v3.patch",
+ {:ticket "CLJ-1365",
+  :name "clj-1365-v2.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1366",
+  :name "0002-make-the-reader-return-the-same-empty-map-when-it-re.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1372",
+  :name "clj-1372.diff",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1365",
-  :name "clj-1365-v1.patch",
+ {:ticket "CLJ-1373",
+  :name "clj-1373.diff",
   :patch-category "Performance enhancement",
   }
  )
