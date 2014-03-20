@@ -595,20 +595,52 @@
   :name "clj-1362-v1.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1365",
-  :name "clj-1365-v2.patch",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1366",
   :name "0002-make-the-reader-return-the-same-empty-map-when-it-re.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1372",
-  :name "clj-1372.diff",
+  :name "clj-1372-2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1373",
   :name "clj-1373.diff",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1375",
+  :name "clj-1375-v1.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1378",
+  :name "clj-1378-v2.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1379",
+  :name "fix-quoting-in-pass-case.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1380",
+  :name "clj-1380.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1383",
+  :name "clj-1383.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1384",
+  :name "CLJ-1384-p1.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1386",
+  :name "0001-Add-transient-predicate.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1387",
+  :name "clj-1387-v2.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1388",
+  :name "0001-FIX-CLJ-1388.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
