@@ -315,6 +315,10 @@
   :name "node-seq.diff",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1099",
+  :name "better-error-message-for-seq.patch",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1103",
   :name "clj-1103-4.diff",
   :patch-category "Language/library enhancement",
@@ -324,7 +328,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1107",
-  :name "0003-CLJ-1107-Throw-exception-for-get-on-unsupported-type.patch",
+  :name "clj-1107-throw-on-unsupported-get-v4.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1108",
@@ -464,7 +468,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-AllInvokeSites-20140204.patch",
+  :name "CLJ-1250-AllInvokeSites-20140320.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1251",
@@ -551,6 +555,15 @@
   :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1323",
+  :name "clj-1323-disable.diff",
+  :patch-category "Clojure language/library bug fixes",
+  :patch-extra-note
+     "This patch was committed shortly before the 1.6.0 release.
+      It merely disables the test that fails on JDK8.  This is a
+      temporary measure until Clojure is modified to use a version
+      of the ASM lib that makes the test pass again.",
+  }
  {:ticket "CLJ-1324",
   :name "clj-1324-1.patch",
   :patch-category "Language/library enhancement",
@@ -632,12 +645,8 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1386",
-  :name "0001-Add-transient-predicate.patch",
+  :name "0002-Add-transient-predicate.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1387",
-  :name "clj-1387-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1388",
   :name "0001-FIX-CLJ-1388.patch",
