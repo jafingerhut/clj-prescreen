@@ -696,7 +696,7 @@ Check it to see if it was created incorrectly."})
        "/" (:name p)))
 
 
-(def next-release-short "1.6")
+(def next-release-short "1.7")
 
 (def next-release (str "Release " next-release-short))
 
