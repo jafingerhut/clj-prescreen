@@ -146,6 +146,10 @@
   :name "clj-865.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-887",
+  :name "0001-don-t-remove-meta-from-arg-vector-in-maybe-destructu.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-888",
   :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
   :patch-category "Better error reporting",
@@ -568,6 +572,10 @@
   :name "clj-1324-1.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1325",
+  :name "boxed.diff",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-1329",
   :name "fix.patch",
   :patch-category "Code cleanup",
@@ -650,6 +658,28 @@
   }
  {:ticket "CLJ-1388",
   :name "0001-FIX-CLJ-1388.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1390",
+  :name "0001-CLJ-1390.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1394",
+  :name "pr-str-dispatch-value-safe.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1398",
+  :name "0001-update-apache-commons-javadoc-location.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "There are 3 separate patches, and it appears the author is
+      suggesting all 3 should be applied.  The other two are:
+
+        0002-add-javadoc-lookup-for-guava-and-apache-commons-lang.patch
+        0003-add-javadoc-lookup-for-jdk8.patch",
+  }
+ {:ticket "CLJ-1399",
+  :name "clj-1399.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  )
