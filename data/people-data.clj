@@ -659,6 +659,12 @@
  :emails #{ "el.wubo@gmail.com" }
  :contributor true
  }
+{:display-name "Norman Richards",
+ :aliases #{ }
+ :usernames #{ "norman" }
+ :emails #{ "orb@nostacktrace.com" }
+ :contributor true
+ }
 {:display-name "Omer Iqbal"
  :aliases #{ "olenhad" }
  :usernames #{ "olenhad" }
@@ -717,6 +723,12 @@
  :aliases #{ }
  :usernames #{ "qerub" }
  :emails #{ "christoffer.sawicki@gmail.com" }
+ :contributor true
+ }
+{:display-name "Roman Scherer",
+ :aliases #{ }
+ :usernames #{ "r0man" }
+ :emails #{ "roman.scherer@burningswell.com" }
  :contributor true
  }
 {:display-name "Rasmus Svensson"
