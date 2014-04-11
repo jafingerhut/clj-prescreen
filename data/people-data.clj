@@ -329,6 +329,12 @@
  :emails #{ "ekoontz@hiro-tan.org" }
  :contributor true
  }
+{:display-name "Eli Lindsey"
+ :aliases #{ }
+ :usernames #{ "elindsey" }
+ :emails #{ "eli@siliconsprawl.com" }
+ :contributor true
+ }
 {:display-name "Jason Felice"
  :aliases #{ }
  :usernames #{ "eraserhd" }
