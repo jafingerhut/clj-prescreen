@@ -652,6 +652,10 @@
   :name "CLJ-1384-p1.patch",
   :patch-category "Performance enhancement",
   }
+ {:ticket "CLJ-1385",
+  :name "CLJ-1385-reword-docstrings-on-transient-update-funct.patch",
+  :patch-category "Doc string fixes only",
+  }
  {:ticket "CLJ-1386",
   :name "0002-Add-transient-predicate.patch",
   :patch-category "Language/library enhancement",
@@ -661,7 +665,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1390",
-  :name "0001-CLJ-1390.patch",
+  :name "CLJ-1390-pprint-GregorianCalendar.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1394",
