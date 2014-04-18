@@ -230,6 +230,10 @@
   :name "string-coerce-to-int.diff",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1039",
+  :name "CLJ-1039-tolerate-misleading-type-metadata-on-var-wh.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1044",
   :name "001-enable-factory-ctor-inside-deftype.diff",
   :patch-category "Allow more correct-looking Clojure code to work",
@@ -685,5 +689,13 @@
  {:ticket "CLJ-1399",
   :name "clj-1399.diff",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1405",
+  :name "onejar-maven-plugin-fix.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1406",
+  :name "0001-modify-clojure.core-load-lib-so-that-it-removes-the-.patch",
+  :patch-category "Better error reporting",
   }
  )
