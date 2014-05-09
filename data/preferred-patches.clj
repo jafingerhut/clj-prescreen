@@ -103,7 +103,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-738",
-  :name "738.diff",
+  :name "clj-738-v2.diff",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-771",
@@ -390,6 +390,10 @@
  {:ticket "CLJ-1157",
   :name "20140121_fix_classloader.diff",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1161",
+  :name "0001-CLJ-1161-Remove-version.properties-from-sources-JAR.patch",
+  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1162",
   :name "CLJ-1162-p1.patch",
@@ -697,5 +701,9 @@
  {:ticket "CLJ-1406",
   :name "0001-modify-clojure.core-load-lib-so-that-it-removes-the-.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1408",
+  :name "CLJ-1408.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
