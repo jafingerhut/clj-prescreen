@@ -327,6 +327,10 @@
   :name "better-error-message-for-seq.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1100",
+  :name "CLJ-1100-reader-tags-with-periods.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1103",
   :name "clj-1103-4.diff",
   :patch-category "Language/library enhancement",
@@ -504,7 +508,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1261",
-  :name "clj-1261-2.diff",
+  :name "clj-1261-3.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1266",
@@ -669,7 +673,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1388",
-  :name "0001-FIX-CLJ-1388.patch",
+  :name "CLJ-1388-record-equality-and-map-record-factory.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1390",
@@ -705,5 +709,17 @@
  {:ticket "CLJ-1408",
   :name "CLJ-1408.patch",
   :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1410",
+  :name "CLJ-1410.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1412",
+  :name "0001-Add-2-arity-version-of-cycle-that-takes-the-number-o.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1419",
+  :name "0001-CLJ-1419-default-to-void-in-asm-type.patch",
+  :patch-category "Language/library enhancement",
   }
  )
