@@ -671,6 +671,12 @@
  :emails #{ "orb@nostacktrace.com" }
  :contributor true
  }
+{:display-name "Tomasz Nurkiewicz",
+ :aliases #{ }
+ :usernames #{ "nurkiewicz" }
+ :emails #{ "nurkiewicz@gmail.com" }
+ :contributor true
+ }
 {:display-name "Omer Iqbal"
  :aliases #{ "olenhad" }
  :usernames #{ "olenhad" }
@@ -723,6 +729,12 @@
  :aliases #{ }
  :usernames #{ "ppotter" }
  :emails #{ "philipgpotter@gmail.com" }
+ :contributor true
+ }
+{:display-name "Peter Taoussanis"
+ :aliases #{ }
+ :usernames #{ "ptaoussanis" }
+ :emails #{ "ptaoussanis@gmail.com" }
  :contributor true
  }
 {:display-name "Christoffer Sawicki"
