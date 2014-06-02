@@ -52,6 +52,12 @@
  :emails #{ "i@raynes.me" }
  :contributor true
  }
+{:display-name "Kyle Kingsbury"
+ :aliases #{ }
+ :usernames #{ "aphyr" }
+ :emails #{ "aphyr@aphyr.com" }
+ :contributor true
+ }
 {:display-name "Alex Osborne"
  :aliases #{ }
  :usernames #{ "aosborne" }
@@ -182,6 +188,12 @@
  :aliases #{ }
  :usernames #{ "chrismgray" }
  :emails #{ "chrismgray@gmail.com" }
+ :contributor true
+ }
+{:display-name "Linus Ericsson"
+ :aliases #{ }
+ :usernames #{ "claj" }
+ :emails #{ "oscarlinusericsson@gmail.com" }
  :contributor true
  }
 {:display-name "Gabriel Horner"
@@ -410,7 +422,7 @@
 {:display-name "Timothy Baldridge"
  :aliases #{ }
  :usernames #{ "halgari" }
- :emails #{ "tbaldridge@gmail.com" "timothy@thinkrelevance.com" }
+ :emails #{ "tbaldidge@gmail.com" "tbaldridge@gmail.com" "timothy@thinkrelevance.com" }
  :contributor true
  }
 {:display-name "Michel Alexandre Salim"
@@ -507,6 +519,12 @@
  :aliases #{ "Joseph Gallo" }
  :usernames #{ "joegallo" }
  :emails #{ "joegallo@gmail.com" }
+ :contributor true
+ }
+{:display-name "Jon Distad"
+ :aliases #{ }
+ :usernames #{ "jon.distad@gmail.com" }
+ :emails #{ "jon.distad@gmail.com" }
  :contributor true
  }
 {:display-name "Jeff Palmucci"
