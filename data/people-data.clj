@@ -422,7 +422,7 @@
 {:display-name "Timothy Baldridge"
  :aliases #{ }
  :usernames #{ "halgari" }
- :emails #{ "tbaldidge@gmail.com" "tbaldridge@gmail.com" "timothy@thinkrelevance.com" }
+ :emails #{ "tbaldridge@gmail.com" "timothy@thinkrelevance.com" }
  :contributor true
  }
 {:display-name "Michel Alexandre Salim"
