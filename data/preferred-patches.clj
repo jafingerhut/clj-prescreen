@@ -301,7 +301,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1093",
-  :name "0001-CLJ-1093-fix-empty-records-literal-v2.patch",
+  :name "0001-CLJ-1093-fix-empty-collection-literal-evaluation.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1094",
@@ -328,7 +328,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1100",
-  :name "CLJ-1100-reader-tags-with-periods.patch",
+  :name "clj-1100-v2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
@@ -488,7 +488,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1251",
-  :name "update.patch",
+  :name "CLJ-1251.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1253",
@@ -508,7 +508,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1261",
-  :name "clj-1261-3.diff",
+  :name "clj-1261-5.diff",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1266",
@@ -585,7 +585,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1325",
-  :name "boxed.diff",
+  :name "clj-1325-v3.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1329",
@@ -633,7 +633,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1372",
-  :name "clj-1372-2.diff",
+  :name "0007-CLJ-1372-consistent-hasheq-for-java.util.-List-Map-M.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1373",
@@ -718,8 +718,40 @@
   :name "0001-Add-2-arity-version-of-cycle-that-takes-the-number-o.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1415",
+  :name "faster-keywords.diff",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1416",
+  :name "0001-CLJ-1416-transients-hash-caching-for-gvec-Object-met.patch",
+  :patch-category "Performance enhancement",
+  }
  {:ticket "CLJ-1419",
   :name "0001-CLJ-1419-default-to-void-in-asm-type.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1420",
+  :name "0001-rand-using-ThreadLocalRandom-and-tests-for-random.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1423",
+  :name "apply-var.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1424",
+  :name "clojure-feature-expressions.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1425",
+  :name "0001-Fix-map-unquote-splicing.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1429",
+  :name "clj-1429.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1430",
+  :name "partial-perf.diff",
+  :patch-category "Performance enhancement",
   }
  )
