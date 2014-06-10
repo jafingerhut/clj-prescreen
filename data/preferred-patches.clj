@@ -726,10 +726,6 @@
   :name "0001-CLJ-1416-transients-hash-caching-for-gvec-Object-met.patch",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1419",
-  :name "0001-CLJ-1419-default-to-void-in-asm-type.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1420",
   :name "0001-rand-using-ThreadLocalRandom-and-tests-for-random.patch",
   :patch-category "Performance enhancement",
