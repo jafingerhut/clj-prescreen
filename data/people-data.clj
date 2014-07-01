@@ -82,10 +82,16 @@
  :emails #{ "arohner@gmail.com" }
  :contributor true
  }
+{:display-name "Reid McKenzie"
+ :aliases #{ "arrdem" }
+ :usernames #{ "arrdem" }
+ :emails #{ "me@arrdem.com" }
+ :contributor true
+ }
 {:display-name "Alex Taggart"
  :aliases #{ "Alexander Taggart" }
  :usernames #{ "ataggart" }
- :emails #{ "mail@ataggart.ca" "alex.taggart@expojure.com" "ataggart@mercury.local" }
+ :emails #{ "mail@ataggart.ca" "alex.taggart@expojure.com" "ataggart@mercury.local" "alex.taggart@outpace.com" }
  :contributor true
  }
 {:display-name "Brandon Bloom"
@@ -98,6 +104,12 @@
  :aliases #{ }
  :usernames #{ "bendlas" }
  :emails #{ "hhochleitner@gmail.com" }
+ :contributor true
+ }
+{:display-name "Ben Moss"
+ :aliases #{ }
+ :usernames #{ "benmoss" }
+ :emails #{ "ben@mossity.com" }
  :contributor true
  }
 {:display-name "Brenton Ashworth"
@@ -677,6 +689,12 @@
  :emails #{ "m@qbits.cc" }
  :contributor true
  }
+{:display-name "Nathan Zadoks"
+ :aliases #{ }
+ :usernames #{ "nathan7" }
+ :emails #{ "nathan@nathan7.eu" }
+ :contributor true
+ }
 {:display-name "Brian Taylor"
  :aliases #{ }
  :usernames #{ "netguy204" }
@@ -831,6 +849,12 @@
  :aliases #{ "Steve Gilardi" }
  :usernames #{ "scgilardi" }
  :emails #{ "scgilardi@gmail.com" "squeegee@squeegee-mbp.scgilardi.selfip.net" }
+ :contributor true
+ }
+{:display-name "Scott Bale"
+ :aliases #{ }
+ :usernames #{ "scottbale" }
+ :emails #{ "scott@balehaus.org" }
  :contributor true
  }
 {:display-name "Scott Lowe"
