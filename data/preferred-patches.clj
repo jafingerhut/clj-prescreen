@@ -53,10 +53,6 @@
       Comment discussion on various approaches to this ticket are
       extensive.",
   }
- {:ticket "CLJ-373",
-  :name "CLJ-373-nested-ops.patch",
-  :patch-category "Allow more correct-looking Clojure code to work",
-  }
  {:ticket "CLJ-415",
   :name "clj-415-assert-prints-locals-v1.txt",
   :patch-category "Debug/tooling enhancement",
@@ -192,6 +188,10 @@
   :stale-patch-last-time-applied-cleanly "Jul 2012",
   :patch-extra-note
      "None of the patches apply cleanly, but did on Jul 26, 2012.",
+  }
+ {:ticket "CLJ-1002",
+  :name "document_chunk_fns.patch",
+  :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1004",
   :name "arraychunk-seq-10004.diff",
@@ -404,7 +404,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1169",
-  :name "0001-CLJ-1169-proposed-patch.patch",
+  :name "CLJ-1169-code-and-test-1.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1180",
@@ -412,7 +412,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1185",
-  :name "CLJ-1181-v001.patch",
+  :name "CLJ-1181-v002.patch",
   :patch-category "Language enhancement, reducers",
   }
  {:ticket "CLJ-1187",
@@ -448,7 +448,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1224",
-  :name "0001-CLJ-1224-cache-hasheq-and-hashCode-for-records.patch",
+  :name "0001-cache-hasheq-and-hashCode-for-records.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1225",
@@ -571,6 +571,10 @@
   :name "0001-CLJ-1319-Throw-on-odd-arguments-to-PersistentArrayMa.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1322",
+  :name "doseq.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1323",
   :name "clj-1323-disable.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -661,7 +665,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1384",
-  :name "CLJ-1384-p1.patch",
+  :name "CLJ-1384-p2.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1385",
@@ -698,6 +702,10 @@
   :name "clj-1399.diff",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1400",
+  :name "clj-1400-1.diff",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1405",
   :name "onejar-maven-plugin-fix.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -719,7 +727,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1415",
-  :name "faster-keywords.diff",
+  :name "keyword-cache.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1416",
@@ -749,5 +757,37 @@
  {:ticket "CLJ-1430",
   :name "partial-perf.diff",
   :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1439",
+  :name "0001-Improve-Keyword.intern-performance.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1442",
+  :name "0001-Annotate-generated-symbols-with-metadata.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1444",
+  :name "0001-Fix-unquote-splicing-for-empty-seqs.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1445",
+  :name "clj-1445-workaround-v2.clj",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1451",
+  :name "CLJ-1451-take-until.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1452",
+  :name "CLJ-1452.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1453",
+  :name "0001-Fix-iterator-implementations-to-throw-NSEE-when-exha.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1456",
+  :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
+  :patch-category "Better error reporting",
   }
  )
