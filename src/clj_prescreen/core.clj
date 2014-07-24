@@ -1579,6 +1579,10 @@ tickets.  You must be selective to change the rankings.
 Each person gets 1 weighted vote to divide up as they wish for each
 project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
 
+Note: Ticket wranglers sometimes look at unweighted vote counts on
+tickets, too, when deciding which to act upon, so feel free to vote on
+many tickets if you care about them.
+
 Each ticket is listed with:
 
 <weighted vote>  <vote count>  <State>   [<project>-<n>] <summary line>
@@ -1624,6 +1628,11 @@ to change the rankings.
 <p>
 Each person gets 1 weighted vote to divide up as they wish for each
 project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+
+<p>
+Note: Ticket wranglers sometimes look at unweighted vote counts on
+tickets, too, when deciding which to act upon, so feel free to vote on
+many tickets if you care about them.
 
 <p>
 State is one of the states in the JIRA flow diagram <a
