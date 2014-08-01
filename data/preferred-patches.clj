@@ -737,6 +737,8 @@
  {:ticket "CLJ-1420",
   :name "0001-rand-using-ThreadLocalRandom-and-tests-for-random.patch",
   :patch-category "Performance enhancement",
+  :patch-extra-note
+     "This patch requires JDK7 or later, breaking with JDK6.",
   }
  {:ticket "CLJ-1423",
   :name "apply-var.patch",
