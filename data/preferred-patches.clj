@@ -12,13 +12,8 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-124",
-  :name nil,
+  :name "clj-124-v1.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "There are lots of different ideas discussed in the comments for
-      CLJ-124, and not clear to me if there is an agreed-upon set of
-      changes for the issue.  CLJ-959 could potentially be closed as a
-      duplicate of CLJ-124.",
   }
  {:ticket "CLJ-129",
   :name nil,
@@ -79,6 +74,10 @@
  {:ticket "CLJ-700",
   :name "clj-700-7.diff",
   :patch-category "Allow more correct-looking Clojure code to work",
+  }
+ {:ticket "CLJ-701",
+  :name "hoistedmethod-pass-5.diff",
+  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-703",
   :name "improve-writeclassfile-perf.patch",
@@ -301,7 +300,7 @@
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1093",
-  :name "0001-CLJ-1093-fix-empty-collection-literal-evaluation.patch",
+  :name "0001-CLJ-1093-fix-compilation-of-empty-PersistentCollecti.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1094",
@@ -391,6 +390,10 @@
   :name "tiny-reducers-cleanup.diff",
   :patch-category "Code cleanup",
   }
+ {:ticket "CLJ-1152",
+  :name "naive-lru-for-multimethods-and-protocols.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
  {:ticket "CLJ-1157",
   :name "20140121_fix_classloader.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -414,10 +417,6 @@
  {:ticket "CLJ-1185",
   :name "CLJ-1181-v002.patch",
   :patch-category "Language enhancement, reducers",
-  }
- {:ticket "CLJ-1187",
-  :name "001-CLJ-1187.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1189",
   :name "CLJ-1189-p1.patch",
@@ -706,10 +705,6 @@
   :name "clj-1400-1.diff",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1405",
-  :name "onejar-maven-plugin-fix.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1406",
   :name "0001-modify-clojure.core-load-lib-so-that-it-removes-the-.patch",
   :patch-category "Better error reporting",
@@ -727,11 +722,11 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1415",
-  :name "keyword-cache.diff",
+  :name "unified-kw-patch.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1416",
-  :name "0001-CLJ-1416-transients-hash-caching-for-gvec-Object-met.patch",
+  :name "0002-CLJ-1416-transients-hash-caching-interop-improvement.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1420",
@@ -760,10 +755,6 @@
   :name "partial-perf.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1439",
-  :name "0001-Improve-Keyword.intern-performance.patch",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1442",
   :name "0001-Annotate-generated-symbols-with-metadata.patch",
   :patch-category "Debug/tooling enhancement",
@@ -785,11 +776,81 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1453",
-  :name "0001-Fix-iterator-implementations-to-throw-NSEE-when-exha.patch",
+  :name "0001-Throw-NSEE-in-gvec-iterator.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
   :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1464",
+  :name "0001-Rename-a-function-parameter-to-reflect-the-fold-func.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1466",
+  :name "iterable-bean-v2.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1469",
+  :name "kwinvoke.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1470",
+  :name "CLJ-1470-v1.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1472",
+  :name "0001-Move-monitor-enter-outside-try-block.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1473",
+  :name "0001-Validate-that-pre-and-post-conditions-are-vectors.patch",
+  :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1475",
+  :name "clj-1475.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1477",
+  :name "0001-Fix-a-typo.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1478",
+  :name "0001-Fix-a-typo.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1479",
+  :name "0001-Fix-a-typo.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1480",
+  :name "0001-Fix-param-name-reference-in-defmulti-s-docstring.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1481",
+  :name "0001-Fix-a-typo.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1482",
+  :name "0001-Replace-a-couple-of-filter-complement-usages-with-re.patch",
+  :patch-category "Code cleanup",
+  }
+ {:ticket "CLJ-1483",
+  :name "0001-Clarify-the-usage-of-replace-first-with-pattern-func.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1485",
+  :name "clj-1485.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1486",
+  :name "0001-make-fnil-vararg.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1487",
+  :name "unroll-partial.patch",
+  :patch-category "Language/library enhancement",
+  :patch-extra-note
+     "Ticket is probably a dup of CLJ-1430"
   }
  )

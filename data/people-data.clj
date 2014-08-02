@@ -13,6 +13,11 @@
  :emails #{ "aaron@thinkrelevance.com" "aaron@aaronbedra.com" }
  :contributor true
  }
+{:display-name "Aaron Craelius"
+ :usernames #{ "aaroncr" }
+ :emails #{ "aaroncraelius@gmail.com" }
+ :contributor true
+ }
 {:display-name "Achim Passen"
  :usernames #{ "achimpassen" }
  :emails #{ "achim.passen@gmail.com" }
@@ -128,6 +133,12 @@
  :aliases #{ }
  :usernames #{ "bjeanes" }
  :emails #{ "me@bjeanes.com" }
+ :contributor true
+ }
+{:display-name "Bozhidar Batsov"
+ :aliases #{ }
+ :usernames #{ "bozhidar" }
+ :emails #{ "bozhidar@batsov.com" }
  :contributor true
  }
 {:display-name "Nicola Mometto"
