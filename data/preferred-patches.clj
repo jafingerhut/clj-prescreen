@@ -189,7 +189,7 @@
      "None of the patches apply cleanly, but did on Jul 26, 2012.",
   }
  {:ticket "CLJ-1002",
-  :name "document_chunk_fns.patch",
+  :name "document_chunk_fns_v2.patch",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1004",
@@ -331,7 +331,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-4.diff",
+  :name "clj-1103-5.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
@@ -668,11 +668,11 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1385",
-  :name "CLJ-1385-reword-docstrings-on-transient-update-funct.patch",
+  :name "CLJ-1385-reword-docstrings-on-transient-update-funct-2.patch",
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1386",
-  :name "0002-Add-transient-predicate.patch",
+  :name "0003-Add-transient-predicate.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1388",
@@ -721,10 +721,6 @@
   :name "0001-Add-2-arity-version-of-cycle-that-takes-the-number-o.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1415",
-  :name "unified-kw-patch.diff",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1416",
   :name "0002-CLJ-1416-transients-hash-caching-interop-improvement.patch",
   :patch-category "Performance enhancement",
@@ -740,7 +736,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1424",
-  :name "clojure-feature-expressions.diff",
+  :name "CLJ-1424-2.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1425",
@@ -756,11 +752,11 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1442",
-  :name "0001-Annotate-generated-symbols-with-metadata.patch",
+  :name "0003-Annotate-generated-symbols-with-metadata.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1444",
-  :name "0001-Fix-unquote-splicing-for-empty-seqs.patch",
+  :name "0001-Fix-unquote-splicing-for-empty-seqs-This-required-ma.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1445",
@@ -800,7 +796,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1472",
-  :name "0001-Move-monitor-enter-outside-try-block.patch",
+  :name "0001-CLJ-1472-Locking-macro-fails-bytecode-verification.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1473",
@@ -847,10 +843,40 @@
   :name "0001-make-fnil-vararg.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1487",
-  :name "unroll-partial.patch",
+ {:ticket "CLJ-1488",
+  :name "0001-Implement-clojure.lang.Named-over-Vars.patch",
   :patch-category "Language/library enhancement",
-  :patch-extra-note
-     "Ticket is probably a dup of CLJ-1430"
+  }
+ {:ticket "CLJ-1489",
+  :name "0001-Implement-var-symbol.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1490",
+  :name "CLJ-1490.1.patch",
+  :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1491",
+  :name "0001-preserve-fn-meta-on-invokePrim.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1492",
+  :name "0001-Exclude-PersistentQueue-from-IPersistentList-eval-co.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1493",
+  :name "fast_keyword_intern.diff",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1494",
+  :name "0001-remove-flatmap-use-1-arity-mapcat-instead.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1496",
+  :name "ex_info_arity.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1498",
+  :name "clj-1498.diff",
+  :patch-category "Language/library enhancement",
   }
  )
