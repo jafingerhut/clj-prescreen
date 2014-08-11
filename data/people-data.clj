@@ -23,6 +23,12 @@
  :emails #{ "achim.passen@gmail.com" }
  :contributor true
  }
+{:display-name "Adam Clements"
+ :aliases #{ }
+ :usernames #{ "adamclements" }
+ :emails #{ "adam.clements@gmail.com" }
+ :contributor true
+ }
 {:display-name "Alan Dipert"
  :usernames #{ "alan@thinkrelevance.com" }
  :emails #{ "alan@thinkrelevance.com" "alan@dipert.org" }
@@ -114,7 +120,7 @@
 {:display-name "Ben Moss"
  :aliases #{ }
  :usernames #{ "benmoss" }
- :emails #{ "ben@mossity.com" }
+ :emails #{ "ben@mossity.com" "ben@movableink.com" }
  :contributor true
  }
 {:display-name "Brenton Ashworth"
@@ -584,6 +590,12 @@
  :aliases #{ }
  :usernames #{ "khinsen" }
  :emails #{ "konrad.hinsen@fastmail.net" }
+ :contributor true
+ }
+{:display-name "Dennis Zhuang"
+ :aliases #{ "dennis zhuang" }
+ :usernames #{ "killme2008" }
+ :emails #{ "killme2008@gmail.com" }
  :contributor true
  }
 {:display-name "Shantanu Kumar"
