@@ -233,7 +233,7 @@ TBENCH-11"
 
 
 (defn url-all-non-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax=2000")
+  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax=4000")
 
 
 (defn url-for-tickets-voted-by-user [username]
