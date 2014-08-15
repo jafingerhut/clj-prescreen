@@ -271,6 +271,7 @@ it to a local file."
                                 (url-all-CLJ-tickets)
                                 (url-all-non-CLJ-tickets))))
 
+(def enumerate (partial map-indexed vector))
 
 (defn dl-open-ticket-votes!
   "Download XML data about votes cast on all open CLJ tickets and
@@ -278,27 +279,28 @@ return it as a map from users to a list of tickets they voted on."
   [all-jira-users http-auth-info verbose]
   (when verbose
     (println "Getting votes for users:"))
-  (into {}
-        (for [user all-jira-users]
-          (let [uname (first (:usernames user))
-                _ (when verbose
-                    (print (format "%s (%s) ...   " (:display-name user)
-                                   uname))
-                    (flush))
-                resp (http/get (url-for-tickets-voted-by-user uname)
-                               (merge http-auth-info
-                                      {:throw-exceptions false}))
-                tickets (if (= 200 (:status resp))
-                          (tickets-from-xml (:body resp))
-                          [])]
-            (when verbose
-              (println (if (= 200 (:status resp))
-                         (if (zero? (count tickets))
-                           ""
-                           (format "%d" (count tickets)))
-                         (format "HTTP error status %d"
-                                 (:status resp)))))
-            [user tickets]))))
+  (let [num-users (count all-jira-users)]
+    (into {}
+          (for [[idx user] (enumerate all-jira-users)]
+            (let [uname (first (:usernames user))
+                  _ (when verbose
+                      (print (format "%d/%d %s (%s) ...   " (inc idx) num-users
+                                     (:display-name user) uname))
+                      (flush))
+                  resp (http/get (url-for-tickets-voted-by-user uname)
+                                 (merge http-auth-info
+                                        {:throw-exceptions false}))
+                  tickets (if (= 200 (:status resp))
+                            (tickets-from-xml (:body resp))
+                            [])]
+              (when verbose
+                (println (if (= 200 (:status resp))
+                           (if (zero? (count tickets))
+                             ""
+                             (format "%d" (count tickets)))
+                           (format "HTTP error status %d"
+                                   (:status resp)))))
+              [user tickets])))))
 
 
 (defn att-dir-name [ticket-name attach-dir]
@@ -340,7 +342,7 @@ return it as a map from users to a list of tickets they voted on."
   (let [num-atts (count atts)]
     (iprintf "Getting %d attachments:\n" num-atts)
     (doall
-     (for [[idx att] (map-indexed list atts)]
+     (for [[idx att] (enumerate atts)]
        (if (nil? (:name att))
          att
          (let [{ticket-name :ticket id :id att-name :name} att
