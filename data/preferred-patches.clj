@@ -12,7 +12,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-124",
-  :name "clj-124-v1.patch",
+  :name "clj-124-daemonthreads-v1.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-129",
@@ -97,10 +97,6 @@
   :name "protocolerr.diff",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-738",
-  :name "clj-738-v2.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-771",
   :name "clj-771-move-unchecked-casts-patch-v5.txt",
   :patch-category "Language/library enhancement",
@@ -141,10 +137,6 @@
   :name "clj-865.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-887",
-  :name "0001-don-t-remove-meta-from-arg-vector-in-maybe-destructu.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-888",
   :name "0001-Forbid-vararg-declaration-in-defprotocol-definterfac.patch",
   :patch-category "Better error reporting",
@@ -160,10 +152,6 @@
  {:ticket "CLJ-970",
   :name "clj-970-extend-implement-parameterized-types-patch2.txt",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-971",
-  :name "clj-971-2.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-976",
   :name "clj-976-queue-literal-eval-and-synquote-patch-v3.txt",
@@ -228,10 +216,6 @@
  {:ticket "CLJ-1030",
   :name "string-coerce-to-int.diff",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1039",
-  :name "CLJ-1039-tolerate-misleading-type-metadata-on-var-wh.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1044",
   :name "001-enable-factory-ctor-inside-deftype.diff",
@@ -383,7 +367,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1148",
-  :name "clj-1148-defonce-3.patch",
+  :name "clj-1148-defonce-5.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1151",
@@ -406,25 +390,13 @@
   :name "CLJ-1162-p1.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1169",
-  :name "CLJ-1169-code-and-test-1.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1180",
   :name "001-CLJ-1180.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1185",
-  :name "CLJ-1181-v002.patch",
-  :patch-category "Language enhancement, reducers",
-  }
  {:ticket "CLJ-1189",
   :name "CLJ-1189-p1.patch",
   :patch-category "Better error reporting",
-  }
- {:ticket "CLJ-1191",
-  :name "clj-1191-patch-v1.txt",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1209",
   :name "0002-CLJ-1209-show-ex-data-in-clojure-test.patch",
@@ -462,6 +434,10 @@
   :name "clj-1229-count-overflow-patch-v1.txt",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1232",
+  :name "0001-throw-on-non-qualified-class-names-that-are-not-auto.patch",
+  :patch-category "Better error reporting",
+  }
  {:ticket "CLJ-1237",
   :name "CLJ-1237c.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -474,21 +450,13 @@
   :name "0001-CLJ-1240-Note-limits-of-clojure.walk-macroexpand-all.patch",
   :patch-category "Doc string fixes only",
   }
- {:ticket "CLJ-1241",
-  :name "0001-fix-CLJ-1241.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1242",
   :name "0001-fix-for-CLJ-1242-tests.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-AllInvokeSites-20140320.patch",
+  :name "CLJ-1250-08-29.patch",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1251",
-  :name "CLJ-1251.patch",
-  :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1253",
   :name "clj-1253-1.txt",
@@ -506,17 +474,9 @@
   :name "clj-1259-1.txt",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1261",
-  :name "clj-1261-5.diff",
-  :patch-category "Better error reporting",
-  }
  {:ticket "CLJ-1266",
   :name "floats-intrinsics.diff",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1274",
-  :name "CLJ-1274.patch",
-  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1275",
   :name "0001-Don-t-use-shorthand-for-typehints-when-print-dup.patch",
@@ -533,6 +493,10 @@
  {:ticket "CLJ-1282",
   :name "CLJ-1282-p2.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1284",
+  :name "CLJ-1284-store-demunged-names.patch",
+  :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1289",
   :name "CLJ-1289-p1.patch",
@@ -587,10 +551,6 @@
   :name "clj-1324-1.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1325",
-  :name "clj-1325-v3.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1329",
   :name "fix.patch",
   :patch-category "Code cleanup",
@@ -627,10 +587,6 @@
   :name "simple-ns-pprint-fix.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1362",
-  :name "clj-1362-v1.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1366",
   :name "0002-make-the-reader-return-the-same-empty-map-when-it-re.patch",
   :patch-category "Language/library enhancement",
@@ -647,10 +603,6 @@
   :name "clj-1375-v1.patch",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1378",
-  :name "clj-1378-v2.diff",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1379",
   :name "fix-quoting-in-pass-case.diff",
   :patch-category "Clojure language/library bug fixes",
@@ -663,10 +615,6 @@
   :name "clj-1383.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1384",
-  :name "CLJ-1384-p2.patch",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1385",
   :name "CLJ-1385-reword-docstrings-on-transient-update-funct-2.patch",
   :patch-category "Doc string fixes only",
@@ -674,10 +622,6 @@
  {:ticket "CLJ-1386",
   :name "0003-Add-transient-predicate.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1388",
-  :name "CLJ-1388-record-equality-and-map-record-factory.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1390",
   :name "CLJ-1390-pprint-GregorianCalendar.patch",
@@ -710,7 +654,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1408",
-  :name "CLJ-1408.patch",
+  :name "CLJ-1408-3.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1410",
@@ -742,14 +686,6 @@
  {:ticket "CLJ-1425",
   :name "0001-Fix-map-unquote-splicing.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1429",
-  :name "clj-1429.patch",
-  :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1430",
-  :name "partial-perf.diff",
-  :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1442",
   :name "0003-Annotate-generated-symbols-with-metadata.patch",
@@ -875,8 +811,44 @@
   :name "ex_info_arity.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1498",
-  :name "clj-1498.diff",
+ {:ticket "CLJ-1501",
+  :name "clj-1501.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1502",
+  :name "clj-1502-v1.patch",
+  :patch-category "Debug/tooling enhancement",
+  }
+ {:ticket "CLJ-1503",
+  :name "0001-allow-for-foo-and-gensym-gensym.patch",
   :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1504",
+  :name "0001-add-inline-to-some-core-predicates.patch",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1506",
+  :name "fast_syntax_quote_reader.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1507",
+  :name "fix_npe_eval_reader.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1508",
+  :name "supplied_p.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1512",
+  :name "volatile2.diff",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1514",
+  :name "0001-Use-fully-qualified-class-names-for-return-type-hint.patch",
+  :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1516",
+  :name "0001-throw-an-exception-on-def-names-containing-dots.patch",
+  :patch-category "Better error reporting",
   }
  )
