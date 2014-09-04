@@ -1074,6 +1074,12 @@
  :emails #{ "jozef.wagner@gmail.com" }
  :contributor true
  }
+{:display-name "Zach Tellman"
+ :aliases #{ }
+ :usernames #{ "ztellman" }
+ :emails #{ "ztellman@gmail.com" }
+ :contributor true
+ }
 ]
 ;;{:display-name ""
 ;; :aliases #{ }
