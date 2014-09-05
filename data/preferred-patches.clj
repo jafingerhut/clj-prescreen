@@ -315,7 +315,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-5.diff",
+  :name "clj-1103-6.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
@@ -427,7 +427,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1226",
-  :name "0001-fix-CLJ-1226.patch",
+  :name "0001-CLJ-1226-fix-set-of-instance-field-expression-that-r.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1229",
@@ -620,7 +620,7 @@
   :patch-category "Doc string fixes only",
   }
  {:ticket "CLJ-1386",
-  :name "0003-Add-transient-predicate.patch",
+  :name "0004-Add-transient-predicate.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1390",
@@ -646,8 +646,12 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1400",
-  :name "clj-1400-1.diff",
+  :name "clj-1400-2.diff",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1403",
+  :name "0001-CLJ-1403-ns-resolve-returns-nil-if-class-is-not-foun.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1406",
   :name "0001-modify-clojure.core-load-lib-so-that-it-removes-the-.patch",
@@ -665,8 +669,12 @@
   :name "0001-Add-2-arity-version-of-cycle-that-takes-the-number-o.patch",
   :patch-category "Language/library enhancement",
   }
+ {:ticket "CLJ-1414",
+  :name "clj-1414-v1.patch",
+  :patch-category "Doc string fixes only",
+  }
  {:ticket "CLJ-1416",
-  :name "0002-CLJ-1416-transients-hash-caching-interop-improvement.patch",
+  :name "0003-CLJ-1416-transients-hash-caching-interop-improvement.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1420",
@@ -699,6 +707,10 @@
   :name "clj-1445-workaround-v2.clj",
   :patch-category "Clojure language/library bug fixes",
   }
+ {:ticket "CLJ-1449",
+  :name "clj-1149-basic-v1.patch",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-1451",
   :name "CLJ-1451-take-until.patch",
   :patch-category "Language/library enhancement",
@@ -712,7 +724,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
-  :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
+  :name "v3_0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1464",
@@ -803,10 +815,6 @@
   :name "fast_keyword_intern.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1494",
-  :name "0001-remove-flatmap-use-1-arity-mapcat-instead.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1496",
   :name "ex_info_arity.diff",
   :patch-category "Language/library enhancement",
@@ -839,16 +847,24 @@
   :name "supplied_p.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1512",
-  :name "volatile2.diff",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1514",
   :name "0001-Use-fully-qualified-class-names-for-return-type-hint.patch",
   :patch-category "Better error reporting",
   }
+ {:ticket "CLJ-1515",
+  :name "patch.diff",
+  :patch-category "Language/library enhancement",
+  }
  {:ticket "CLJ-1516",
   :name "0001-throw-an-exception-on-def-names-containing-dots.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1517",
+  :name "unrolled-collections-2.diff",
+  :patch-category "Performance enhancement",
+  }
+ {:ticket "CLJ-1519",
+  :name "new-ns-arity.patch",
+  :patch-category "Language/library enhancement",
   }
  )
