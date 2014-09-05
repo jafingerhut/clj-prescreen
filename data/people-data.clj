@@ -34,6 +34,12 @@
  :emails #{ "alan@thinkrelevance.com" "alan@dipert.org" }
  :contributor true
  }
+{:display-name "Alex Baranosky"
+ :aliases #{ }
+ :usernames #{ "alexbaranosky" }
+ :emails #{ "alexander.baranosky@gmail.com" }
+ :contributor true
+ }
 {:display-name "Alex Miller"
  :aliases #{ "puredanger" }
  :usernames #{ "alexmiller" }
