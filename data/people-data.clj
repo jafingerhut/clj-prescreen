@@ -646,6 +646,12 @@
  :emails #{ "kevin@keminglabs.com" }
  :contributor true
  }
+{:display-name "Mark Nutter"
+ :aliases #{ }
+ :usernames #{ "manutter51" }
+ :emails #{ "manutter51@gmail.com" }
+ :contributor true
+ }
 {:display-name "Matt Revelle"
  :aliases #{ }
  :usernames #{ "mattrevelle" }
@@ -1024,6 +1030,12 @@
  :aliases #{ "tpratley" "unknown" }
  :usernames #{ "timothypratley" }
  :emails #{ "timothypratley@gmail.com" "Ninja@.(none)" }
+ :contributor true
+ }
+{:display-name "Tobias Kortkamp"
+ :aliases #{ }
+ :usernames #{ "tobik" }
+ :emails #{ "tobias.kortkamp@gmail.com" }
  :contributor true
  }
 {:display-name "Tom Faulhaber"
