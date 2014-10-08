@@ -369,8 +369,8 @@ index bfc8274..dea9310 100644
               #{"andy.fingerhut@gmail.com" "andy_fingerhut@alum.wustl.edu"
                 "jafinger@cisco.com"},
               :contributor true}]
-    (is (= authors1 #{"Andy Fingerhut <andy_fingerhut@alum.wustl.edu>"
-                      "Juha Arpiainen <jarpiain@iki.fi>"}))
+    (is (= (set authors1) #{"Andy Fingerhut <andy_fingerhut@alum.wustl.edu>"
+                            "Juha Arpiainen <jarpiain@iki.fi>"}))
     (is (= names-and-emails1
            #{{:name "Andy Fingerhut", :email "andy_fingerhut@alum.wustl.edu"}
              {:name "Juha Arpiainen", :email "jarpiain@iki.fi"}}))
