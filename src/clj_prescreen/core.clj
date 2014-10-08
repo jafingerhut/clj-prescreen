@@ -699,14 +699,19 @@ Check it to see if it was created incorrectly."})
 
 
 (def next-release-short "1.7")
-
 (def next-release (str "Release " next-release-short))
 
-(defn next-rel? [fix-versions]
-  (some #(= % next-release) fix-versions))
+(defn next-release? [att]
+  (some #(= % next-release) (:fixVersion att)))
 
-(defn backlog? [fix-versions]
-  (some #(= % "Backlog") fix-versions))
+(def after-next-release-short "1.8")
+(def after-next-release (str "Release " after-next-release-short))
+
+(defn after-next-release? [att]
+  (some #(= % after-next-release) (:fixVersion att)))
+
+(defn backlog? [att]
+  (some #(= % "Backlog") (:fixVersion att)))
 
 
 (defn derived-ticket-state-seq [att]
@@ -714,8 +719,8 @@ Check it to see if it was created incorrectly."})
         open (contains? #{"Open" "In Progress" "Reopened"} status)
         approval (get att "Approval")
         fix-versions (:fixVersion att)
-        next-rel (next-rel? fix-versions)
-        backlog (backlog? fix-versions)
+        next-rel (next-release? att)
+        backlog (or (backlog? att) (after-next-release? att))
         patch (get att "Patch")
         bad-field-vals
         (filter identity
@@ -1051,9 +1056,6 @@ apply the patch, and try to build with 'ant' in that copy."
        (= (:patch-author-summary att) :CA-ok)
        (contains? #{:ok :warn} (:patch-status att))
        (not= (:ant-status att) :ok)))
-
-(defn next-release? [att]
-  (some #(= % next-release) (:fixVersion att)))
 
 (defn approval-in? [att approval-set]
   (approval-set (get att "Approval")))
@@ -1595,6 +1597,10 @@ Each ticket is listed with:
 where State is one of the states in the JIRA flow diagram at
 
     http://dev.clojure.org/display/community/JIRA+workflow
+
+Note that a state of \"Backlog\" is shown below if the next release is
+N, and the ticket is marked for fix in release N+1 (e.g. the next
+release is 1.7, but the ticket is marked for fix in release 1.8).
 "
               project date-str project) ]
     :html
@@ -1639,6 +1645,11 @@ many tickets if you care about them.
 <p>
 State is one of the states in the JIRA flow diagram <a
 href=\"http://dev.clojure.org/display/community/JIRA+workflow\">here</a>.
+
+<p>
+Note that a state of \"Backlog\" is shown below if the next release is
+<span style=\"font-style: italic;\">N</span>, and the ticket is marked for fix in release <span style=\"font-style: italic;\">N+1</span> (e.g. the next
+release is 1.7, but the ticket is marked for fix in release 1.8).
 "
               project project date-str project) ]))
 
