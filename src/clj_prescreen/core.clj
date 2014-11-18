@@ -390,7 +390,7 @@ the root directory of a Clojure git repository."
                                 [false args])
         cmd-str (str/join " " args)]
     (when *cmd-log* (iprintf *cmd-log* "\n%% %s\n" cmd-str))
-    (let [{:keys [exit out err] :as ret} (apply sh/sh args)]
+    (let [{:keys [exit] :as ret} (apply sh/sh args)]
       (if (and (not= exit 0) throw-on-error)
         (let [err-msg (format "Non-0 exit status %d from command: \"%s\"
 %s"
@@ -462,7 +462,7 @@ once, using a set."
 
 
 (defn one-author-contributor-status
-  [people {:keys [name email] :as author}]
+  [people author]
   (let [[match-kind x] (find-by-name-and-email people author)]
     (if (= match-kind :one-full-match)
       {:contributor-status (if (:contributor x)
@@ -504,7 +504,7 @@ type."
   (or (:actual-type p) (:guessed-type p)))
 
 
-(defn apply-git-patch [p patch-filename idx num-patches]
+(defn apply-git-patch [p patch-filename _idx _num-patches]
   (let [{:keys [exit out err]} (try-cmd "git" "am" "--keep-cr"
                                         "--ignore-whitespace" "-s"
                                         patch-filename)]
@@ -541,11 +541,11 @@ Aborting eval-patch! to avoid corrupting the git repo." (:exit abort-ret))})))
 to get git repo back into state to continue." exit)})))))
 
 
-(defn apply-non-git-patch [p patch-filename idx num-patches]
+(defn apply-non-git-patch [p patch-filename _idx _num-patches]
   (let [patch-opts (or (:patch-opts p) [ "-p1" ])
         patch-cmd (concat [ "patch" ] patch-opts
                           [ "--batch" (str "--input=" patch-filename) ])
-        {:keys [exit out err]} (apply try-cmd patch-cmd)]
+        {:keys [exit out]} (apply try-cmd patch-cmd)]
     (if (zero? exit)
       ;; Check for unusual output, since patch --batch can
       ;; automatically choose to do some things you might not want to
@@ -573,7 +573,7 @@ Check it to see if it was created incorrectly."})
 
 (defn remove-acceptable-ant-output-problems [s system-props]
   (let [p system-props
-        orig-s s
+;;        orig-s s
         s (cond (and (= "Oracle Corporation" (get p "java.vendor"))
                      (.startsWith ^String (get p "java.version") "1.7.0"))
                 (-> s
@@ -614,12 +614,11 @@ Check it to see if it was created incorrectly."})
  ^ test: \s* $)"
                                  "$1$2"))
                 :else s)]
-    (comment
-      (printf "andy-debug: remove-acceptable-ant-output-problems ")
-      (if (= orig-s s)
-        (printf "left ant output UNCHANGED\n")
-        (printf "CHANGED ant output\n"))
-      (flush))
+;;    (printf "andy-debug: remove-acceptable-ant-output-problems ")
+;;    (if (= orig-s s)
+;;      (printf "left ant output UNCHANGED\n")
+;;      (printf "CHANGED ant output\n"))
+;;    (flush)
     s))
 
 
@@ -679,7 +678,7 @@ Check it to see if it was created incorrectly."})
 
 (defn build-and-test-clojure [p]
   (try-cmd :throw-on-error "ant" "clean")
-  (let [{:keys [exit out err]} (try-cmd "ant")
+  (let [{:keys [exit out]} (try-cmd "ant")
         system-props (System/getProperties)
         p (merge p (check-ant-output out system-props))]
     (cond
@@ -1112,12 +1111,12 @@ apply the patch, and try to build with 'ant' in that copy."
                                                       (:name ppat))))
                            ppats-by-ticket))
 
-          ppat-is-not-prescreened
-          (into {} (filter (fn [[ticket [ppat]]]
-                             (let [as (get atts-by-ticket ticket)
-                                   a (patch-name-exists? as (:name ppat))]
-                               (not (prescreened? a))))
-                           ppats-by-ticket))
+;;          ppat-is-not-prescreened
+;;          (into {} (filter (fn [[ticket [ppat]]]
+;;                             (let [as (get atts-by-ticket ticket)
+;;                                   a (patch-name-exists? as (:name ppat))]
+;;                               (not (prescreened? a))))
+;;                           ppats-by-ticket))
 
           prescreened-but-not-marked-with-patch
           (->> prescreened-atts
@@ -1519,7 +1518,7 @@ contributor, and it does not build and pass tests.
    ["    </tr>\n"]
    
    ;; Ticket info
-   (cfor [[ticket info] sorted-ticket-info]
+   (cfor [[_ticket info] sorted-ticket-info]
      (let [orig-title (:title info)
            [_ ticket-abbrev summary] (re-find #"^\s*\[(\S+)\]\s*(.*)\s*$"
                                               orig-title)]
@@ -1680,7 +1679,7 @@ Project %s tickets
   [fmt project ticket-info]
   (let [tickets-with-votes (sort-by sort-key-weighted-vote-then-num-votes
                                     ticket-info)
-        tickets-by-type (group-by (fn [[ticket info]] (:type info))
+        tickets-by-type (group-by (fn [[_ticket info]] (:type info))
                                   tickets-with-votes)]
     (cfor [ticket-type (sort (keys tickets-by-type))]
       (case fmt
@@ -1753,7 +1752,7 @@ Project %s tickets
         tickets-by-proj-then-type (map-vals (fn [m]
                                               (->> m
                                                    (group-by
-                                                    (fn [[ticket info]] (:type info)))
+                                                    (fn [[_ticket info]] (:type info)))
                                                    (map-vals count)))
                                             ticket-info-by-proj)
         cols (->> tickets-by-proj-then-type
@@ -1949,7 +1948,7 @@ Project %s tickets
         (with-local-vars [idx 0]
           (doseq [x (sort grouping-key-cmp-fn (keys grouped-ts))
                   ticket-info (get grouped-ts x)]
-            (let [{:keys [status created-gnuplot-fmt resolved-gnuplot-fmt]} ticket-info
+            (let [{:keys [created-gnuplot-fmt resolved-gnuplot-fmt]} ticket-info
                   res (or resolved-gnuplot-fmt today)
                   color (color-for-ticket-fn ticket-info)]
               ;; TBD: Have an option to set idx equal to (:ticket-num ticket-info)
