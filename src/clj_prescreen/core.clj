@@ -224,16 +224,22 @@ TBENCH-11"
     (map #(dzx/xml1-> % :key dzx/text) tickets-zip)))
 
 
-(defn url-all-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ&tempMax=2000")
+(defn url-all-CLJ-tickets [max-responses]
+  (format "%s%d"
+          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ&tempMax="
+          max-responses))
 
 
-(defn url-all-open-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax=2000")
+(defn url-all-open-CLJ-tickets [max-responses]
+  (format "%s%d"
+          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
+          max-responses))
 
 
-(defn url-all-non-CLJ-tickets []
-  "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax=4000")
+(defn url-all-non-CLJ-tickets [max-responses]
+  (format "%s%d"
+          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax="
+          max-responses))
 
 
 (defn url-for-tickets-voted-by-user [username]
@@ -256,11 +262,14 @@ file with name file-name"
                    (:status resp) url)))))))
 
 
+(def max-responses 4000)
+
+
 (defn dl-all-CLJ-tickets!
   "Download XML data about all CLJ tickets and save it to a local
 file."
   [file-name]
-  (get-url-to-file! file-name (url-all-CLJ-tickets)))
+  (get-url-to-file! file-name (url-all-CLJ-tickets max-responses)))
 
 
 (defn dl-all-tickets!
@@ -268,8 +277,9 @@ file."
 it to a local file."
   [file-name project]
   (get-url-to-file! file-name (if (= project :CLJ)
-                                (url-all-CLJ-tickets)
-                                (url-all-non-CLJ-tickets))))
+                                (url-all-CLJ-tickets max-responses)
+                                (url-all-non-CLJ-tickets max-responses))))
+
 
 (def enumerate (partial map-indexed vector))
 
@@ -1454,7 +1464,13 @@ contributor, and it does not build and pass tests.
    (extract-dec-num ticket)])
 
 
-(defn ticket-strs [sorted-ticket-info col-order]
+(defn one-weighted-vote-val-str [nv]
+  (if (and (number? nv) (> nv 1))
+    (str "1/" nv)
+    (str nv)))
+
+
+(defn ticket-strs [sorted-ticket-info col-order sort-order]
   (cfor [[ticket info] sorted-ticket-info]
     (concat
      ;;[ (pprint info) ]
@@ -1473,12 +1489,11 @@ contributor, and it does not build and pass tests.
           (if (seq (:vote-list info))
             (format "\n             %s"
                     (str/join "\n             "
-                              (map #(format "%s (%s)"
+                              (map #(format "%s%s"
                                             (:display-name %)
-                                            (let [nv (:user-num-votes %)]
-                                              (if (and (number? nv) (> nv 1))
-                                                (str "1/" nv)
-                                                nv)))
+                                            (if (= sort-order :weighted-vote)
+                                              (format " (%s)" (one-weighted-vote-val-str (:user-num-votes %)))
+                                              ""))
                                    (:vote-list info))))))])
      [ "\n" ])))
 
@@ -1490,7 +1505,7 @@ contributor, and it does not build and pass tests.
   (str "http://dev.clojure.org/jira/browse/" ticket-abbrev))
 
 
-(defn tickets-html-table-strs [sorted-ticket-info col-order]
+(defn tickets-html-table-strs [sorted-ticket-info col-order sort-order]
   (concat
    [;; HTML table tag
     "<table style=\"text-align: left; width: 950px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n"
@@ -1543,10 +1558,9 @@ contributor, and it does not build and pass tests.
                                     (map #(html-escape-text
                                            (format "%s (%s)"
                                                    (:display-name %)
-                                                   (let [nv (:user-num-votes %)]
-                                                     (if (and (number? nv) (> nv 1))
-                                                       (str "1/" nv)
-                                                       nv))))
+                                                   (if (= sort-order :weighted-vote)
+                                                     (format " (%s)" (one-weighted-vote-val-str (:user-num-votes %)))
+                                                     "")))
                                          (:vote-list info)))))
            "\n        </td>\n"])
         ["    </tr>\n"])))
@@ -1676,8 +1690,12 @@ Project %s tickets
 
 
 (defn top-ticket-body-strs
-  [fmt project ticket-info]
-  (let [tickets-with-votes (sort-by sort-key-weighted-vote-then-num-votes
+  [fmt project ticket-info sort-order]
+  (let [tickets-with-votes (sort-by (case sort-order
+                                      :weighted-vote
+                                      sort-key-weighted-vote-then-num-votes
+                                      :unweighted-vote
+                                      sort-key-num-votes-then-weighted-vote)
                                     ticket-info)
         tickets-by-type (group-by (fn [[_ticket info]] (:type info))
                                   tickets-with-votes)]
@@ -1688,19 +1706,29 @@ Project %s tickets
          [(format "\n========================================\n%s\n\n"
                   ticket-type)]
          (ticket-strs (get tickets-by-type ticket-type)
-                      [:weighted-vote :num-votes :derivedState
-                       ;; "Patch"
-                       :title :voter-details]))
+                      (concat
+                       [:weighted-vote :num-votes :derivedState
+                        ;; "Patch"
+                        :title]
+                       (case sort-order
+                        :weighted-vote [:voter-details]
+                        :unweighted-vote []))
+                      sort-order))
         :html
         (concat
          [(format "<h2><a name=\"%s\"></a>%s</h2>\n\n"
                   (ticket-table-html-anchor-name project ticket-type)
                   ticket-type)]
          (tickets-html-table-strs (get tickets-by-type ticket-type)
-                                  [:weighted-vote :num-votes :derivedState
-                                   ;; "Patch"
-                                   :ticket-with-link
-                                   :title :voter-details]))))))
+                                  (concat
+                                   [:weighted-vote :num-votes :derivedState
+                                    ;; "Patch"
+                                    :ticket-with-link
+                                    :title]
+                                   (case sort-order
+                                     :weighted-vote [:voter-details]
+                                     :unweighted-vote []))
+                                  sort-order))))))
 
 
 (defn other-ticket-summary-table-html-strs [ticket-info projs col-order]
@@ -1769,26 +1797,30 @@ Project %s tickets
                                             projs cols))))
 
 
-(defn print-top-tickets-by-vote-weight!
-  [out-fname ticket-info fmt project]
+(defn print-top-tickets-by-vote!
+  [out-fname ticket-info fmt project sort-order]
   ;; TBD: Might be better to extract the date from the input somehow.
   (let [date-str (local-date-str)]
     (with-open [wrtr (io/writer out-fname)]
       (binding [*out* wrtr]
         (print-strs (concat
                      (top-ticket-header-strs fmt project date-str)
-                     (top-ticket-body-strs fmt project ticket-info)))))))
+                     (top-ticket-body-strs fmt project ticket-info
+                                           sort-order)))))))
 
 
 ;; Print a report of top tickets sorted from highest weighted vote to
 ;; lowest.
-(defn gen-top-ticket-reports! [cur-eval-dir]
+(defn gen-top-ticket-reports! [cur-eval-dir sort-order]
   (let [votes-fname (str cur-eval-dir "votes-on-tickets.clj")
         votes-by-user (read-safely votes-fname)
         ticket-info-CLJ (-> (str cur-eval-dir "CLJ-all.xml")
                             slurp ticket-info-from-xml)
         ticket-info-non-CLJ (-> (str cur-eval-dir "non-CLJ-all.xml")
-                                slurp ticket-info-from-xml)]
+                                slurp ticket-info-from-xml)
+        sort-order-desc (case sort-order
+                          :weighted-vote "weighted"
+                          :unweighted-vote "unweighted")]
     (doseq [project ["CLJ" "CLJS"]]
       (let [open-tickets-info
             (->> (ticket-plus-vote-info (if (= project "CLJ")
@@ -1801,19 +1833,22 @@ Project %s tickets
         (printf "Project %s vote-diffs:\n" project)
         (println (vote-diffs open-tickets-info))
         
-        (print-top-tickets-by-vote-weight!
-         (str cur-eval-dir project "-top-tickets-by-weighted-vote.txt")
-         open-tickets-info :text project)
-        (print-top-tickets-by-vote-weight!
-         (str cur-eval-dir project "-top-tickets-by-weighted-vote.html")
-         open-tickets-info :html project)))
+        (print-top-tickets-by-vote!
+         (str cur-eval-dir project
+              "-top-tickets-by-" sort-order-desc "-vote.txt")
+         open-tickets-info :text project sort-order)
+        (print-top-tickets-by-vote!
+         (str cur-eval-dir project
+              "-top-tickets-by-" sort-order-desc "-vote.html")
+         open-tickets-info :html project sort-order)))
 
     ;; Now do the same for all other Clojure projects with votes on
     ;; open tickets, except put them all in one file together, since
     ;; they tend to have far fewer tickets and votes than the CLJ or
     ;; CLJS projects above.
     (doseq [fmt [:text :html]]
-      (let [out-fname (str cur-eval-dir "OTHERS-top-tickets-by-weighted-vote."
+      (let [out-fname (str cur-eval-dir "OTHERS-top-tickets-by-"
+                           sort-order-desc "-vote."
                            (case fmt
                              :text "txt"
                              :html "html"))
@@ -1837,7 +1872,8 @@ Project %s tickets
                             (println (vote-diffs open-tickets-info))))
                         (concat
                          (top-ticket-short-project-header-strs fmt project)
-                         (top-ticket-body-strs fmt project open-tickets-info)))))]
+                         (top-ticket-body-strs fmt project open-tickets-info
+                                               sort-order)))))]
         (with-open [wrtr (io/writer out-fname)]
           (binding [*out* wrtr]
             (print-strs things)))))))
@@ -2016,7 +2052,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
                 all-users (read-safely "data/all-clojure-jira-users.clj")
                 votes-by-user (dl-open-ticket-votes! all-users auth-info true)]
             (spit-pretty fname votes-by-user))
-          (gen-top-ticket-reports! cur-eval-dir))
+          (doseq [sort-order [:weighted-vote :unweighted-vote]]
+            (gen-top-ticket-reports! cur-eval-dir sort-order)))
         (do (iprintf *err* "Wrong number of args %d for '%s' action\n"
                      (count args) action)
             (show-usage prog-name)
