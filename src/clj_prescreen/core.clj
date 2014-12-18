@@ -1556,7 +1556,7 @@ contributor, and it does not build and pass tests.
              :voter-details
              (format "%s" (str/join "<br>\n"
                                     (map #(html-escape-text
-                                           (format "%s (%s)"
+                                           (format "%s%s"
                                                    (:display-name %)
                                                    (if (= sort-order :weighted-vote)
                                                      (format " (%s)" (one-weighted-vote-val-str (:user-num-votes %)))
