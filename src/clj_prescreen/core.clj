@@ -132,6 +132,9 @@
                             (let [vals (seq (dzx/xml-> ticket fld dzx/text))]
                               (cond
                                (= fld :fixVersion) vals
+                               (= fld :labels)
+                               (let [labels (dzx/xml-> ticket :labels :label dzx/text)]
+                                 labels)
                                (<= (count vals) 1) (first vals)
                                :else (do
                                        (iprintf *err* "Warning: ticket-fields found multiple values for field %s of ticket '%s':\n%s\n"
@@ -984,6 +987,15 @@ Check it to see if it was created incorrectly."})
 
 (defn status-closed? [att]
   (contains? #{"Closed" "Resolved"} (:status att)))
+
+
+(defn dl-patches-only!
+  "Download all attachments for selected tickets."
+  [cur-eval-dir patch-type-list ticket-dir]
+  (doseq [patch-type patch-type-list]
+    (let [as1 (->> (xml->attach-info (str cur-eval-dir patch-type ".xml"))
+                   (remove status-closed?))]
+      (download-attachments! as1 ticket-dir))))
 
 
 (defn dl-patches-check-ca!
@@ -2013,8 +2025,9 @@ Project %s tickets
 (defn show-usage [prog-name]
   (iprintf *err* "usage:
     %s [ help | -h | --help ]
+    %s patches
     %s top-tickets <jira-account-name> <jira-password>
-" prog-name prog-name))
+" prog-name prog-name prog-name))
 
 
 (def prog-name "lein run")
@@ -2028,6 +2041,51 @@ Project %s tickets
   (let [[action & args] args]
     (case action
       
+      "patches"
+      (if (= 0 (count args))
+        (let [eval-root (str fs/*cwd* "/eval-results/")
+              yyyy-mm-dd (str (LocalDate/now))
+              cur-eval-dir (str eval-root yyyy-mm-dd "/")
+              ticket-dir (str cur-eval-dir "ticket-info")
+              xml-fname (str cur-eval-dir "CLJ-all.xml")
+              att-list-dir cur-eval-dir
+              att-list-fname "att-list.txt"]
+          (when-not (fs/exists? eval-root)
+            (die "Directory %s must exist, but does not.  Aborting." eval-root))
+          (when (fs/exists? cur-eval-dir)
+            (die "Eval directory %s
+where all results will go already exists.
+Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
+"
+                 cur-eval-dir))
+          (when-not (fs/mkdirs cur-eval-dir)
+            (die "mkdirs %s failed.  Aborting.\n" cur-eval-dir))
+
+          (iprintf "Getting info about all tickets for CLJ project...\n")
+          (dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
+          (iprintf "Downloading all attachments for open CLJ tickets...\n")
+          (dl-patches-only! cur-eval-dir ["CLJ-all"] ticket-dir)
+          (iprintf "Writing names of all attachment files to file '%s'...\n"
+                   (str att-list-dir att-list-fname))
+          (with-open [wrtr (io/writer (str att-list-dir att-list-fname))]
+            (doseq [att-info (->> (xml->attach-info xml-fname)
+                                  (remove status-closed?))
+                    :let [ticket (:ticket att-info)
+                          att-name (:name att-info)]
+                    :when att-name]
+              (let [^String full-dir-path (att-dir-name ticket ticket-dir)
+                    rel-dir (if (.startsWith full-dir-path att-list-dir)
+                              (subs full-dir-path (count att-list-dir))
+                              full-dir-path)]
+;;                (p/pprint (select-keys att-info [:ticket :labels :name]))
+                (iprintf wrtr "%s/%s  ; %s\n"
+                         rel-dir att-name
+                         (str/join " " (:labels att-info)))))))
+        (do (iprintf *err* "Wrong number of args %d for '%s' action\n"
+                     (count args) action)
+            (show-usage prog-name)
+            (System/exit 1)))
+
       "top-tickets"
       (if (= 2 (count args))
         (let [[jira-account jira-pw] args
@@ -2046,7 +2104,9 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
           (when-not (fs/mkdirs cur-eval-dir)
             (die "mkdirs %s failed.  Aborting.\n" cur-eval-dir))
 
+          (iprintf "Getting info about all tickets for CLJ project...\n")
           (dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
+          (iprintf "Getting info about all tickets for projects other than CLJ...\n")
           (dl-all-tickets! (str cur-eval-dir "non-CLJ-all.xml") :non-CLJ)
           (let [fname (str cur-eval-dir "votes-on-tickets.clj")
                 all-users (read-safely "data/all-clojure-jira-users.clj")
