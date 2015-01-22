@@ -233,10 +233,10 @@ TBENCH-11"
           max-responses))
 
 
-(defn url-all-open-CLJ-tickets [max-responses]
-  (format "%s%d"
-          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
-          max-responses))
+;;(defn url-all-open-CLJ-tickets [max-responses]
+;;  (format "%s%d"
+;;          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
+;;          max-responses))
 
 
 (defn url-all-non-CLJ-tickets [max-responses]
@@ -266,13 +266,6 @@ file with name file-name"
 
 
 (def max-responses 4000)
-
-
-(defn dl-all-CLJ-tickets!
-  "Download XML data about all CLJ tickets and save it to a local
-file."
-  [file-name]
-  (get-url-to-file! file-name (url-all-CLJ-tickets max-responses)))
 
 
 (defn dl-all-tickets!
@@ -2344,7 +2337,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; were closed/resolved.  Some of this should be cleaned up a bit and
 ;; added above.
 
-(dl-all-CLJ-tickets! (str cur-eval-dir "CLJ-all.xml"))
+(dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
 
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
