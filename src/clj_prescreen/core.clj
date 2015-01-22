@@ -194,6 +194,11 @@ TBENCH-11"
     [ticket-name 0]))
 
 
+(defn xml->ticket-info [file]
+  (let [z (zip/xml-zip (xml/parse file))]
+    (dzx/xml-> z :channel :item)))
+
+
 (defn xml->attach-info [file]
   (let [z (zip/xml-zip (xml/parse file))
         tickets (dzx/xml-> z :channel :item)]
@@ -274,7 +279,18 @@ it to a local file."
   [file-name project]
   (get-url-to-file! file-name (if (= project :CLJ)
                                 (url-all-CLJ-tickets max-responses)
-                                (url-all-non-CLJ-tickets max-responses))))
+                                (url-all-non-CLJ-tickets max-responses)))
+  (let [n (count (xml->ticket-info file-name))]
+    (iprintf "Wrote info about %d tickets to file '%s'\n"
+             n file-name)
+    (cond
+      (>= n max-responses)
+      (iprintf "Time to edit code to increase max-responses above cur value of %d NOW.  Not all tickets were retrieved.\n"
+               max-responses)
+      
+      (> n (- max-responses 100))
+      (iprintf "Time to edit code to increase max-responses above cur value of %d SOON.\n"
+               max-responses))))
 
 
 (def enumerate (partial map-indexed vector))
