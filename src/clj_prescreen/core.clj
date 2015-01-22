@@ -1704,10 +1704,8 @@ Project %s tickets
 (defn top-ticket-body-strs
   [fmt project ticket-info sort-order]
   (let [tickets-with-votes (sort-by (case sort-order
-                                      :weighted-vote
-                                      sort-key-weighted-vote-then-num-votes
-                                      :unweighted-vote
-                                      sort-key-num-votes-then-weighted-vote)
+                                      :weighted-vote sort-key-weighted-vote-then-num-votes
+                                      :unweighted-vote sort-key-num-votes-then-weighted-vote)
                                     ticket-info)
         tickets-by-type (group-by (fn [[_ticket info]] (:type info))
                                   tickets-with-votes)]
@@ -1719,12 +1717,15 @@ Project %s tickets
                   ticket-type)]
          (ticket-strs (get tickets-by-type ticket-type)
                       (concat
-                       [:weighted-vote :num-votes :derivedState
+                       (case sort-order
+                         :weighted-vote [:weighted-vote]
+                         :unweighted-vote [])
+                       [:num-votes :derivedState
                         ;; "Patch"
                         :title]
                        (case sort-order
-                        :weighted-vote [:voter-details]
-                        :unweighted-vote []))
+                         :weighted-vote [:voter-details]
+                         :unweighted-vote []))
                       sort-order))
         :html
         (concat
@@ -1733,7 +1734,10 @@ Project %s tickets
                   ticket-type)]
          (tickets-html-table-strs (get tickets-by-type ticket-type)
                                   (concat
-                                   [:weighted-vote :num-votes :derivedState
+                                   (case sort-order
+                                     :weighted-vote [:weighted-vote]
+                                     :unweighted-vote [])
+                                   [:num-votes :derivedState
                                     ;; "Patch"
                                     :ticket-with-link
                                     :title]
