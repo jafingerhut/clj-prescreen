@@ -233,10 +233,10 @@ TBENCH-11"
           max-responses))
 
 
-(defn url-all-open-CLJ-tickets [max-responses]
-  (format "%s%d"
-          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
-          max-responses))
+;;(defn url-all-open-CLJ-tickets [max-responses]
+;;  (format "%s%d"
+;;          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
+;;          max-responses))
 
 
 (defn url-all-non-CLJ-tickets [max-responses]
@@ -266,13 +266,6 @@ file with name file-name"
 
 
 (def max-responses 4000)
-
-
-(defn dl-all-CLJ-tickets!
-  "Download XML data about all CLJ tickets and save it to a local
-file."
-  [file-name]
-  (get-url-to-file! file-name (url-all-CLJ-tickets max-responses)))
 
 
 (defn dl-all-tickets!
@@ -1704,10 +1697,8 @@ Project %s tickets
 (defn top-ticket-body-strs
   [fmt project ticket-info sort-order]
   (let [tickets-with-votes (sort-by (case sort-order
-                                      :weighted-vote
-                                      sort-key-weighted-vote-then-num-votes
-                                      :unweighted-vote
-                                      sort-key-num-votes-then-weighted-vote)
+                                      :weighted-vote sort-key-weighted-vote-then-num-votes
+                                      :unweighted-vote sort-key-num-votes-then-weighted-vote)
                                     ticket-info)
         tickets-by-type (group-by (fn [[_ticket info]] (:type info))
                                   tickets-with-votes)]
@@ -1719,12 +1710,15 @@ Project %s tickets
                   ticket-type)]
          (ticket-strs (get tickets-by-type ticket-type)
                       (concat
-                       [:weighted-vote :num-votes :derivedState
+                       (case sort-order
+                         :weighted-vote [:weighted-vote]
+                         :unweighted-vote [])
+                       [:num-votes :derivedState
                         ;; "Patch"
                         :title]
                        (case sort-order
-                        :weighted-vote [:voter-details]
-                        :unweighted-vote []))
+                         :weighted-vote [:voter-details]
+                         :unweighted-vote []))
                       sort-order))
         :html
         (concat
@@ -1733,7 +1727,10 @@ Project %s tickets
                   ticket-type)]
          (tickets-html-table-strs (get tickets-by-type ticket-type)
                                   (concat
-                                   [:weighted-vote :num-votes :derivedState
+                                   (case sort-order
+                                     :weighted-vote [:weighted-vote]
+                                     :unweighted-vote [])
+                                   [:num-votes :derivedState
                                     ;; "Patch"
                                     :ticket-with-link
                                     :title]
@@ -2340,7 +2337,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; were closed/resolved.  Some of this should be cleaned up a bit and
 ;; added above.
 
-(dl-all-CLJ-tickets! (str cur-eval-dir "CLJ-all.xml"))
+(dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
 
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
