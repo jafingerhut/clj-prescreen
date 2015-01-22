@@ -7,3 +7,4 @@
 /checkouts
 /.lein-deps-sum
 *-log.txt
+data/all-clojure-jira-users.clj
