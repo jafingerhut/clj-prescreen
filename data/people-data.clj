@@ -26,7 +26,7 @@
 {:display-name "Adam Clements"
  :aliases #{ }
  :usernames #{ "adamclements" }
- :emails #{ "adam.clements@gmail.com" }
+ :emails #{ "adam.clements@gmail.com" "adam@swiftkey.net" }
  :contributor true
  }
 {:display-name "Alan Dipert"
@@ -51,6 +51,12 @@
  :aliases #{ }
  :usernames #{ "alexott" }
  :emails #{ "alexott@gmail.com" }
+ :contributor true
+ }
+{:display-name "Alexander Yakushev"
+ :aliases #{ }
+ :usernames #{ "alexyakushev" }
+ :emails #{ "yakushev.alex@gmail.com" "alex@bytopia.org" }
  :contributor true
  }
 {:display-name "Alan Malloy"
@@ -87,6 +93,12 @@
  :emails #{ "alex.redington@thinkrelevance.com" }
  :contributor true
  }
+{:display-name "Andrea Richiardi"
+ :aliases #{ "" }
+ :usernames #{ "arichiardi" }
+ :emails #{ "a.richiardi.work@gmail.com" }
+ :contributor true
+ }
 {:display-name "Alex Redington and Russ Olsen"
  :aliases #{ }
  :usernames #{ }
@@ -105,6 +117,12 @@
  :emails #{ "me@arrdem.com" }
  :contributor true
  }
+{:display-name "Aspasia Beneti"
+ :aliases #{ "aspasia" }
+ :usernames #{ "aspasia" }
+ :emails #{ "aspasia.beneti@gmail.com" }
+ :contributor true
+ }
 {:display-name "Alex Taggart"
  :aliases #{ "Alexander Taggart" }
  :usernames #{ "ataggart" }
@@ -120,13 +138,19 @@
 {:display-name "Herwig Hochleitner"
  :aliases #{ }
  :usernames #{ "bendlas" }
- :emails #{ "hhochleitner@gmail.com" }
+ :emails #{ "hhochleitner@gmail.com" "herwig@bendlas.net" }
  :contributor true
  }
 {:display-name "Ben Moss"
  :aliases #{ }
  :usernames #{ "benmoss" }
  :emails #{ "ben@mossity.com" "ben@movableink.com" }
+ :contributor true
+ }
+{:display-name "Blake West"
+ :aliases #{ }
+ :usernames #{ "blakewest" }
+ :emails #{ "bwest87@gmail.com" }
  :contributor true
  }
 {:display-name "Brenton Ashworth"
@@ -150,7 +174,7 @@
 {:display-name "Bozhidar Batsov"
  :aliases #{ }
  :usernames #{ "bozhidar" }
- :emails #{ "bozhidar@batsov.com" }
+ :emails #{ "bozhidar@batsov.com" "bozhidar@tradeo.com" }
  :contributor true
  }
 {:display-name "Nicola Mometto"
@@ -243,6 +267,12 @@
  :emails #{ "cninja@gmail.com" }
  :contributor true
  }
+{:display-name "Colin Taylor"
+ :aliases #{ }
+ :usernames #{ "coltnz" }
+ :emails #{ "colin.taylor@gmail.com" "colint@smxemail.com" }
+ :contributor true
+ }
 {:display-name "Cosmin Stejerean"
  :aliases #{ }
  :usernames #{ "cosmin" }
@@ -316,6 +346,12 @@
  :emails #{ "i+clojuredev@gashinsky.com" "dimi...@gashinsky.com" }
  :contributor true
  }
+{:display-name "Dirk Geurs"
+ :aliases #{ }
+ :usernames #{ "dirklectisch" }
+ :emails #{ "dirklectisch@mac.com" "dirkgeurs@mac.com" }
+ :contributor true
+ }
 {:display-name "David Powell"
  :aliases #{ }
  :usernames #{ "djpowell" }
@@ -343,13 +379,25 @@
 {:display-name "Daniel Solano Gómez"
  :aliases #{ "=?UTF-8?q?Daniel=20Solano=20G=C3=B3mez?=" }
  :usernames #{ "dsg" }
- :emails #{ "clojure@sattvik.com" }
+ :emails #{ "clojure@sattvik.com" "daniel@solanogomez.org" }
+ :contributor true
+ }
+{:display-name "John Hume"
+ :aliases #{ }
+ :usernames #{ "duelin_markers" }
+ :emails #{ "duelin.markers@gmail.com" }
  :contributor true
  }
 {:display-name "Tim Dysinger"
  :aliases #{ }
  :usernames #{ "dysinger" }
  :emails #{ "tim@dysinger.net" }
+ :contributor true
+ }
+{:display-name "Édipo L Féderle"
+ :aliases #{ "elf" }
+ :usernames #{ "edipofederle" }
+ :emails #{ "edipofederle@gmail.com" }
  :contributor true
  }
 {:display-name "Edward Tsech"
@@ -400,6 +448,12 @@
  :emails #{ "erics@capdes.com" }
  :contributor true
  }
+{:display-name "Francis Avila"
+ :aliases #{ }
+ :usernames #{ "favila" }
+ :emails #{ "francisga@gmail.com" "favila@breezeehr.com" }
+ :contributor true
+ }
 {:display-name "Federico Brubacher"
  :aliases #{ }
  :usernames #{ "fbrubacher" }
@@ -441,6 +495,12 @@
  :usernames #{ "glchapman" }
  :emails #{ "glchapman1@yahoo.com" }
  :contributor false
+ }
+{:display-name "Gordon Syme"
+ :aliases #{ }
+ :usernames #{ "gordonsyme" }
+ :emails #{ "gordonsyme@gmail.com" }
+ :contributor true
  }
 {:display-name "Ghadi Shayban"
  :aliases #{ }
@@ -532,6 +592,12 @@
  :emails #{ "jeremyheiler@gmail.com" }
  :contributor true
  }
+{:display-name "Johan Mena"
+ :aliases #{ }
+ :usernames #{ "jhn" }
+ :emails #{ "johan.menac@gmail.com" "jmena@pulsepoint.com" }
+ :contributor true
+ }
 {:display-name "Jim Blomo"
  :aliases #{ }
  :usernames #{ "jim.blomo" }
@@ -592,6 +658,18 @@
  :emails #{ "clojure@justinbalthrop.com" "justin@geni.com" }
  :contributor true
  }
+{:display-name "Jason Whitlark"
+ :aliases #{ }
+ :usernames #{ "jwhitlark" }
+ :emails #{ "jason@whitlark.org" }
+ :contributor true
+ }
+{:display-name "Bart Kastermans"
+ :aliases #{ }
+ :usernames #{ "kasterma" }
+ :emails #{ "kasterma@kasterma.net" }
+ :contributor true
+ }
 {:display-name "Konrad Hinsen"
  :aliases #{ }
  :usernames #{ "khinsen" }
@@ -604,16 +682,34 @@
  :emails #{ "killme2008@gmail.com" }
  :contributor true
  }
+{:display-name "Kuldeep Bora"
+ :aliases #{ "kul" }
+ :usernames #{ "kul" }
+ :emails #{ "kuldeep.bora@gmail.com" }
+ :contributor true
+ }
 {:display-name "Shantanu Kumar"
  :aliases #{ }
  :usernames #{ "kumarshantanu" }
  :emails #{ "kumar.shantanu@gmail.com" }
  :contributor true
  }
+{:display-name "Steven Yi"
+ :aliases #{ }
+ :usernames #{ "kunstmusik" }
+ :emails #{ "stevenyi@gmail.com" }
+ :contributor true
+ }
 {:display-name "Kurt Harriger"
  :aliases #{ }
  :usernames #{ "kurtharriger" }
  :emails #{ "kurtharriger@gmail.com" }
+ :contributor true
+ }
+{:display-name "Kevin Woram"
+ :aliases #{ "kworam"}
+ :usernames #{ "kworam" }
+ :emails #{ "kworam@quasarlogic.com" }
  :contributor true
  }
 {:display-name "Laurent Petit"
@@ -658,10 +754,22 @@
  :emails #{ "matt@dynamictyping.org" }
  :contributor true
  }
+{:display-name "Mike Blume"
+ :aliases #{ "Michael Blume" }
+ :usernames #{ "michaelblume" }
+ :emails #{ "michael.blume@climate.com" "blume.mike@gmail.com" }
+ :contributor true
+ }
 {:display-name "Mike Hinchey"
  :aliases #{ }
  :usernames #{ "mikehinchey" }
  :emails #{ "hincheymg@gmail.com" }
+ :contributor true
+ }
+{:display-name "Nahuel Greco"
+ :aliases #{ }
+ :usernames #{ "nahuel" }
+ :emails #{ "ngreco@gmail.com" }
  :contributor true
  }
 {:display-name "Hubert Iwaniuk"
@@ -826,6 +934,12 @@
  :emails #{ "raek@raek.se" "raek@lysator.liu.se" }
  :contributor true
  }
+{:display-name "Ragnar Dahlen"
+ :aliases #{ "=?UTF-8?q?Ragnar=20Dahl=C3=A9n?=" }
+ :usernames #{ "ragge" }
+ :emails #{ "r.dahlen@gmail.com" }
+ :contributor true
+ }
 {:display-name "Rahul Pilani"
  :aliases #{ }
  :usernames #{ "rahulpilani" }
@@ -886,6 +1000,12 @@
  :emails #{ "scgilardi@gmail.com" "squeegee@squeegee-mbp.scgilardi.selfip.net" }
  :contributor true
  }
+{:display-name "Ralf Schmitt"
+ :aliases #{ }
+ :usernames #{ "schmir" }
+ :emails #{ "ralf@systemexit.de" }
+ :contributor true
+ }
 {:display-name "Scott Bale"
  :aliases #{ }
  :usernames #{ "scottbale" }
@@ -914,6 +1034,12 @@
  :aliases #{ "Micah" }
  :usernames #{ "slagyr" }
  :emails #{ "micahmartin@gmail.com" "micah@8thlight.com" }
+ :contributor true
+ }
+{:display-name "Erik Assum"
+ :aliases #{ "" }
+ :usernames #{ "slipset" }
+ :emails #{ "erik@iterate.no" "erik@assum.net" }
  :contributor true
  }
 {:display-name "OHTA Shogo"
@@ -988,6 +1114,12 @@
  :emails #{ "toby@tcrawley.org" "tcrawley@gmail.com" }
  :contributor true
  }
+{:display-name "Tom Crayford"
+ :aliases #{ }
+ :usernames #{ "tcrayford" }
+ :emails #{ "tom@tcrayford.com" "tcrayford@googlemail.com" }
+ :contributor true
+ }
 {:display-name "Phil Hagelberg"
  :aliases #{ }
  :usernames #{ "technomancy" }
@@ -998,6 +1130,12 @@
  :aliases #{ }
  :usernames #{ "tessellator" }
  :emails #{ "caepo3@gmail.com" }
+ :contributor true
+ }
+{:display-name "Gijs Stuurman"
+ :aliases #{ }
+ :usernames #{ "thegeez" }
+ :emails #{ "gijsstuurman@gmail.com" }
  :contributor true
  }
 {:display-name "Thomas Heller"
@@ -1050,6 +1188,12 @@
  :emails #{ "tom@tomoj.la" }
  :contributor true
  }
+{:display-name "Nikita Prokopov"
+ :aliases #{ }
+ :usernames #{ "tonsky" }
+ :emails #{ "prokopov@gmail.com" }
+ :contributor true
+ }
 {:display-name "Karsten Schmidt"
  :aliases #{ }
  :usernames #{ "toxi" }
@@ -1090,6 +1234,12 @@
  :aliases #{ }
  :usernames #{ "wagjo" }
  :emails #{ "jozef.wagner@gmail.com" }
+ :contributor true
+ }
+{:display-name "Yanxiang Lou"
+ :aliases #{ }
+ :usernames #{ "yanxiang" }
+ :emails #{ "yanxiang.lou@gmail.com" }
  :contributor true
  }
 {:display-name "Zach Tellman"
