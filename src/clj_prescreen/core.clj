@@ -633,8 +633,35 @@ Check it to see if it was created incorrectly."})
  .*)
 ^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.[56] \s* $
 (.*
- ^ test: \s* $)"
+ ^ test-example: \s* $)"
                                  "$1$2"))
+                (and (= "Oracle Corporation" (get p "java.vendor"))
+                     (.startsWith ^String (get p "java.version") "1.9.0"))
+                (-> s
+                    (str/replace #"(?xms)
+(^ compile-java: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.[56] \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ source\ value\ 1\.6\ is\ obsolete\ and\ will\ be\ removed\ in\ a\ future\ release \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ target\ value\ 1\.6\ is\ obsolete\ and\ will\ be\ removed\ in\ a\ future\ release \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ To\ suppress\ warnings\ about\ obsolete\ options,\ use\ -Xlint:-options\. \s* $ \r*\n
+(.*)
+^ \s* \[javac\]\ 4\ warnings \s* $
+(.*
+ ^ compile-clojure: \s* $)"
+                                 "$1$2$3")
+                    (str/replace #"(?xms)
+(^ compile-tests: \s* $
+ .*)
+^ \s* \[javac\]\ warning:\ \[options\]\ bootstrap\ class\ path\ not\ set\ in\ conjunction\ with\ -source\ 1\.[56] \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ source\ value\ 1\.6\ is\ obsolete\ and\ will\ be\ removed\ in\ a\ future\ release \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ target\ value\ 1\.6\ is\ obsolete\ and\ will\ be\ removed\ in\ a\ future\ release \s* $ \r*\n
+^ \s* \[javac\]\ warning:\ \[options\]\ To\ suppress\ warnings\ about\ obsolete\ options,\ use\ -Xlint:-options\. \s* $ \r*\n
+(.*)
+^ \s* \[javac\]\ 4\ warnings \s* $
+(.*
+ ^ test-example: \s* $)"
+                                 "$1$2$3"))
                 :else s)]
 ;;    (printf "andy-debug: remove-acceptable-ant-output-problems ")
 ;;    (if (= orig-s s)
