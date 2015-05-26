@@ -117,10 +117,6 @@
   :name "clj-793-v5.patch",
   :patch-category "Code cleanup",
   }
- {:ticket "CLJ-803",
-  :name "0001-atom-interface.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-825",
   :name "clj-825-1.patch",
   :patch-category "Clojure language/library bug fixes",
@@ -342,10 +338,6 @@
   :name "reductions-reducer.diff",
   :patch-category "Language enhancement, reducers",
   }
- {:ticket "CLJ-1115",
-  :name "multi-arity-into.diff",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1117",
   :name "clj-1117.patch",
   :patch-category "Doc string fixes only",
@@ -526,10 +518,6 @@
   :name "clj-1295-1.diff",
   :patch-category "Performance enhancement",
   }
- {:ticket "CLJ-1297",
-  :name "clj-1297-v3.patch",
-  :patch-category "Better error reporting",
-  }
  {:ticket "CLJ-1305",
   :name "0001-add-not-found-to-sets-and-vecs-as-functions-refs-130.patch",
   :patch-category "Language/library enhancement",
@@ -669,10 +657,6 @@
   :name "0001-modify-clojure.core-load-lib-so-that-it-removes-the-.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1410",
-  :name "CLJ-1410.patch",
-  :patch-category "Performance enhancement",
-  }
  {:ticket "CLJ-1412",
   :name "0001-Add-2-arity-version-of-cycle-that-takes-the-number-o.patch",
   :patch-category "Language/library enhancement",
@@ -728,7 +712,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
-  :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patc",
+  :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1458",
