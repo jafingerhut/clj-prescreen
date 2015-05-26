@@ -712,7 +712,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
-  :name "0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
+  :name "v3_0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1458",
