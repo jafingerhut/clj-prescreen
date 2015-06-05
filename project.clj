@@ -9,5 +9,5 @@
                  [clj-http "0.7.7"]
                  [joda-time "2.1"]
                  ]
-  :jvm-opts ^:replace ["-Xmx102m"]
+  :jvm-opts ^:replace ["-Xmx1024m"]
   :main clj-prescreen.core)
