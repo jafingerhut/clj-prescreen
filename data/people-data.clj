@@ -18,6 +18,11 @@
  :emails #{ "aaroncraelius@gmail.com" }
  :contributor true
  }
+{:display-name "Abe Fettig"
+ :usernames #{ "abram" }
+ :emails #{ "abe@figlyinc.com" }
+ :contributor true
+ }
 {:display-name "Achim Passen"
  :usernames #{ "achimpassen" }
  :emails #{ "achim.passen@gmail.com" }
@@ -237,6 +242,12 @@
  :emails #{ "charles@dyfis.net" "duffy@indeed.com" }
  :contributor true
  }
+{:display-name "Chen Guo"
+ :aliases #{ }
+ :usernames #{ "chenguo" }
+ :emails #{ "chen@factual.com" }
+ :contributor true
+ }
 {:display-name "Chris Houser"
  :aliases #{ "Chouser" }
  :usernames #{ "chouser@n01se.net" }
@@ -319,6 +330,12 @@
  :aliases #{ }
  :usernames #{ "davidrupp" }
  :emails #{ "david@ruppworks.com" }
+ :contributor true
+ }
+{:display-name "Daniel Compton"
+ :aliases #{ }
+ :usernames #{ "desk@danielcompton.net" }
+ :emails #{ "desk@danielcompton.net" }
  :contributor true
  }
 {:display-name "Devender Gollapally"
@@ -628,6 +645,12 @@
  :emails #{ "jon.distad@gmail.com" }
  :contributor true
  }
+{:display-name "Jonas Enlund"
+ :aliases #{ }
+ :usernames #{ "jonase" }
+ :emails #{ "jonas.enlund@gmail.com" }
+ :contributor true
+ }
 {:display-name "Jeff Palmucci"
  :aliases #{ }
  :usernames #{ "jpalmucci" }
@@ -874,6 +897,12 @@
  :emails #{ "paul@paulbutcher.com" }
  :contributor true
  }
+{:display-name "Patrick Gombert"
+ :aliases #{ }
+ :usernames #{ "patrickgombert" }
+ :emails #{ "patrickgombert@gmail.com" }
+ :contributor true
+ }
 {:display-name "Pepijn de Vos"
  :aliases #{ }
  :usernames #{ "pepijndevos" }
@@ -908,6 +937,12 @@
  :aliases #{ }
  :usernames #{ "ppotter" }
  :emails #{ "philipgpotter@gmail.com" }
+ :contributor true
+ }
+{:display-name "Pietro Menna"
+ :aliases #{ "\"Pietro F. Menna\"" }
+ :usernames #{ "pietromenna" }
+ :emails #{ "pietromenna@yahoo.com" }
  :contributor true
  }
 {:display-name "Peter Taoussanis"
@@ -1223,6 +1258,12 @@
  :usernames #{ "vdim" }
  :emails #{ "vyacheslav.dimitrov@gmail.com" }
  :contributor false
+ }
+{:display-name "Mark Simpson"
+ :aliases #{ }
+ :usernames #{ "verdammelt@gmail.com" }
+ :emails #{ "verdammelt@gmail.com" }
+ :contributor true
  }
 {:display-name "Vipul A M"
  :aliases #{ }

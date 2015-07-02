@@ -315,7 +315,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1103",
-  :name "clj-1103-6.diff",
+  :name "clj-1103-7.diff",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1104",
@@ -395,7 +395,7 @@
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1208",
-  :name "0001-CLJ-1208-load-own-namespace-in-deftype-defrecord-cla-v3.patch",
+  :name "0001-CLJ-1208-load-own-namespace-in-deftype-defrecord-cla-v5.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1209",
@@ -419,7 +419,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1224",
-  :name "0001-cache-hasheq-and-hashCode-for-records.patch",
+  :name "0001-cache-hasheq-and-hashCode-for-records-v2.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1225",
@@ -438,10 +438,6 @@
   :name "0001-auto-qualify-arglists-class-names-v3.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1237",
-  :name "CLJ-1237c.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1239",
   :name "0002-CLJ-1239-protocol-dispatch-for-clojure.walk.patch",
   :patch-category "Language/library enhancement",
@@ -455,7 +451,7 @@
   :patch-category "Allow more correct-looking Clojure code to work",
   }
  {:ticket "CLJ-1250",
-  :name "CLJ-1250-08-29-ws.patch",
+  :name "clj-1250-2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1253",
@@ -592,7 +588,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1373",
-  :name "clj-1373-2.diff",
+  :name "clj-1373.diff",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1375",
@@ -712,11 +708,11 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
-  :name "v3_0001-CLJ-1456-counting-forms-to-catch-malformed-throw-for.patch",
+  :name "clj-1456-4.patch",
   :patch-category "Better error reporting",
   }
  {:ticket "CLJ-1458",
-  :name "CLJ-1458-transient-merge3.patch",
+  :name "clj-1458-4.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1467",
@@ -968,7 +964,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1645",
-  :name "CLJ-1645-protocol-class-has-no-source-file-information.patch",
+  :name "CLJ-1645-protocol-class-has-no-source-file-information-w-repl.patch",
   :patch-category "Debug/tooling enhancement",
   }
  {:ticket "CLJ-1647",
@@ -996,7 +992,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1659",
-  :name "clj-1659.patch",
+  :name "clj-1659-v3.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1661",
@@ -1008,7 +1004,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1671",
-  :name "clj-1671-4.patch",
+  :name "clj-1671-5.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1673",
@@ -1078,5 +1074,61 @@
  {:ticket "CLJ-1737",
   :name "clearer-CompilerException-messase.patch",
   :patch-category "Better error reporting",
+  }
+ {:ticket "CLJ-1741",
+  :name "0001-CLJ-1714-Don-t-load-AOT-class-when-compiling-already.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1743",
+  :name "clj-1743-2.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1744",
+  :name "0001-CLJ-1744-clear-unused-locals-v2.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1747",
+  :name "CLJ-1747-eduction-print.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1755",
+  :name "transient-vector-nth.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1759",
+  :name "clj-1759.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1761",
+  :name "clj-1761-with-tests.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1762",
+  :name "reduce-kv-java-map.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1763",
+  :name "0001-CLJ-1763-make-sort-thread-safe.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1765",
+  :name "clj-1765.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1766",
+  :name "serialization_test_mod.diff",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1769",
+  :name "docstringfix.patch",
+  :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1770",
+  :name "atom-reset-atomic-watch-2015-06-30.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1772",
+  :name "clj-1772.patch",
+  :patch-category "Doc string fixes only",
   }
  )

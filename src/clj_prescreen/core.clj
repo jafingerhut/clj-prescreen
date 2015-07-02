@@ -746,13 +746,13 @@ Check it to see if it was created incorrectly."})
        "/" (:name p)))
 
 
-(def next-release-short "1.7")
+(def next-release-short "1.8")
 (def next-release (str "Release " next-release-short))
 
 (defn next-release? [att]
   (some #(= % next-release) (:fixVersion att)))
 
-(def after-next-release-short "1.8")
+(def after-next-release-short "1.9")
 (def after-next-release (str "Release " after-next-release-short))
 
 (defn after-next-release? [att]
@@ -2187,8 +2187,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (in-ns 'user)
 (use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[me.raynes.fs :as fs])
-(def cur-eval-dir (str fs/*cwd* "/eval-results/2015-05-25/"))
-(def clojure-tree "./eval-results/2015-05-25-clojure-to-prescreen/clojure")
+(def cur-eval-dir (str fs/*cwd* "/eval-results/2015-07-02/"))
+(def clojure-tree "./eval-results/2015-07-01-clojure-to-prescreen/clojure")
 (def ticket-dir (str cur-eval-dir "ticket-info"))
 (def ppat-fname "./data/preferred-patches.clj")
 (def patch-type-list [ "CLJ-all" ])
