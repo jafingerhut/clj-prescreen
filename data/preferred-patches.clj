@@ -971,10 +971,6 @@
   :name "kworam-clj-1647.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1650",
-  :name "0001-CLJ-1650-compile-forces-namespace-reloading-from-AOT.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1653",
   :name "clj-1653-2.patch",
   :patch-category "Language/library enhancement",
