@@ -64,7 +64,7 @@
       test.generative could use that one.",
   }
  {:ticket "CLJ-428",
-  :name "clj-428-v4.diff",
+  :name "clj-428-code-v5.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-457",
@@ -86,10 +86,6 @@
  {:ticket "CLJ-701",
   :name "hoistedmethod-pass-5.diff",
   :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-703",
-  :name "improve-writeclassfile-perf.patch",
-  :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-706",
   :name "706-fix-deprecation-warnings-on-replicate.diff",
@@ -394,10 +390,6 @@
   :name "CLJ-1189-p1.patch",
   :patch-category "Better error reporting",
   }
- {:ticket "CLJ-1208",
-  :name "0001-CLJ-1208-load-own-namespace-in-deftype-defrecord-cla-v5.patch",
-  :patch-category "Language/library enhancement",
-  }
  {:ticket "CLJ-1209",
   :name "0002-CLJ-1209-show-ex-data-in-clojure-test.patch",
   :patch-category "Debug/tooling enhancement",
@@ -419,7 +411,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1224",
-  :name "0001-cache-hasheq-and-hashCode-for-records-v2.patch",
+  :name "0001-CLJ-1224-cache-hasheq-and-hashCode-for-records.patch",
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1225",
@@ -449,10 +441,6 @@
  {:ticket "CLJ-1242",
   :name "0001-fix-for-CLJ-1242-tests.patch",
   :patch-category "Allow more correct-looking Clojure code to work",
-  }
- {:ticket "CLJ-1250",
-  :name "clj-1250-2.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1253",
   :name "clj-1253-1.txt",
@@ -517,10 +505,6 @@
  {:ticket "CLJ-1305",
   :name "0001-add-not-found-to-sets-and-vecs-as-functions-refs-130.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1313",
-  :name "clj-1313-v3.patch",
-  :patch-category "Code cleanup",
   }
  {:ticket "CLJ-1314",
   :name "clj-1314-v2.diff",
@@ -633,10 +617,6 @@
         0002-add-javadoc-lookup-for-guava-and-apache-commons-lang.patch
         0003-add-javadoc-lookup-for-jdk8.patch",
   }
- {:ticket "CLJ-1399",
-  :name "clj-1399-with-test.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1400",
   :name "clj-1400-4.diff",
   :patch-category "Better error reporting",
@@ -692,7 +672,7 @@
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1449",
-  :name "clj-1449-more-v1.patch",
+  :name "add_functions_to_strings-4.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1451",
@@ -704,7 +684,7 @@
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1453",
-  :name "0001-Throw-NSEE-in-gvec-iterator.patch",
+  :name "CLJ-1453.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1456",
@@ -827,17 +807,9 @@
   :name "doreduced2.diff",
   :patch-category "Language/library enhancement",
   }
- {:ticket "CLJ-1528",
-  :name "fix-CLJ-1528.diff",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1530",
   :name "0001-fix-LispReader-and-EdnReader-so-that-foo-bar-baz-is-.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1533",
-  :name "clj-1533-2.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1534",
   :name "clj_1534.diff",
@@ -854,14 +826,6 @@
  {:ticket "CLJ-1556",
   :name "0001-CLJ-1556-Generate-type-functions-with-instance-check.patch",
   :patch-category "Language/library enhancement",
-  }
- {:ticket "CLJ-1562",
-  :name "fix-CLJ-1418_and_1562.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1565",
-  :name "CLJ-1565.patch",
-  :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1566",
   :name "refer.patch",
@@ -901,10 +865,6 @@
   }
  {:ticket "CLJ-1587",
   :name "0001-PersistentArrayMap-s-assoc-doesn-t-respect-HASHTABLE.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1588",
-  :name "clj-1588-2.patch",
   :patch-category "Clojure language/library bug fixes",
   }
  {:ticket "CLJ-1595",
@@ -959,14 +919,6 @@
   :name "clj-1643-gen-seq-test-v1.patch",
   :patch-category "Debug/tooling enhancement",
   }
- {:ticket "CLJ-1644",
-  :name "CLJ-1644-array-first-nil-v2.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
- {:ticket "CLJ-1645",
-  :name "CLJ-1645-protocol-class-has-no-source-file-information-w-repl.patch",
-  :patch-category "Debug/tooling enhancement",
-  }
  {:ticket "CLJ-1647",
   :name "kworam-clj-1647.patch",
   :patch-category "Better error reporting",
@@ -987,10 +939,6 @@
   :name "CLJ-1657-patch.diff",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1659",
-  :name "clj-1659-v3.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1661",
   :name "CLJ-1661-v1.patch",
   :patch-category "Language/library enhancement",
@@ -1000,7 +948,7 @@
   :patch-category "Performance enhancement",
   }
  {:ticket "CLJ-1671",
-  :name "clj-1671-5.patch",
+  :name "clj-1671-6.patch",
   :patch-category "Language/library enhancement",
   }
  {:ticket "CLJ-1673",
@@ -1095,10 +1043,6 @@
   :name "clj-1759.patch",
   :patch-category "Clojure language/library bug fixes",
   }
- {:ticket "CLJ-1761",
-  :name "clj-1761-with-tests.patch",
-  :patch-category "Clojure language/library bug fixes",
-  }
  {:ticket "CLJ-1762",
   :name "reduce-kv-java-map.patch",
   :patch-category "Language/library enhancement",
@@ -1126,5 +1070,21 @@
  {:ticket "CLJ-1772",
   :name "clj-1772.patch",
   :patch-category "Doc string fixes only",
+  }
+ {:ticket "CLJ-1776",
+  :name "clj-1776-v1.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1777",
+  :name "0001-CLJ-1777-Change-vswap-from-a-macro-to-an-inlineable-.patch",
+  :patch-category "Language/library enhancement",
+  }
+ {:ticket "CLJ-1778",
+  :name "clj-1778-2-with-tests.patch",
+  :patch-category "Clojure language/library bug fixes",
+  }
+ {:ticket "CLJ-1780",
+  :name "strengthen-clearing-test.patch",
+  :patch-category "Clojure language/library bug fixes",
   }
  )
