@@ -74,6 +74,12 @@
  :emails #{ "abonnairesergeant@gmail.com" }
  :contributor true
  }
+{:display-name "Andrew Rosa"
+ :aliases #{ }
+ :usernames #{ "andrewhr" }
+ :emails #{ "andrewhr@me.com" }
+ :contributor true
+ }
 {:display-name "Anthony Grimes"
  :aliases #{ }
  :usernames #{ "anthonygrimes" }
@@ -120,6 +126,12 @@
  :aliases #{ "arrdem" }
  :usernames #{ "arrdem" }
  :emails #{ "me@arrdem.com" }
+ :contributor true
+ }
+{:display-name "Andy Sheldon"
+ :aliases #{ "asheldo" }
+ :usernames #{ "asheldo" }
+ :emails #{ "andymsheldon@gmail.com" "andy.m.sheldon@gmail.com" }
  :contributor true
  }
 {:display-name "Aspasia Beneti"
@@ -1009,6 +1021,12 @@
  :aliases #{ }
  :usernames #{ }
  :emails #{ "robertlachlan@gmail.com" }
+ :contributor true
+ }
+{:display-name "Nola Stowe"
+ :aliases #{ }
+ :usernames #{ "rubygeek" }
+ :emails #{ "nola@rubygeek.com" }
  :contributor true
  }
 {:display-name "Russ Olsen"
