@@ -59,6 +59,12 @@
 (def ^:dynamic *auto-flush* true)
 
 
+(def home-dir (get (System/getenv) "HOME"))
+
+(def people-data-fname
+  (str home-dir "/Dropbox/personal/clj-prescreen/people-data.clj"))
+
+
 (defn printf-to-writer [w fmt-str & args]
   (binding [*out* w]
     (apply clojure.core/printf fmt-str args)
@@ -1050,7 +1056,7 @@ machine, not once for each OS/JDK combo I want to test."
                          (group-by :ticket)
                          (map-vals first))
           as3b (map #(add-preferred-patch-info % pref-pats) as3)
-          as4 (let [people-info (read-safely "data/people-data.clj")]
+          as4 (let [people-info (read-safely people-data-fname)]
                 (map #(add-author-info % ticket-dir people-info) as3b))]
       (spit-pretty (str cur-eval-dir patch-type "-downloaded-only.txt") as4)
       (spit (str cur-eval-dir patch-type "-author-info.txt")
@@ -1074,7 +1080,7 @@ apply the patch, and try to build with 'ant' in that copy."
                          (group-by :ticket)
                          (map-vals first))
           as3b (map #(add-preferred-patch-info % pref-pats) as3)
-          as4 (let [people-info (read-safely "data/people-data.clj")]
+          as4 (let [people-info (read-safely people-data-fname)]
                 (map #(add-author-info % ticket-dir people-info) as3b))]
       (spit-pretty (str cur-eval-dir patch-type "-evaled-authors.txt") as4)
       (spit (str cur-eval-dir patch-type "-patch-summary.txt")
@@ -2220,7 +2226,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    | http://dev.clojure.org   in html and plain text formats.
 ;;    |  |
 ;;    |  |  +-----------------Clojure source code tree
-;;    |  |  |  +---------------|-data/{people-data.clj, preferred-patches.clj}
+;;    |  |  |  +---------------|-people-data-fname, data/preferred-patches.clj
 ;;    v  v  v  v               |  |
 ;; dl-patches-check-ca!        |  |
 ;; Code at Note 7              |  |
@@ -2320,8 +2326,9 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (dl-patches-check-ca! cur-eval-dir patch-type-list ticket-dir ppat-fname clojure-tree)
 
 ;; After doing the dl-patches-check-ca! above, if you edit
-;; data/people-data.clj or preferred-patches.clj and want to redo
-;; [patch-type]-author-info.txt report, do this:
+;; the file with name given by people-data-fname or
+;; data/preferred-patches.clj and want to
+;; redo [patch-type]-author-info.txt report, do this:
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-downloaded-only.txt")
         as1 (read-safely fname1)
@@ -2329,7 +2336,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
                        (group-by :ticket)
                        (map-vals first))
         as1 (map #(add-preferred-patch-info % pref-pats) as1)
-        as1 (let [people-info (read-safely "data/people-data.clj")]
+        as1 (let [people-info (read-safely people-data-fname)]
               (map #(add-author-info % ticket-dir people-info) as1))]
     (spit-pretty fname1 as1)
     (spit (str cur-eval-dir patch-type "-author-info.txt")
@@ -2343,12 +2350,12 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (do-eval-check-ca! cur-eval-dir ticket-dir clojure-tree patch-type-list ppat-fname)
 
 ;; After doing the do-eval-check-ca! above, if you edit
-;; data/people-data.clj and want to redo the author evaluations only,
-;; do this:
+;; the file with name given by people-data-fname and want to redo the
+;; author evaluations only, do this:
 (doseq [patch-type patch-type-list]
   (let [fname1 (str cur-eval-dir patch-type "-evaled-authors.txt")
         as1 (read-safely fname1)
-        as1 (let [people-info (read-safely "data/people-data.clj")]
+        as1 (let [people-info (read-safely people-data-fname)]
               (map #(add-author-info % ticket-dir people-info) as1))]
     (spit-pretty fname1 as1)
     (spit (str cur-eval-dir patch-type "-patch-summary.txt")
