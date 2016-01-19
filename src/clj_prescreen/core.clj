@@ -783,8 +783,8 @@ Check it to see if it was created incorrectly."})
                                        status))
                    "Bad: Unkn Status")
                  (when (not (or (nil? approval)
-                                (contains? #{"Triaged" "Vetted" "Incomplete"
-                                             "Screened" "Ok"}
+                                (contains? #{"Triaged" "Prescreened" "Vetted"
+                                             "Incomplete" "Screened" "Ok"}
                                            approval)))
                    "Bad: Unkn Approval")
                  (when (not (or (empty? fix-versions) next-rel backlog))
@@ -799,7 +799,8 @@ Check it to see if it was created incorrectly."})
      (not open) ["Closed"]
      :else (filter identity
                    [(when (nil? approval) "Open")
-                    (when (= approval "Triaged") "Triaged")
+                    (when (contains? #{"Triaged" "Prescreened"} approval)
+                      approval)
                     (when (and (= approval "Vetted")
                                (empty? fix-versions))
                       "Vetted")
