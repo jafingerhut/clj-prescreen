@@ -5,6 +5,7 @@
 /native
 /.lein-failures
 /checkouts
+/.lein-repl-history
 /.lein-deps-sum
 *-log.txt
 data/all-clojure-jira-users.clj
