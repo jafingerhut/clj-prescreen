@@ -752,14 +752,14 @@ Check it to see if it was created incorrectly."})
        "/" (:name p)))
 
 
-(def next-release-short "1.8")
+(def next-release-short "1.9")
+(def after-next-release-short "1.10")
+
 (def next-release (str "Release " next-release-short))
+(def after-next-release (str "Release " after-next-release-short))
 
 (defn next-release? [att]
   (some #(= % next-release) (:fixVersion att)))
-
-(def after-next-release-short "1.9")
-(def after-next-release (str "Release " after-next-release-short))
 
 (defn after-next-release? [att]
   (some #(= % after-next-release) (:fixVersion att)))
@@ -826,7 +826,7 @@ Check it to see if it was created incorrectly."})
           (zero? n) "Bad: Match no state"
           :else (str "Bad: Match >1 state: "
                      (str/join ", " s)))))
-  
+
 
 (defn add-author-info
   [p attach-dir people-info]
