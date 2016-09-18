@@ -1563,15 +1563,15 @@ contributor, and it does not build and pass tests.
 (defn tickets-html-table-strs [sorted-ticket-info col-order sort-order]
   (concat
    [;; HTML table tag
-    "<table style=\"text-align: left; width: 950px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n"
+    "<table class=\"table-of-top-voted-tickets\">\n"
     "  <tbody>\n"
     
     ;; Headings
     "    <tr>\n"]
    (cfor [col col-order]
-     [(format "        <td style=\"vertical-align: bottom;%s\">%s\n"
+     [(format "        <td class=\"tableheading%s\">%s\n"
               (case col
-                :voter-details " width: 200px;"
+                :voter-details " tableheading-voters"
                 "")
               (case col
                 :weighted-vote "Weighted vote"
@@ -1595,7 +1595,7 @@ contributor, and it does not build and pass tests.
        (concat
         ["    <tr>\n"]
         (cfor [col col-order]
-          ["        <td style=\"vertical-align: top;\">"
+          ["        <td class=\"tablecell\">"
            (case col
              :weighted-vote (format "%.2f" (double (:weighted-vote info 0)))
              :num-votes (format "%d" (:num-votes info 0))
@@ -1672,11 +1672,12 @@ release is 1.7, but the ticket is marked for fix in release 1.8).
 "
               project date-str project) ]
     :html
-    [ (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">
-<html>
+    [ (format "<!DOCTYPE html>
+<html lang=\"en-us\">
 <head>
-<meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\">
-<title>Top %s tickets by weighted vote</title>
+  <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\">
+  <title>Top %s tickets by weighted vote</title>
+  <link type=\"text/css\" rel=\"stylesheet\" href=\"../jafingerhut-clojure.css\">
 </head>
 <body>
 
@@ -1685,13 +1686,15 @@ release is 1.7, but the ticket is marked for fix in release 1.8).
 Date: %s<br>
 <br>
 
+<p>
 Open %s tickets with at least one vote, sorted in descending order of
-their <span style=\"font-style: italic;\">weighted vote</span>.&nbsp;
+their <em>weighted vote</em>.&nbsp;
 At the end of the CLJ and CLJS lists are tickets with no votes, but
 they have been at least Triaged.  For the CLJ project, Triaged means
 that at least one Clojure screener thinks the ticket describes a real
 issue.  At the end of other project ticket lists are all open tickets,
 whether they have votes or not.
+</p>
 
 <p>
 Suppose someone has currently voted on <span style=\"font-style:
@@ -1700,24 +1703,29 @@ style=\"font-style: italic;\">1/N</span> for each of those
 tickets.&nbsp; Thus voting on all tickets has the same relative effect
 on their ranking as voting on no tickets.&nbsp; You must be selective
 to change the rankings.
+</p>
 
 <p>
 Each person gets 1 weighted vote to divide up as they wish for each
 project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+</p>
 
 <p>
 Note: Ticket wranglers sometimes look at unweighted vote counts on
 tickets, too, when deciding which to act upon, so feel free to vote on
 many tickets if you care about them.
+</p>
 
 <p>
 State is one of the states in the JIRA flow diagram <a
 href=\"http://dev.clojure.org/display/community/JIRA+workflow\">here</a>.
+</p>
 
 <p>
 Note that a state of \"Backlog\" is shown below if the next release is
 <span style=\"font-style: italic;\">N</span>, and the ticket is marked for fix in release <span style=\"font-style: italic;\">N+1</span> (e.g. the next
 release is 1.7, but the ticket is marked for fix in release 1.8).
+</p>
 "
               project project date-str project) ]))
 
@@ -1772,7 +1780,7 @@ Project %s tickets
                       sort-order))
         :html
         (concat
-         [(format "<h2><a name=\"%s\"></a>%s</h2>\n\n"
+         [(format "<h2><a id=\"%s\"></a>%s</h2>\n\n"
                   (ticket-table-html-anchor-name project ticket-type)
                   ticket-type)]
          (tickets-html-table-strs (get tickets-by-type ticket-type)
@@ -1793,13 +1801,13 @@ Project %s tickets
 (defn other-ticket-summary-table-html-strs [ticket-info projs col-order]
   (concat
    [;; HTML table tag
-    "<table style=\"text-align: left; width: 500px;\" border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n"
+    "<table>\n"
     "  <tbody>\n"
     
     ;; Headings
     "    <tr>\n"]
    (cfor [col col-order]
-     [(format "        <td style=\"vertical-align: bottom;\">%s\n"
+     [(format "        <td class=\"tableheading\">%s\n"
               (if (= col :project)
                 "Project"
                 (format "Open %s tickets" col)))
@@ -1812,7 +1820,7 @@ Project %s tickets
        (concat
         ["    <tr>\n"]
         (cfor [col col-order]
-          ["        <td style=\"vertical-align: top;\">"
+          ["        <td class=\"tablecell\">"
            (if (= col :project)
              proj
              (if-let [num-tickets (get-in ticket-info [proj col])]
