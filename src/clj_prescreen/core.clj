@@ -1571,6 +1571,7 @@ contributor, and it does not build and pass tests.
    (cfor [col col-order]
      [(format "        <td class=\"tableheading%s\">%s\n"
               (case col
+                :ticket-with-link " tableheading-ticket"
                 :voter-details " tableheading-voters"
                 "")
               (case col
