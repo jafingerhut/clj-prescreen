@@ -1416,6 +1416,30 @@ contributor, and it does not build and pass tests.
   (set (map vote-project (keys ticket-info))))
 
 
+(defn log-with-base [x base]
+  (/ (Math/log x) (Math/log base)))
+
+
+(defn weighted-vote-value [num-votes-for-user ret-type]
+  "For a user who has a total of num-votes-for-user votes across all
+  tickets in one project, return the weight of their vote.  If
+  ret-type is :number, return the value as a number.  If ret-type
+  is :string, return the value as a string for purposes of displaying
+  in the weighted vote table.
+
+  Originally the value was (1 / num-votes-for-user), so everyone got 1
+  vote per project and they could divide it up as many ways as they
+  wished.  Alex Miller suggested that perhaps really enthusiastic
+  users who vote on lots of tickets should effectively get more than 1
+  point to divide up, and suggested (1 + log base 2 of
+  num-votes-for-user)."
+  (let [val (/ (+ 1 (log-with-base num-votes-for-user 2))
+               num-votes-for-user)]
+    (case ret-type
+      :number val
+      :string (format "%.2f" val))))
+
+
 (defn ticket-plus-vote-info [tickets-info votes-by-user project]
   (let [;; votes-by-user is expected to be a map where:
         ;;
@@ -1466,7 +1490,8 @@ contributor, and it does not build and pass tests.
         vote-info-by-ticket
         (map-vals (fn [users]
                     {:num-votes (count users)
-                     :weighted-vote (apply + (map #(/ 1 (:user-num-votes %))
+                     :weighted-vote (apply + (map #(weighted-vote-value
+                                                    (:user-num-votes %) :number)
                                                   users))
                      :vote-list (sort-by (fn [u]
                                            [(:user-num-votes u)
@@ -1520,8 +1545,8 @@ contributor, and it does not build and pass tests.
 
 
 (defn one-weighted-vote-val-str [nv]
-  (if (and (number? nv) (> nv 1))
-    (str "1/" nv)
+  (if (number? nv)
+    (weighted-vote-value nv :string)
     (str nv)))
 
 
@@ -1645,12 +1670,14 @@ the ticket describes a real issue.  At the end of other project ticket
 lists are all open tickets, whether they have votes or not.
 
 Suppose someone has currently voted on N open tickets.  Then their
-vote counts as 1/N for each of those tickets.  Thus voting on all
-tickets has the same relative effect on their ranking as voting on no
-tickets.  You must be selective to change the rankings.
+vote counts as (1+log(N,2))/N for each of those tickets, where
+log(N,2) is the base 2 logarithm of N (formerly it was 1/N).  This new
+formula gives those who vote on many tickets more 'points' to divide
+up (suggested by Alex Miller).  Still, it helps to be selective to
+change the rankings.
 
-Each person gets 1 weighted vote to divide up as they wish for each
-project, e.g. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+This calculation is done independently for each project, e.g. for CLJ,
+for CLJS, for MATCH, etc.
 
 Note: Ticket wranglers sometimes look at unweighted vote counts on
 tickets, too, when deciding which to act upon, so feel free to vote on
@@ -1700,15 +1727,17 @@ whether they have votes or not.
 <p>
 Suppose someone has currently voted on <span style=\"font-style:
 italic;\">N</span> open tickets.&nbsp; Then their vote counts as <span
-style=\"font-style: italic;\">1/N</span> for each of those
-tickets.&nbsp; Thus voting on all tickets has the same relative effect
-on their ranking as voting on no tickets.&nbsp; You must be selective
-to change the rankings.
+style=\"font-style: italic;\">(1+log(N,2))/N</span> for each of those
+tickets, where <span style=\"font-style: italic;\">log(N,2)</span> is
+the base 2 logarithm of N (formerly it was <span style=\"font-style:
+italic;\">1/N</span>).&nbsp; This new formula gives those who vote on many
+tickets more 'points' to divide up (suggested by Alex Miller).&nbsp; Still,
+it helps to be selective to change the rankings.
 </p>
 
 <p>
-Each person gets 1 weighted vote to divide up as they wish for each
-project, i.e. 1 for CLJ, 1 for CLJS, 1 for MATCH, etc.
+This calculation is done independently for each project, e.g. for CLJ,
+for CLJS, for MATCH, etc.
 </p>
 
 <p>
