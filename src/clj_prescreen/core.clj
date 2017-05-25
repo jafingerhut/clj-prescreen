@@ -276,7 +276,7 @@ file with name file-name"
                    (:status resp) url)))))))
 
 
-(def max-responses 4000)
+(def max-responses 6000)
 
 
 (defn dl-all-tickets!
