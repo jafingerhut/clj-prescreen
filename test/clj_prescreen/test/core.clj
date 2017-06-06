@@ -1,4 +1,5 @@
 (ns clj-prescreen.test.core
+  (:import (java.io StringReader))
   (:use [clj-prescreen.core])
   (:use [clojure.test])
   (:require [clojure.java.io :as io]))
@@ -326,7 +327,7 @@ index f8b27de..8fe5631 100644
 
 
 From e04a3121db983bb3890058b2470fc2efff483717 Mon Sep 17 00:00:00 2001
-From: Juha Arpiainen <jarpiain@iki.fi>
+From: John Public <john.public@aol.com>
 Date: Sun, 31 Oct 2010 19:32:25 +0200
 Subject: [PATCH 2/2] Allow loop/recur nested in catch and finally
 
@@ -358,8 +359,33 @@ index bfc8274..dea9310 100644
 ;; the boundaries of a patch in this case?  Perhaps by looking for the
 ;; line "---" by itself at the end of the comments?
 
+(def test-people-data-contents-string
+  "
+[
+{:display-name \"John Public\"
+ :aliases #{ }
+ :usernames #{ \"johnpublic\" }
+ :emails #{ \"john.public@aol.com\" }
+ :contributor true
+ }
+{:display-name \"John Jacob Jingleheimer Schmidt\"
+ :aliases #{ }
+ :usernames #{ \"johnjacob\" }
+ :emails #{ \"john_jacob_jingleheimer_schmidt@gmail.com\" }
+ :contributor false
+ }
+{:display-name \"Andy Fingerhut\"
+ :aliases #{ \"John Andrew Fingerhut\" }
+ :usernames #{ \"jafingerhut\" }
+ :emails #{ \"andy_fingerhut@alum.wustl.edu\" \"andy.fingerhut@gmail.com\" \"jafinger@cisco.com\" }
+ :contributor true
+ }
+]
+")
+
 (deftest test-author-checks
-  (let [people (read (java.io.PushbackReader. (io/reader "data/people-data.clj")))
+  (let [people (read (java.io.PushbackReader.
+                      (StringReader. test-people-data-contents-string)))
         authors1 (git-patch-authors test-patch-content-1)
         names-and-emails1 (set (map extract-name-and-email authors1))
         andy {:display-name "Andy Fingerhut",
@@ -370,10 +396,10 @@ index bfc8274..dea9310 100644
                 "jafinger@cisco.com"},
               :contributor true}]
     (is (= (set authors1) #{"Andy Fingerhut <andy_fingerhut@alum.wustl.edu>"
-                            "Juha Arpiainen <jarpiain@iki.fi>"}))
+                            "John Public <john.public@aol.com>"}))
     (is (= names-and-emails1
            #{{:name "Andy Fingerhut", :email "andy_fingerhut@alum.wustl.edu"}
-             {:name "Juha Arpiainen", :email "jarpiain@iki.fi"}}))
+             {:name "John Public", :email "john.public@aol.com"}}))
     (is (= (find-by-name-and-email people
                                    {:name "Andy Fingerhut"
                                     :email "andy_fingerhut@alum.wustl.edu"})
@@ -400,15 +426,15 @@ index bfc8274..dea9310 100644
               :display-name "Andy Fingerhut",
               :email "andy_fingerhut@alum.wustl.edu"}
              {:contributor-status :contributor,
-              :name "Juha Arpiainen",
-              :display-name "Juha Arpiainen",
-              :email "jarpiain@iki.fi"}}))
+              :name "John Public",
+              :display-name "John Public",
+              :email "john.public@aol.com"}}))
     (is (= (set (patch-authors-contributor-status
-                 ["Rahul Pilani <rahul.pilani@gmail.com>"] people))
+                 ["John Jacob Jingleheimer Schmidt <john_jacob_jingleheimer_schmidt@gmail.com>"] people))
            #{{:contributor-status :not-contributor,
-              :name "Rahul Pilani",
-              :display-name "Rahul Pilani",
-              :email "rahul.pilani@gmail.com"}}))
+              :name "John Jacob Jingleheimer Schmidt",
+              :display-name "John Jacob Jingleheimer Schmidt",
+              :email "john_jacob_jingleheimer_schmidt@gmail.com"}}))
     (is (= (set (patch-authors-contributor-status
                  [ "Andy Fingerhut <jafingerhut@me.com>" ] people))
            #{{:contributor-status :only-partial-matches,
