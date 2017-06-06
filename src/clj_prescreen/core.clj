@@ -1448,9 +1448,9 @@ contributor, and it does not build and pass tests.
         ;;   JIRA ticket name, e.g. "CLJ-863".
         ;;
         ;; The maps describing users are of this form:
-        ;; {:display-name "Brian Siebert",
-        ;;  :usernames #{"bsiebert"},
-        ;;  :emails #{"bsiebert@fgm.com"}}
+        ;; {:display-name "John Public",
+        ;;  :usernames #{"johnpublic"},
+        ;;  :emails #{"john.public@aol.com"}}
         votes-by-user (map-vals (fn [ticket-strs]
                                   (filter #(= (vote-project %) project)
                                           ticket-strs))
