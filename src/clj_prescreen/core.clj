@@ -2136,7 +2136,8 @@ Project %s tickets
               att-list-dir cur-eval-dir
               att-list-fname "att-list.txt"]
           (when-not (fs/exists? eval-root)
-            (die "Directory %s must exist, but does not.  Aborting." eval-root))
+            (when-not (fs/mkdirs eval-root)
+              (die "mkdirs %s failed.  Aborting.\n" eval-root)))
           (when (fs/exists? cur-eval-dir)
             (die "Eval directory %s
 where all results will go already exists.
@@ -2179,7 +2180,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
               cur-eval-dir (str eval-root yyyy-mm-dd "/")
               auth-info {:basic-auth [jira-account jira-pw]}]
           (when-not (fs/exists? eval-root)
-            (die "Directory %s must exist, but does not.  Aborting." eval-root))
+            (when-not (fs/mkdirs eval-root)
+              (die "mkdirs %s failed.  Aborting.\n" eval-root)))
           (when (fs/exists? cur-eval-dir)
             (die "Eval directory %s
 where all results will go already exists.
