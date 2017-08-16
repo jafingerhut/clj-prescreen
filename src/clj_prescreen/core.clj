@@ -376,8 +376,12 @@ return it as a map from users to a list of tickets they voted on."
          (let [{ticket-name :ticket id :id att-name :name} att
                local-filename (str (att-dir-name ticket-name attach-dir)
                                    "/" att-name)
-               url (str "http://dev.clojure.org/jira/secure/attachment/"
-                        id "/" att-name)
+               ;; If someone creates a JIRA attachment with spaces in
+               ;; the name, the URL to access it should have spaces
+               ;; replaced with plus signs (+).
+               remote-name (str/replace att-name " " "+")
+               url (str "https://dev.clojure.org/jira/secure/attachment/"
+                        id "/" remote-name)
                _ (iprintf "    Attachment %d/%d %s ...\n"
                           (inc idx) num-atts att-name)
                att-contents (slurp url)
