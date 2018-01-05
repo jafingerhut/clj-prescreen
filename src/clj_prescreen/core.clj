@@ -756,8 +756,26 @@ Check it to see if it was created incorrectly."})
        "/" (:name p)))
 
 
-(def next-release-short "Next")
-(def after-next-release-short "1.10")
+;; Example: As of 2017-Jan-04, Clojure 1.9.0 was the latest release of
+;; Clojure.  Many Clojure tickets showed the 'Fix Version(s)' field as
+;; 'Release 1.10'.  Those should be considered as marked for possible
+;; fixing in the next release of Clojure, and should have a
+;; derived-ticket-state-seq that includes strings
+;; like "Screenable", "Screened", etc.
+
+;; If any tickets had 'Fix Version(s)' of 'Release 1.11', they should
+;; show up with derived status "Backlog", since they are not planned
+;; for the next Clojure release.
+
+;; Both of these values typically require updating when a new release
+;; of Clojure is made, and the JIRA tickets have their 'Fix
+;; Versions(s)' field change, probably because they are marked in JIRA
+;; has having a variable as their fix version, which when updated in
+;; one place in JIRA, causes all tickets referring to that name in
+;; their 'Fix Version(s)' to update as a result.
+
+(def next-release-short "1.10")
+(def after-next-release-short "1.11")
 
 (def next-release (str "Release " next-release-short))
 (def after-next-release (str "Release " after-next-release-short))
