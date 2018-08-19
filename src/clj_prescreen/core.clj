@@ -2131,7 +2131,7 @@ Project %s tickets
 
 (defn show-usage [prog-name]
   (iprintf *err* "usage:
-    %s [ help | -h | --help ]
+    %s [ help ]
     %s patches
     %s top-tickets <jira-account-name> <jira-password>
 " prog-name prog-name prog-name))
