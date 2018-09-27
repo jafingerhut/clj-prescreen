@@ -18,4 +18,4 @@
                         "dev,test,1.6:dev,test,1.7:dev,test,1.8:dev,test,1.9:dev,test,1.10"
                         "test"]}
   :jvm-opts ^:replace ["-Xmx1024m"]
-  :main clj-prescreen.core)
+  :main clj-prescreen.presc)
