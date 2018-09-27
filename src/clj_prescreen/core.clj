@@ -1442,7 +1442,7 @@ contributor, and it does not build and pass tests.
   (/ (Math/log x) (Math/log base)))
 
 
-(defn weighted-vote-value [num-votes-for-user ret-type]
+(defn weighted-vote-value
   "For a user who has a total of num-votes-for-user votes across all
   tickets in one project, return the weight of their vote.  If
   ret-type is :number, return the value as a number.  If ret-type
@@ -1455,6 +1455,7 @@ contributor, and it does not build and pass tests.
   users who vote on lots of tickets should effectively get more than 1
   point to divide up, and suggested (1 + log base 2 of
   num-votes-for-user)."
+  [num-votes-for-user ret-type]
   (let [val (/ (+ 1 (log-with-base num-votes-for-user 2))
                num-votes-for-user)]
     (case ret-type
