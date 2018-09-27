@@ -1,8 +1,8 @@
-(ns clj-prescreen.test.core
+(ns clj-prescreen.test.presc
   (:import (java.io StringReader))
   (:use [clojure.test])
   (:require [clojure.java.io :as io]
-            [clj-prescreen.core :as ps]))
+            [clj-prescreen.presc :as ps]))
 
 
 ;; All of the following sample output of the 'ant' command while

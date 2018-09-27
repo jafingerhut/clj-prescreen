@@ -1,4 +1,4 @@
-(ns clj-prescreen.core
+(ns clj-prescreen.presc
   (:import (java.io File ByteArrayInputStream))
   (:import (org.joda.time LocalDate DateTime Duration))
   (:require [clojure.xml :as xml]
@@ -2255,7 +2255,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; Step 4: Evaluate these expressions in a REPL.
 
 (in-ns 'user)
-(use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
+(use 'clj-prescreen.presc 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[me.raynes.fs :as fs])
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2015-07-19/"))
 (def clojure-tree "./eval-results/2015-07-19-clojure-to-prescreen/clojure")
@@ -2454,7 +2454,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 (dl-all-tickets! (str cur-eval-dir "CLJ-all.xml") :CLJ)
 
 (in-ns 'user)
-(use 'clj-prescreen.core 'clojure.repl 'clojure.pprint)
+(use 'clj-prescreen.presc 'clojure.repl 'clojure.pprint)
 (require '[clojure.java.io :as io] '[fs.core :as fs] '[clojure.tools.trace :as t])
 (def cur-eval-dir (str fs/*cwd* "/eval-results/2013-08-18/"))
 
