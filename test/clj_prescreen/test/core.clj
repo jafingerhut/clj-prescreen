@@ -1,8 +1,8 @@
 (ns clj-prescreen.test.core
   (:import (java.io StringReader))
-  (:use [clj-prescreen.core])
   (:use [clojure.test])
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clj-prescreen.core :as ps]))
 
 
 ;; All of the following sample output of the 'ant' command while
@@ -262,34 +262,34 @@ Total time: 5 seconds
   (doseq [props interesting-props-to-test]
     (is (= [:ok "Success"]
            (let [{:keys [ant-status ant-msg]}
-                 (check-ant-output ant-output-good props)]
+                 (ps/check-ant-output ant-output-good props)]
              [ant-status (and ant-msg (re-find #"Success" ant-msg))])))
 ;;    (is (let [{:keys [ant-status ant-msg]}
-;;              (check-ant-output ant-output-good props)]
+;;              (ps/check-ant-output ant-output-good props)]
 ;;          (and (= ant-status :ok)
 ;;               (re-find #"Success" ant-msg))))
     (is (= [:fail "Reflection warning"]
            (let [{:keys [ant-status ant-msg]}
-                 (check-ant-output ant-output-warning-but-no-errors props)]
+                 (ps/check-ant-output ant-output-warning-but-no-errors props)]
              [ant-status (and ant-msg (re-find #"Reflection warning" ant-msg))])))
 ;;    (is (let [{:keys [ant-status ant-msg]}
-;;              (check-ant-output ant-output-warning-but-no-errors props)]
+;;              (ps/check-ant-output ant-output-warning-but-no-errors props)]
 ;;          (and (= ant-status :fail)
 ;;               (re-find #"Reflection warning" ant-msg))))
     (is (= [:fail "1 failures, 0 errors"]
            (let [{:keys [ant-status ant-msg]}
-                 (check-ant-output ant-output-test-failure props)]
+                 (ps/check-ant-output ant-output-test-failure props)]
              [ant-status (and ant-msg (re-find #"1 failures, 0 errors" ant-msg))])))
 ;;    (is (let [{:keys [ant-status ant-msg]}
-;;              (check-ant-output ant-output-test-failure props)]
+;;              (ps/check-ant-output ant-output-test-failure props)]
 ;;          (and (= ant-status :fail)
 ;;               (re-find #"test: 1 failure, 0 errors" ant-msg))))
     (is (= [:fail "Compile failed"]
            (let [{:keys [ant-status ant-msg]}
-                 (check-ant-output ant-output-compilation-error props)]
+                 (ps/check-ant-output ant-output-compilation-error props)]
              [ant-status (and ant-msg (re-find #"(?i)Compile failed" ant-msg))])))
 ;;    (is (let [{:keys [ant-status ant-msg]}
-;;              (check-ant-output ant-output-compilation-error props)]
+;;              (ps/check-ant-output ant-output-compilation-error props)]
 ;;          (and (= ant-status :fail)
 ;;               (re-find #"compile-java: 2 errors" ant-msg))))
     ))
@@ -386,8 +386,8 @@ index bfc8274..dea9310 100644
 (deftest test-author-checks
   (let [people (read (java.io.PushbackReader.
                       (StringReader. test-people-data-contents-string)))
-        authors1 (git-patch-authors test-patch-content-1)
-        names-and-emails1 (set (map extract-name-and-email authors1))
+        authors1 (ps/git-patch-authors test-patch-content-1)
+        names-and-emails1 (set (map ps/extract-name-and-email authors1))
         andy {:display-name "Andy Fingerhut",
               :aliases #{"John Andrew Fingerhut"},
               :usernames #{"jafingerhut"},
@@ -400,27 +400,27 @@ index bfc8274..dea9310 100644
     (is (= names-and-emails1
            #{{:name "Andy Fingerhut", :email "andy_fingerhut@alum.wustl.edu"}
              {:name "John Public", :email "john.public@aol.com"}}))
-    (is (= (find-by-name-and-email people
-                                   {:name "Andy Fingerhut"
-                                    :email "andy_fingerhut@alum.wustl.edu"})
+    (is (= (ps/find-by-name-and-email people
+                                      {:name "Andy Fingerhut"
+                                       :email "andy_fingerhut@alum.wustl.edu"})
            [:one-full-match andy]))
-    (is (= (find-by-name-and-email people
-                                   {:name "John Andrew Fingerhut"
-                                    :email "andy.fingerhut@gmail.com"})
+    (is (= (ps/find-by-name-and-email people
+                                      {:name "John Andrew Fingerhut"
+                                       :email "andy.fingerhut@gmail.com"})
            [:one-full-match andy]))
-    (is (= (find-by-name-and-email people
-                                   {:name "J. Andy Fingerhut"
-                                    :email "andy_fingerhut@alum.wustl.edu"})
+    (is (= (ps/find-by-name-and-email people
+                                      {:name "J. Andy Fingerhut"
+                                       :email "andy_fingerhut@alum.wustl.edu"})
            [:only-partial-matches (list andy)]))
-    (is (= (find-by-name-and-email people
-                                   {:name "Andy Fingerhut"
-                                    :email "jafingerhut@me.com"})
+    (is (= (ps/find-by-name-and-email people
+                                      {:name "Andy Fingerhut"
+                                       :email "jafingerhut@me.com"})
            [:only-partial-matches (list andy)]))
-    (is (= (find-by-name-and-email people
-                                   {:name "J. Andy Fingerhut"
-                                    :email "jafingerhut@me.com"})
+    (is (= (ps/find-by-name-and-email people
+                                      {:name "J. Andy Fingerhut"
+                                       :email "jafingerhut@me.com"})
            [:no-matches nil]))
-    (is (= (set (patch-authors-contributor-status authors1 people))
+    (is (= (set (ps/patch-authors-contributor-status authors1 people))
            #{{:contributor-status :contributor,
               :name "Andy Fingerhut",
               :display-name "Andy Fingerhut",
@@ -429,18 +429,18 @@ index bfc8274..dea9310 100644
               :name "John Public",
               :display-name "John Public",
               :email "john.public@aol.com"}}))
-    (is (= (set (patch-authors-contributor-status
+    (is (= (set (ps/patch-authors-contributor-status
                  ["John Jacob Jingleheimer Schmidt <john_jacob_jingleheimer_schmidt@gmail.com>"] people))
            #{{:contributor-status :not-contributor,
               :name "John Jacob Jingleheimer Schmidt",
               :display-name "John Jacob Jingleheimer Schmidt",
               :email "john_jacob_jingleheimer_schmidt@gmail.com"}}))
-    (is (= (set (patch-authors-contributor-status
+    (is (= (set (ps/patch-authors-contributor-status
                  [ "Andy Fingerhut <jafingerhut@me.com>" ] people))
            #{{:contributor-status :only-partial-matches,
               :name "Andy Fingerhut",
               :email "jafingerhut@me.com"}}))
-    (is (= (set (patch-authors-contributor-status
+    (is (= (set (ps/patch-authors-contributor-status
                  [ "Daffy Duck <daffy@disney.com>" ] people))
            #{{:contributor-status :no-matches,
               :name "Daffy Duck",
