@@ -240,24 +240,24 @@ TBENCH-11"
 
 (defn url-all-CLJ-tickets [max-responses]
   (format "%s%d"
-          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ&tempMax="
+          "https://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ&tempMax="
           max-responses))
 
 
 ;;(defn url-all-open-CLJ-tickets [max-responses]
 ;;  (format "%s%d"
-;;          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
+;;          "https://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%3DCLJ+and+status+not+in+%28Closed%2CResolved%29&tempMax="
 ;;          max-responses))
 
 
 (defn url-all-non-CLJ-tickets [max-responses]
   (format "%s%d"
-          "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax="
+          "https://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=Project%21%3DCLJ&tempMax="
           max-responses))
 
 
 (defn url-for-tickets-voted-by-user [username]
-  (let [url-part1 "http://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
+  (let [url-part1 "https://dev.clojure.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=status+not+in+%28Closed%2CResolved%29+and+voter%3D%27"
         url-part2 "%27&tempMax=1000&field=title"]
     (str url-part1 (util/url-encode username) url-part2)))
 
@@ -1605,7 +1605,7 @@ contributor, and it does not build and pass tests.
 
 
 (defn url-for-clj-ticket [ticket-abbrev]
-  (str "http://dev.clojure.org/jira/browse/" ticket-abbrev))
+  (str "https://dev.clojure.org/jira/browse/" ticket-abbrev))
 
 
 (defn tickets-html-table-strs [sorted-ticket-info col-order sort-order]
@@ -1715,7 +1715,7 @@ Each ticket is listed with:
 
 where State is one of the states in the JIRA flow diagram at
 
-    http://dev.clojure.org/display/community/JIRA+workflow
+    https://clojure.org/community/workflow#_workflow
 
 Note that a state of \"Backlog\" is shown below if the next release is
 N, and the ticket is marked for fix in release N+1 (e.g. the next
@@ -1771,7 +1771,7 @@ many tickets if you care about them.
 
 <p>
 State is one of the states in the JIRA flow diagram <a
-href=\"http://dev.clojure.org/display/community/JIRA+workflow\">here</a>.
+href=\"https://clojure.org/community/workflow#_workflow\">here</a>.
 </p>
 
 <p>
@@ -2269,7 +2269,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; http://dev.clojure.org -----> Download via manual steps (Note 2)
+;; https://dev.clojure.org -----> Download via manual steps (Note 2)
 ;;         |           |           |
 ;;         |           |           v
 ;; dl-all-tickets!     |         data/all-clojure-jira-users.clj
@@ -2287,7 +2287,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;;    |                            v  
 ;;    |                          Top tickets by weighted vote reports
 ;;    |                          for CLJ, CLJS, and all others, each
-;;    | http://dev.clojure.org   in html and plain text formats.
+;;    | https://dev.clojure.org  in html and plain text formats.
 ;;    |  |
 ;;    |  |  +-----------------Clojure source code tree
 ;;    |  |  |  +---------------|-people-data-fname, data/preferred-patches.clj
@@ -2522,7 +2522,7 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; Note: You must have admin access on the Clojure JIRA web site to
 ;; get a list of all users like this.
 ;;
-;; Go to this link: http://dev.clojure.org/jira/browse/CLJ
+;; Go to this link: https://dev.clojure.org/jira/browse/CLJ
 ;;
 ;; Click "Administration" link next to your name near the upper right
 ;; corner of the page.
