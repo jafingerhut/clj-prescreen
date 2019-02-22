@@ -1518,8 +1518,7 @@ contributor, and it does not build and pass tests.
                                                   users))
                      :vote-list (sort-by (fn [u]
                                            [(:user-num-votes u)
-                                            (:display-name u)
-                                            u])
+                                            (:display-name u)])
                                          users)})
                   votes-by-ticket)
 
@@ -2362,7 +2361,8 @@ Aborting to avoid overwriting any files there.  Delete it and rerun if you wish.
 ;; or I am missing a user, and should get an updated user list.  See
 ;; Note 2.
 
-(gen-top-ticket-reports! cur-eval-dir)
+(gen-top-ticket-reports! cur-eval-dir :weighted-vote)
+(gen-top-ticket-reports! cur-eval-dir :unweighted-vote)
 ;;;; End of Note 6 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
